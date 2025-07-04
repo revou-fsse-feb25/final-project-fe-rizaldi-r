@@ -1,3 +1,10 @@
+import Navbar from "@/components/_commons/navbar/Navbar";
+
 export default function searchPage() {
-    return <div>Discover Courses</div>;
+  return (
+    <div>
+      <Navbar />
+      Discover Courses
+    </div>
+  );
 }
