@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 import Image from "next/image";
 
 export default function Home() {
@@ -101,3 +102,15 @@ export default function Home() {
     </div>
   );
 }
+=======
+import Navbar from "@/components/_commons/navbar/Navbar";
+
+export default function MyCoursesPage() {
+    return (
+        <>
+            <Navbar/>
+        </>
+    );
+}
+
+>>>>>>> 6c67ec44efea7df2977059720b5f6cbdb680a107
