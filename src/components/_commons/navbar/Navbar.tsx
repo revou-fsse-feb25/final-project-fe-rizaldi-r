@@ -12,18 +12,59 @@ enum TabNames {
   PERFORMANCE,
 };
 
+// Define the structure for each tab's configuration
+interface TabConfig {
+  id: TabNames;
+  label: string;
+  href: string;
+  iconLink: string;
+}
+
+// Array containing the configuration for all tabs
+const tabs: TabConfig[] = [
+  {
+    id: TabNames.SEARCH,
+    label: "Search",
+    href: "/student/search",
+    iconLink: "/search.svg",
+  },
+  {
+    id: TabNames.MY_COURSES,
+    label: "My Courses",
+    href: "/",
+    iconLink: "/folder-open.svg",
+  },
+  {
+    id: TabNames.ASSIGNMENTS,
+    label: "Assignments",
+    href: "/student/assignments",
+    iconLink: "/book.svg",
+  },
+  {
+    id: TabNames.PERFORMANCE,
+    label: "Performance",
+    href: "/student/performance",
+    iconLink: "/speedometer.svg",
+  },
+];
+
 export default function Navbar() {
   const pathname = usePathname();
   
-  // Determine the active tab based on the current pathname
-  const getActiveTabFromPath = (path: string) => {
-    if (path === "/" || path.includes("/my-courses")) return TabNames.MY_COURSES;
-    else if (path.includes("/search")) return TabNames.SEARCH;
-    else if (path.includes("/assignments")) return TabNames.ASSIGNMENTS;
-    else if (path.includes("/performance")) return TabNames.PERFORMANCE;
-    return TabNames.MY_COURSES;
+  // determine the active tab based on the current pathname
+  const getActiveTabFromPath = (path: string): TabNames => {
+    for (const tab of tabs) {
+      // handling for the root path
+      if (tab.href === "/" && path === "/") {
+        return tab.id; 
+      } else if (tab.href !== "/" && path.includes(tab.href)) {
+        return tab.id;
+      }
+    }
+    // default tab 
+    return TabNames.MY_COURSES; 
   };
-  
+
   const [activeTab, setActiveTab] = useState(getActiveTabFromPath(pathname));
 
   useEffect(() => {
@@ -38,34 +79,16 @@ export default function Navbar() {
 
         {/* Tab Buttons */}
         <div className="flex items-center gap-10 text-base font-medium h-full">
-          <NavbarTabButton
-            iconLink="/search.svg"
-            href="/student/search"
-            isActive={activeTab === TabNames.SEARCH}
-          >
-            Search
-          </NavbarTabButton>
-          <NavbarTabButton
-            iconLink="/folder-open.svg"
-            href="/"
-            isActive={activeTab === TabNames.MY_COURSES}
-          >
-            My Courses
-          </NavbarTabButton>
-          <NavbarTabButton
-            iconLink="/book.svg"
-            href="/student/assignments"
-            isActive={activeTab === TabNames.ASSIGNMENTS}
-          >
-            Assignments
-          </NavbarTabButton>
-          <NavbarTabButton
-            iconLink="/speedometer.svg"
-            href="/student/performance"
-            isActive={activeTab === TabNames.PERFORMANCE}
-          >
-            Performance
-          </NavbarTabButton>
+          {tabs.map((tab) => (
+            <NavbarTabButton
+              key={tab.id} 
+              iconLink={tab.iconLink}
+              href={tab.href}
+              isActive={activeTab === tab.id}
+            >
+              {tab.label}
+            </NavbarTabButton>
+          ))}
         </div>
 
         {/* Profile */}
