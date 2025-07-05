@@ -1,3 +1,3 @@
-export default function SignUpPage() {
-    return <div>SignUp</div>;
-}
+"use client";
+
+export default function SignUpPage() {}
