@@ -7,20 +7,6 @@ export default function SignUpPage() {
   const [message, setMessage] = useState("");
   const [error, setError] = useState("");
   const [isLoading, setIsLoading] = useState(false);
-  const [formData, setFormData] = useState({
-    firstName: "",
-    lastName: "",
-    email: "",
-    password: "",
-  });
-
-  const handleFormChange = (e: ChangeEvent<HTMLInputElement>) => {
-    setFormData({
-      ...formData,
-      [e.target.name]: e.target.value,
-    });
-    console.log(" formData", formData);
-  };
 
   const handleFormSubmit = async (e: ChangeEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -40,56 +26,28 @@ export default function SignUpPage() {
         <h2 className="text-4xl font-bold">Sign Up</h2>
 
         <form onSubmit={handleFormSubmit} className="flex flex-col gap-4">
-
           {/* Name Input */}
           <div className="flex gap-4">
             <div className="flex flex-col gap-2 ">
               <label htmlFor="first-name">First Name</label>
-              <TextInput
-                type="text"
-                name="firstName"
-                placeholder="First name"
-                value={formData.firstName}
-                onChange={handleFormChange}
-              />
+              <TextInput type="text" name="firstName" placeholder="First name" />
             </div>
             <div className="flex flex-col gap-2">
               <label htmlFor="last-name">Last Name</label>
-              <TextInput
-                type="text"
-                name="lastName"
-                placeholder="Last name"
-                value={formData.lastName}
-                onChange={handleFormChange}
-              />
+              <TextInput type="text" name="lastName" placeholder="Last name" />
             </div>
           </div>
 
           {/* Email input */}
           <div className="flex flex-col gap-2">
             <label htmlFor="email">Email</label>
-            <TextInput
-              type="email"
-              name="email"
-              placeholder="you@example.com"
-              value={formData.email}
-              onChange={handleFormChange}
-            />
+            <TextInput type="email" name="email" placeholder="you@example.com" />
           </div>
 
           {/* Password Input */}
           <div className="flex flex-col gap-2">
             <label htmlFor="password">Password</label>
-            <input
-              type="password"
-              id="password"
-              name="password"
-              placeholder="********"
-              value={formData.password}
-              onChange={handleFormChange}
-              className="bg-gray-100 border-b border-b-gray-300 py-3 px-4"
-              required
-            />
+            <TextInput type="password" name="password" placeholder="********" />
             <p className="text-xs text-gray-400">
               It must be a combination of minimum 8 letters, numbers, and symbols.
             </p>

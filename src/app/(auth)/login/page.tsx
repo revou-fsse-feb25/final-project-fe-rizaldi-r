@@ -1,4 +1,5 @@
 "use client";
+import TextInput from "@/components/_commons/TextInput";
 import Link from "next/link";
 import { ChangeEvent, useState } from "react";
 
@@ -6,25 +7,18 @@ export default function LoginPage() {
   const [message, setMessage] = useState("");
   const [error, setError] = useState("");
   const [isLoading, setIsLoading] = useState(false);
-  const [formData, setFormData] = useState({
-    email: "",
-    password: "",
-  });
-
-  const handleFormChange = (e: ChangeEvent<HTMLInputElement>) => {
-    setFormData({
-      ...formData,
-      [e.target.name]: e.target.value,
-    });
-    console.log(" formData", formData);
-  };
 
   const handleFormSubmit = async (e: ChangeEvent<HTMLFormElement>) => {
     e.preventDefault();
     setError("");
     setIsLoading(true);
     try {
-      if (formData.email === "user@example.com" && formData.password === "password123") {
+      const email = (e.currentTarget.elements.namedItem("email") as HTMLInputElement)?.value;
+      // console.log(" email", email);
+      const password = (e.currentTarget.elements.namedItem("password") as HTMLInputElement)?.value;
+      // console.log(" password", password);
+
+      if (email === "user@example.com" && password === "password123") {
         setMessage("Login successful!");
       } else {
         setMessage("Invalid email or password.");
@@ -45,7 +39,7 @@ export default function LoginPage() {
           {/* Email Input */}
           <div className="flex flex-col gap-2">
             <label htmlFor="email">Email Address</label>
-            <input
+            {/* <input
               type="email"
               id="email"
               name="email"
@@ -54,12 +48,13 @@ export default function LoginPage() {
               onChange={handleFormChange}
               className="bg-gray-100 border-b border-b-gray-300 py-3 px-4"
               required
-            />
+            /> */}
+            <TextInput type="email" name="email" placeholder="you@example.com" />
           </div>
           {/* Password Input */}
           <div className="flex flex-col gap-2">
             <label htmlFor="password">Password</label>
-            <input
+            {/* <input
               type="password"
               id="password"
               name="password"
@@ -68,10 +63,8 @@ export default function LoginPage() {
               onChange={handleFormChange}
               className="bg-gray-100 border-b border-b-gray-300 py-3 px-4"
               required
-            />
-            <p className="text-xs text-gray-400">
-              It must be a combination of minimum 8 letters, numbers, and symbols.
-            </p>
+            /> */}
+            <TextInput type="password" name="password" placeholder="********" />
           </div>
 
           <Link href={"/"} className="text-blue-600">
@@ -88,7 +81,10 @@ export default function LoginPage() {
 
         {/* Sign Up Link */}
         <p>
-          Don't have an account? <Link href="/signup" className="font-semibold">Sign Up</Link>
+          Don't have an account?{" "}
+          <Link href="/signup" className="font-semibold">
+            Sign Up
+          </Link>
         </p>
       </section>
     </main>
