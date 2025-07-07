@@ -1,6 +1,5 @@
 "use client";
 
-// import Link from "next/link";
 import NavbarTabButton from "./NavbarTabButton";
 import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
@@ -12,7 +11,6 @@ enum TabNames {
   PERFORMANCE,
 };
 
-// Define the structure for each tab's configuration
 interface TabConfig {
   id: TabNames;
   label: string;
@@ -73,12 +71,12 @@ export default function Navbar() {
 
   return (
     <>
-      <nav className="flex justify-between items-center h-15">
+      <nav className="w-full flex justify-between items-center h-15">
         {/* Logo */}
         <h1 className="font-bold text-2xl text-gray-500">Campjam</h1>
 
         {/* Tab Buttons */}
-        <div className="flex items-center gap-10 text-base font-medium h-full">
+        <div className="flex items-center gap-10 text-sm font-medium h-full">
           {tabs.map((tab) => (
             <NavbarTabButton
               key={tab.id} 
