@@ -41,7 +41,7 @@ export default function HorizontalCourseCard({
   return (
     <div className="flex flex-col sm:flex-row w-full bg-white border border-gray-300 rounded-md p-3">
       {/* Course Image Section */}
-      <Link href={`/student/course/${id}`} className="relative w-2/7">
+      <Link href={`/student/courses/${id}`} className="relative w-3/7">
         <img
           src={imageSrc}
           alt={imageAlt}
@@ -70,7 +70,7 @@ export default function HorizontalCourseCard({
         </Link>
 
         {/* Categories */}
-        <div className="flex flex-wrap gap-2 mb-2">
+        <div className="flex flex-wrap gap-2">
           {categories.map((category, index) => (
             <Label key={index}>{category}</Label>
           ))}
