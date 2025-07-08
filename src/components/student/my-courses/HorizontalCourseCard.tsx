@@ -5,7 +5,7 @@ import Label from "@/components/_commons/Label";
 import Link from "next/link";
 
 interface HorizontalCourseCardProps {
-  id: string;
+  enrollmentId: string;
   imageSrc: string;
   imageAlt: string;
   status: {
@@ -26,7 +26,7 @@ interface HorizontalCourseCardProps {
 }
 
 export default function HorizontalCourseCard({
-  id,
+  enrollmentId,
   imageSrc,
   imageAlt,
   status,
@@ -41,7 +41,7 @@ export default function HorizontalCourseCard({
   return (
     <div className="flex flex-col sm:flex-row w-full bg-white border border-gray-300 rounded-md p-3">
       {/* Course Image Section */}
-      <Link href={`/student/courses/${id}`} className="relative w-3/7">
+      <Link href={`/student/courses/${enrollmentId}`} className="relative w-3/7">
         <img
           src={imageSrc}
           alt={imageAlt}
@@ -63,7 +63,7 @@ export default function HorizontalCourseCard({
 
       {/* Course Details Section */}
       <div className="flex flex-col gap-3 w-3/7 m-4 my-2">
-        <Link href={`/student/course/${id}`}>
+        <Link href={`/student/courses/${enrollmentId}`}>
           <Header size="20px" className="text-gray-900 leading-tight">
             {title}
           </Header>

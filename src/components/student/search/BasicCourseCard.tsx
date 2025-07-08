@@ -34,7 +34,7 @@ export default function BasicCourseCard({
     <div className="bg-white border border-gray-300 rounded-lg overflow-hidden w-full max-w-sm mx-auto">
       {/* Course Image Section */}
       <Link
-        href={`/student/course/${courseId}`}
+        href={`/student/courses/${courseId}`}
         className="w-full h-fit bg-gray-200 flex items-center justify-center relative"
       >
         {/* Image */}
@@ -60,7 +60,7 @@ export default function BasicCourseCard({
 
       {/* Course Details Section */}
       <div className="flex flex-col gap-4 p-4 pt-6">
-        <Link href={`/student/course/${courseId}`}>
+        <Link href={`/student/courses/${courseId}`}>
           <Header size="20px">{title}</Header>
         </Link>
 

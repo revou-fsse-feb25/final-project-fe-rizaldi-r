@@ -15,12 +15,14 @@ export const courseCategoriesData = {
 
 export const courseData = [
   {
-    id: "course-1", //course ID
+    courseId: "course-1", //course Id
     imageSrc: "https://placehold.co/400x200/E0E0E0/FFFFFF?text=Intro+to+NextJS",
     imageAlt: "Intro to NextJS Course",
     status: [{ label: "Required" }, { label: "Enrolled" }],
     title: "Intro to NextJS",
     categories: ["Frontend", "Javascript"],
+    endDate: "Anytime",
+    // lecturer_id
     lecturer: {
       name: "Jane Doe",
       title: "Frontend Developer",
@@ -28,12 +30,13 @@ export const courseData = [
     },
   },
   {
-    id: "course-2",
+    courseId: "course-2",
     imageSrc: "https://placehold.co/400x200/E0E0E0/FFFFFF?text=Advanced+NextJS",
     imageAlt: "Advanced NextJS Course",
     status: [{ label: "Required" }, { label: "Enrolled" }],
     title: "Advanced NextJS",
     categories: ["Frontend", "Javascript"],
+    endDate: "Anytime",
     lecturer: {
       name: "Jane Doe",
       title: "Frontend Developer",
@@ -41,12 +44,13 @@ export const courseData = [
     },
   },
   {
-    id: "course-3",
+    courseId: "course-3",
     imageSrc: "https://placehold.co/400x200/F2F4F8/FFFFFF?text=React+Basics",
     imageAlt: "React Basics Course",
     status: [{ label: "Not Started" }],
     title: "React Basics",
     categories: ["Frontend", "UI/UX"],
+    endDate: "Anytime",
     lecturer: {
       name: "John Smith",
       title: "Software Engineer",
@@ -54,29 +58,17 @@ export const courseData = [
     },
   },
   {
-    id: "course-4",
+    courseId: "course-4",
     imageSrc: "https://placehold.co/400x200/F3F4F6/FFFFFF?text=Node.js+API",
     imageAlt: "Node.js API Development Course",
     status: [{ label: "Enrolled" }],
     title: "Node.js API Development",
     categories: ["Backend", "Javascript"],
+    endDate: "July 15, 2025",
     lecturer: {
       name: "Alice Johnson",
       title: "Backend Developer",
       avatarSrc: "https://placehold.co/32x32/F2F4F8/C1C7CD?text=AJ",
-    },
-  },
-  {
-    id: "course-5",
-    imageSrc: "https://placehold.co/400x200/E0E0E0/FFFFFF?text=Data+Structures",
-    imageAlt: "Data Structures and Algorithms",
-    status: [{ label: "Required" }, { label: "Completed" }],
-    title: "Data Structures & Algorithms",
-    categories: ["Computer Science", "Algorithms"],
-    lecturer: {
-      name: "Bob Williams",
-      title: "Algorithm Specialist",
-      avatarSrc: "https://placehold.co/32x32/F2F4F8/C1C7CD?text=BW",
     },
   },
 ];
@@ -89,21 +81,44 @@ export const courseData = [
 // * **Enrollment Date:** Date the student enrolled in the course.
 // * **Completion Status:** (e.g., 'Not Started', 'In Progress', 'Completed')
 // * **Last Accessed Date:** Timestamp of the last time the student accessed the course.
-export const enrollmentData = {
-  id: "nextjs-intro-101", // enrollment ID
-  imageSrc: "https://placehold.co/200x150/E0E0E0/FFFFFF?text=Course+Image",
-  imageAlt: "Intro to NextJS Course",
-  status: [{ label: "Required", dotColorClass: "bg-gray-500" }],
-  title: "Intro to NextJS",
-  categories: ["Frontend", "Javascript"],
-  lecturer: {
-    name: "Jane Doe",
-    title: "Frontend Developer",
-    avatarSrc: "https://placehold.co/32x32/F2F4F8/C1C7CD?text=JD",
+export const enrollmentData = [
+  {
+    enrollmentId: "nextjs-intro-101", // enrollment ID
+    // courseId: "course-1", // needs course id in db
+    imageSrc: "https://placehold.co/200x150/E0E0E0/FFFFFF?text=Course+Image",
+    imageAlt: "Intro to NextJS Course",
+    status: [{ label: "Required"}],
+    title: "Intro to NextJS",
+    categories: ["Frontend", "Javascript"],
+    dueDate: "Anytime",
+    lecturer: {
+      name: "Jane Doe",
+      title: "Frontend Developer",
+      avatarSrc: "https://placehold.co/32x32/F2F4F8/C1C7CD?text=JD",
+    },
+    // studentId: "student-1", // needs student id in db
+
+    // added fields
+    progressPercentage: 30,
+    modulesCompleted: 5,
+    totalModules: 12,
   },
-  // added fields
-  dueDate: "Anytime",
-  progressPercentage: 30,
-  modulesCompleted: 5,
-  totalModules: 12,
-};
+  {
+    enrollmentId: "backend-api-201",
+    imageSrc: "https://placehold.co/200x150/D1D5DB/FFFFFF?text=Backend+API",
+    imageAlt: "Backend API Development",
+    status: [{ label: "Enrolled" }],
+    title: "Backend API Development with Node.js",
+    categories: ["Backend", "Node.js", "Express"],
+    dueDate: "August 30, 2025",
+    lecturer: {
+      name: "John Smith",
+      title: "Lead Backend Dev",
+      avatarSrc: "https://placehold.co/32x32/F2F4F8/C1C7CD?text=JS",
+    },
+    // added fields
+    progressPercentage: 75,
+    modulesCompleted: 9,
+    totalModules: 12,
+  },
+];
