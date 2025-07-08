@@ -1,25 +1,19 @@
 import Button from "@/components/_commons/Button";
 import Header from "@/components/_commons/Header";
-import Navbar from "@/components/_commons/navbar/Navbar";
+import Layout from "@/components/_commons/layout/Layout";
 import SearchInput from "@/components/_commons/SearchInput";
 import BasicCourseCard from "@/components/student/search/BasicCourseCard";
 import { courseCategoriesData, courseData } from "@/utils/MockData";
 
 export default function searchPage() {
   return (
-    <>
-      <Navbar />
+    <Layout>
       <main className="flex flex-col gap-8 my-13">
         <Header size="32px">Discover Courses</Header>
 
         {/* Search */}
         <section className="flex justify-between gap-4">
-          <SearchInput
-            type="text"
-            name="search"
-            placeholder="Search for..."
-            className="w-full"
-          />
+          <SearchInput type="text" name="search" placeholder="Search for..." className="w-full" />
           <Button iconLink="/filter.svg" isDisabled={true}>
             Add Filter
           </Button>
@@ -59,25 +53,31 @@ export default function searchPage() {
         <section className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
           {courseData.map((course) => (
             <BasicCourseCard
-              key={course.id}
-              courseId={course.id}
-              imageSrc={course.imageSrc}
-              imageAlt={course.imageAlt}
+              {...course}
+              key={course.courseId}
               status={course.status.map((s) => ({
                 label: s.label,
                 dotColorClass: "bg-gray-300",
               }))}
-              title={course.title}
-              categories={course.categories}
-              lecturer={{
-                name: course.lecturer.name,
-                title: course.lecturer.title,
-                avatarSrc: course.lecturer.avatarSrc,
-              }}
+              // key={course.id}
+              // courseId={course.id}
+              // imageSrc={course.imageSrc}
+              // imageAlt={course.imageAlt}
+              // status={course.status.map((s) => ({
+              //   label: s.label,
+              //   dotColorClass: "bg-gray-300",
+              // }))}
+              // title={course.title}
+              // categories={course.categories}
+              // lecturer={{
+              //   name: course.lecturer.name,
+              //   title: course.lecturer.title,
+              //   avatarSrc: course.lecturer.avatarSrc,
+              // }}
             />
           ))}
         </section>
       </main>
-    </>
+    </Layout>
   );
 }
