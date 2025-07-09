@@ -54,7 +54,7 @@ export default function searchPage() {
           {courseData.map((course) => (
             <BasicCourseCard
               {...course}
-              key={course.courseId}
+              key={course.id}
               status={course.status.map((s) => ({
                 label: s.label,
                 dotColorClass: "bg-gray-300",

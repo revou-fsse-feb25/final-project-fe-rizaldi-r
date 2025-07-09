@@ -15,7 +15,7 @@ export const courseCategoriesData = {
 
 export const courseData = [
   {
-    courseId: "course-1", //course Id
+    id: "course-1", //course Id
     imageSrc: "https://placehold.co/400x200/E0E0E0/FFFFFF?text=Intro+to+NextJS",
     imageAlt: "Intro to NextJS Course",
     status: [{ label: "Required" }, { label: "Enrolled" }],
@@ -30,7 +30,7 @@ export const courseData = [
     },
   },
   {
-    courseId: "course-2",
+    id: "course-2",
     imageSrc: "https://placehold.co/400x200/E0E0E0/FFFFFF?text=Advanced+NextJS",
     imageAlt: "Advanced NextJS Course",
     status: [{ label: "Required" }, { label: "Enrolled" }],
@@ -44,7 +44,7 @@ export const courseData = [
     },
   },
   {
-    courseId: "course-3",
+    id: "course-3",
     imageSrc: "https://placehold.co/400x200/F2F4F8/FFFFFF?text=React+Basics",
     imageAlt: "React Basics Course",
     status: [{ label: "Not Started" }],
@@ -58,7 +58,7 @@ export const courseData = [
     },
   },
   {
-    courseId: "course-4",
+    id: "course-4",
     imageSrc: "https://placehold.co/400x200/F3F4F6/FFFFFF?text=Node.js+API",
     imageAlt: "Node.js API Development Course",
     status: [{ label: "Enrolled" }],
@@ -83,7 +83,7 @@ export const courseData = [
 // * **Last Accessed Date:** Timestamp of the last time the student accessed the course.
 export const enrollmentData = [
   {
-    enrollmentId: "nextjs-intro-101", // enrollment ID
+    id: "nextjs-intro-101", // enrollment ID
     // courseId: "course-1", // needs course id in db
     imageSrc: "https://placehold.co/200x150/E0E0E0/FFFFFF?text=Course+Image",
     imageAlt: "Intro to NextJS Course",
@@ -104,7 +104,7 @@ export const enrollmentData = [
     totalModules: 12,
   },
   {
-    enrollmentId: "backend-api-201",
+    id: "backend-api-201",
     imageSrc: "https://placehold.co/200x150/D1D5DB/FFFFFF?text=Backend+API",
     imageAlt: "Backend API Development",
     status: [{ label: "Enrolled" }],

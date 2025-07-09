@@ -5,7 +5,7 @@ import Label from "@/components/_commons/Label";
 import Link from "next/link";
 
 interface CourseCardProps {
-  courseId: string;
+  id: string;
   imageSrc: string;
   imageAlt: string;
   status: {
@@ -22,7 +22,7 @@ interface CourseCardProps {
 }
 
 export default function BasicCourseCard({
-  courseId,
+  id,
   imageSrc,
   imageAlt,
   status,
@@ -34,7 +34,7 @@ export default function BasicCourseCard({
     <div className="bg-white border border-gray-300 rounded-lg overflow-hidden w-full max-w-sm mx-auto">
       {/* Course Image Section */}
       <Link
-        href={`/student/courses/${courseId}`}
+        href={`/student/courses/${id}`}
         className="w-full h-fit bg-gray-200 flex items-center justify-center relative"
       >
         {/* Image */}
@@ -60,7 +60,7 @@ export default function BasicCourseCard({
 
       {/* Course Details Section */}
       <div className="flex flex-col gap-4 p-4 pt-6">
-        <Link href={`/student/courses/${courseId}`}>
+        <Link href={`/student/courses/${id}`}>
           <Header size="20px">{title}</Header>
         </Link>
 

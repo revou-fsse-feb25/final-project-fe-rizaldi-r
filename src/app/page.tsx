@@ -2,7 +2,7 @@ import Button from "@/components/_commons/Button";
 import Header from "@/components/_commons/Header";
 import SearchInput from "@/components/_commons/SearchInput";
 import { courseCategoriesData, enrollmentData } from "@/utils/MockData";
-import HorizontalCourseCard from "@/components/student/my-courses/HorizontalCourseCard";
+import EnrollmentCard from "@/components/student/my-courses/EnrollmentCard";
 import Layout from "@/components/_commons/layout/Layout";
 
 const courseStatusExcluded = ["Not Enrolled", "Enrolled"];
@@ -56,13 +56,13 @@ export default function MyCoursesPage() {
           ))}
         </section>
 
-        {/* Course Card List */}
+        {/* Enrollment Card List */}
         <section className="grid grid-cols-1 sm:grid-cols-1 md:grid-cols-1 lg:grid-cols-2 gap-4">
-          {enrollmentData.map((course) => (
-            <HorizontalCourseCard
-              {...course}
-              key={course.enrollmentId}
-              status={course.status.map((s) => ({
+          {enrollmentData.map((enrollment) => (
+            <EnrollmentCard
+              {...enrollment}
+              key={enrollment.id}
+              status={enrollment.status.map((s) => ({
                 label: s.label,
                 dotColorClass: "bg-gray-300",
               }))}
