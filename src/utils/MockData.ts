@@ -61,6 +61,7 @@ export const courseData = [
     id: "course-4",
     imageSrc: "https://placehold.co/400x200/F3F4F6/FFFFFF?text=Node.js+API",
     imageAlt: "Node.js API Development Course",
+    // TODO: status enrolled should be specific to student
     status: [{ label: "Enrolled" }],
     title: "Node.js API Development",
     categories: ["Backend", "Javascript"],
@@ -90,7 +91,7 @@ export const enrollmentData = [
     status: [{ label: "Required"}],
     title: "Intro to NextJS",
     categories: ["Frontend", "Javascript"],
-    dueDate: "Anytime",
+    endDate: "Anytime",
     lecturer: {
       name: "Jane Doe",
       title: "Frontend Developer",
@@ -110,7 +111,7 @@ export const enrollmentData = [
     status: [{ label: "Enrolled" }],
     title: "Backend API Development with Node.js",
     categories: ["Backend", "Node.js", "Express"],
-    dueDate: "August 30, 2025",
+    endDate: "August 30, 2025",
     lecturer: {
       name: "John Smith",
       title: "Lead Backend Dev",
