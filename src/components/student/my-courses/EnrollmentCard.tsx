@@ -19,7 +19,7 @@ interface HorizontalCourseCardProps {
     title: string;
     avatarSrc?: string;
   };
-  dueDate: string; // e.g., "Anytime", "July 15, 2025"
+  endDate: string; // e.g., "Anytime", "July 15, 2025"
   progressPercentage: number; // 0-100
   modulesCompleted: number;
   totalModules: number;
@@ -32,7 +32,7 @@ export default function EnrollmentCard({
   status,
   title,
   categories,
-  dueDate,
+  endDate,
   progressPercentage,
   modulesCompleted,
   totalModules,
@@ -78,7 +78,7 @@ export default function EnrollmentCard({
 
         {/* Due Date */}
         <p className="text-sm text-gray-600">
-          <span className="font-medium">Due date:</span> {dueDate}
+          <span className="font-medium">Due date:</span> {endDate}
         </p>
 
         {/* Progress Bar */}
