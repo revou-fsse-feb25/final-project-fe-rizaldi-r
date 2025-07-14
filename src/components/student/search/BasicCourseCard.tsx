@@ -31,10 +31,10 @@ export default function BasicCourseCard({
   lecturer,
 }: CourseCardProps) {
   return (
-    <div className="bg-white border border-gray-300 rounded-lg overflow-hidden w-full max-w-sm mx-auto">
+    <section className="bg-white border border-gray-300 rounded-lg overflow-hidden w-full max-w-sm mx-auto">
       {/* Course Image Section */}
       <Link
-        href={`/student/courses/${id}`}
+        href={`/student/my-courses/${id}`}
         className="w-full h-fit bg-gray-200 flex items-center justify-center relative"
       >
         {/* Image */}
@@ -60,8 +60,8 @@ export default function BasicCourseCard({
 
       {/* Course Details Section */}
       <div className="flex flex-col gap-4 p-4 pt-6">
-        <Link href={`/student/courses/${id}`}>
-          <Header size="20px">{title}</Header>
+        <Link href={`/student/my-courses/${id}`}>
+          <Header element="h2" size="20px">{title}</Header>
         </Link>
 
         {/* Categories */}
@@ -72,7 +72,7 @@ export default function BasicCourseCard({
         </div>
 
         {/* Lecturer Info */}
-        <div className="">
+        <div>
           <p className="text-sm font-medium text-gray-600 mb-2">Lecturer</p>
           <div className="flex items-center space-x-3">
             {lecturer.avatarSrc ? (
@@ -96,6 +96,6 @@ export default function BasicCourseCard({
           </div>
         </div>
       </div>
-    </div>
+    </section>
   );
 }
