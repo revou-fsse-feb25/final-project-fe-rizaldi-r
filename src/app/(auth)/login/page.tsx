@@ -1,25 +1,38 @@
 "use client";
+
 import TextInput from "@/components/_commons/TextInput";
 import Link from "next/link";
+import { useRouter } from "next/router";
 import { ChangeEvent, useState } from "react";
 
 export default function LoginPage() {
   const [message, setMessage] = useState("");
   const [error, setError] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+  const [formData, setFormData] = useState<Record<string, string>>({});
+  const [submitted, setSubmitted] = useState(false);
+
+  const router = useRouter()
+
+  const handleInputChange = (name: string, value: string) => {
+    setFormData((prevFormData) => ({
+      ...prevFormData,
+      [name]: value,
+    }));
+  };
 
   const handleFormSubmit = async (e: ChangeEvent<HTMLFormElement>) => {
     e.preventDefault();
     setError("");
+    setSubmitted(true);
     setIsLoading(true);
     try {
       const email = (e.currentTarget.elements.namedItem("email") as HTMLInputElement)?.value;
-      // console.log(" email", email);
       const password = (e.currentTarget.elements.namedItem("password") as HTMLInputElement)?.value;
-      // console.log(" password", password);
 
       if (email === "user@example.com" && password === "password123") {
         setMessage("Login successful!");
+        router.
       } else {
         setMessage("Invalid email or password.");
       }
@@ -49,7 +62,15 @@ export default function LoginPage() {
               className="bg-gray-100 border-b border-b-gray-300 py-3 px-4"
               required
             /> */}
-            <TextInput type="email" name="email" placeholder="you@example.com" />
+            <TextInput
+              type="email"
+              name="email"
+              placeholder="you@example.com"
+              onChange={(val) => handleInputChange("email", val)}
+              value={formData["email"] || ""}
+              required={true}
+              submitted={submitted}
+            />
           </div>
           {/* Password Input */}
           <div className="flex flex-col gap-2">
@@ -64,10 +85,18 @@ export default function LoginPage() {
               className="bg-gray-100 border-b border-b-gray-300 py-3 px-4"
               required
             /> */}
-            <TextInput type="password" name="password" placeholder="********" />
+            <TextInput
+              type="password"
+              name="password"
+              placeholder="********"
+              onChange={(val) => handleInputChange("password", val)}
+              value={formData["password"] || ""}
+              required={true}
+              submitted={submitted}
+            />
           </div>
 
-          <Link href={"/"} className="text-blue-600">
+          <Link href={""} className="text-blue-600">
             Forgot Password
           </Link>
 

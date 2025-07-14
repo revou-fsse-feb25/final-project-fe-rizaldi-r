@@ -3,15 +3,43 @@ import TextInput from "@/components/_commons/TextInput";
 import Link from "next/link";
 import { ChangeEvent, useState } from "react";
 
+const requiredFields: string[] = ["firstName", "lastName", "email", "password"];
+
 export default function SignUpPage() {
   const [message, setMessage] = useState("");
   const [error, setError] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+  const [formData, setFormData] = useState<Record<string, string>>({});
+  const [submitted, setSubmitted] = useState(false);
+
+  const handleInputChange = (name: string, value: string) => {
+    setFormData((prevFormData) => ({
+      ...prevFormData,
+      [name]: value,
+    }));
+  };
 
   const handleFormSubmit = async (e: ChangeEvent<HTMLFormElement>) => {
     e.preventDefault();
     setError("");
+    setSubmitted(true);
+
+    let formIsValid = true;
+    for (const field of requiredFields) {
+      if (!formData[field] || formData[field].trim() === "") {
+        formIsValid = false;
+        break;
+      }
+    }
+
+    if (!formIsValid) {
+      setError("Please fill in all required fields.");
+      setIsLoading(false);
+      return;
+    }
+
     setIsLoading(true);
+
     try {
       setMessage("Submited");
     } catch (error) {
@@ -30,24 +58,57 @@ export default function SignUpPage() {
           <div className="flex gap-4">
             <div className="flex flex-col gap-2 ">
               <label htmlFor="first-name">First Name</label>
-              <TextInput type="text" name="firstName" placeholder="First name" />
+              <TextInput
+                type="text"
+                name="firstName"
+                placeholder="First name"
+                onChange={(val) => handleInputChange("firstName", val)}
+                value={formData["firstName"] || ""}
+                required={true}
+                submitted={submitted}
+              />
             </div>
             <div className="flex flex-col gap-2">
               <label htmlFor="last-name">Last Name</label>
-              <TextInput type="text" name="lastName" placeholder="Last name" />
+              <TextInput
+                type="text"
+                name="lastName"
+                placeholder="Last name"
+                onChange={(val) => handleInputChange("lastName", val)}
+                value={formData["lastName"] || ""}
+                required={true}
+                submitted={submitted}
+              />
             </div>
           </div>
 
           {/* Email input */}
+          {/* TODO: add regex instead */}
           <div className="flex flex-col gap-2">
             <label htmlFor="email">Email</label>
-            <TextInput type="email" name="email" placeholder="you@example.com" />
+            <TextInput
+              type="email"
+              name="email"
+              placeholder="you@example.com"
+              onChange={(val) => handleInputChange("email", val)}
+              value={formData["email"] || ""}
+              required={true}
+              submitted={submitted}
+            />
           </div>
 
           {/* Password Input */}
           <div className="flex flex-col gap-2">
             <label htmlFor="password">Password</label>
-            <TextInput type="password" name="password" placeholder="********" />
+            <TextInput
+              type="password"
+              name="password"
+              placeholder="********"
+              onChange={(val) => handleInputChange("password", val)}
+              value={formData["password"] || ""}
+              required={true}
+              submitted={submitted}
+            />
             <p className="text-xs text-gray-400">
               It must be a combination of minimum 8 letters, numbers, and symbols.
             </p>
@@ -59,7 +120,8 @@ export default function SignUpPage() {
           </button>
 
           {/* Message Display */}
-          {message && <p className="text-red-500">{message}</p>}
+          {message && <p className="text-blue-500">{message}</p>}
+          {error && <p className="text-red-500">{error}</p>}
         </form>
 
         {/* Sign Up Link */}
