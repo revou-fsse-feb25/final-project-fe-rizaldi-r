@@ -32,12 +32,12 @@ const tabs: TabConfig[] = [
     href: "/",
     iconLink: "/folder-open.svg",
   },
-  {
-    id: TabNames.ASSIGNMENTS,
-    label: "Assignments",
-    href: "/student/assignments",
-    iconLink: "/book.svg",
-  },
+  // {
+  //   id: TabNames.ASSIGNMENTS,
+  //   label: "Assignments",
+  //   href: "/student/assignments",
+  //   iconLink: "/book.svg",
+  // },
   {
     id: TabNames.PERFORMANCE,
     label: "Performance",
