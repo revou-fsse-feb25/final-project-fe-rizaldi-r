@@ -86,6 +86,7 @@ export const courseData = [
   },
 ];
 
+// shortened enrollmentData 
 export const enrollmentData = [
   {
     id: "enroll-nextjs-intro-101", // enrollment ID
@@ -103,7 +104,7 @@ export const enrollmentData = [
   },
 ];
 
-//  enrollment and course data
+// enrollment and course data join
 export const enrolledCourseData = [
   {
     id: "enroll-nextjs-intro-101", // enrollment ID
@@ -249,7 +250,8 @@ export const modulesData: ItfModule[] = [
   },
 ];
 
-export const studentPerformanceListData: ItfProgressDashboard[] = [
+// enrollmentData
+export const coursePerformanceListData: ItfProgressDashboard[] = [
   {
     enrollmentId: "enroll-nextjs-intro-101",
     courseTitle: "Intro to NextJS",
