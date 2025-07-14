@@ -28,9 +28,9 @@ export default function SearchInput({
 
   return (
     <div
-      className={`flex gap-2 bg-slate-100 border border-gray-300 rounded-md py-3 px-4 ${className}`}
+      className={`flex gap-2 bg-slate-100 border border-gray-300 rounded-md py-2.5 px-3.5 ${className}`}
     >
-      <img src="/search.svg" className="w-6 opacity-50" />
+      <img src="/search.svg" className="w-5.5 opacity-50" />
       <input
         type={type}
         id={name}

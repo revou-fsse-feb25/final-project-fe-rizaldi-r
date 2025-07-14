@@ -15,11 +15,11 @@ interface ButtonProps {
   iconLink?: string;
   iconSize?: number;
   type?: "button" | "submit" | "reset";
-  bgColorClass?: string;
   borderColorClass?: string;
   fontSize?: ButtonFontSize;
   fontWeight?: FontWeight;
   padding?: ButtonPaddingSize;
+  isFilled?: boolean;
   isRound?: boolean;
   isDisabled?: boolean;
   className?: string;
@@ -31,34 +31,34 @@ export default function Button({
   iconLink,
   iconSize = 20,
   type = "button",
-  bgColorClass,
   borderColorClass,
   fontSize = "small",
   fontWeight = "font-bold",
   padding = "small",
+  isFilled,
   isRound,
   isDisabled = false,
   className,
   onClick = () => {},
 }: ButtonProps) {
   const getPaddingClasses = (size: ButtonPaddingSize) => {
-    if (bgColorClass) {
+    if (isFilled) {
       switch (size) {
         case "small":
           return "px-3 py-2";
         case "medium":
-          return "px-3 py-4";
+          return "px-5 py-3";
         case "large":
-          return "px-4 py-4";
+          return "px-6 py-4";
         default:
           return "px-3 py-4";
       }
     } else {
       switch (size) {
         case "small":
-          return "px-2 py-2";
+          return "px-0 py-2";
         case "medium":
-          return "px-2 py-4";
+          return "px-0 py-4";
         case "large":
           return "px-2 py-4";
         default:
@@ -85,10 +85,9 @@ export default function Button({
     flex items-center justify-center gap-2
     ${paddingClasses}
     ${borderColorClass ? `border ${borderColorClass}` : ""}
-    ${bgColorClass ? bgColorClass : ""}
     ${fontSizeClasses}
     ${fontWeight}
-    ${isRound ? "rounded-full" : "rounded-lg"}
+    ${isRound ? "rounded-full" : "rounded-sm"}
     ${isDisabled ? "opacity-30 cursor-not-allowed" : "opacity-90 cursor-pointer"}
     ${className}
     `
