@@ -9,6 +9,7 @@ type FontWeight =
   | "font-extrabold";
 type ButtonPaddingSize = "small" | "medium" | "large";
 type ButtonFontSize = "small" | "medium" | "large";
+type ButtonRoundSize = "small" | "medium" | "large" | "full";
 
 interface ButtonProps {
   children: React.ReactNode;
@@ -19,6 +20,7 @@ interface ButtonProps {
   fontSize?: ButtonFontSize;
   fontWeight?: FontWeight;
   padding?: ButtonPaddingSize;
+  roundSize?: ButtonRoundSize;
   isFilled?: boolean;
   isRound?: boolean;
   isDisabled?: boolean;
@@ -35,8 +37,8 @@ export default function Button({
   fontSize = "small",
   fontWeight = "font-bold",
   padding = "small",
+  roundSize = "small",
   isFilled,
-  isRound,
   isDisabled = false,
   className,
   onClick = () => {},
@@ -78,6 +80,20 @@ export default function Button({
         return "text-base";
     }
   };
+  const getRoundSizeClasses = (size: ButtonRoundSize) => {
+    switch (size) {
+      case "small":
+        return "rounded-sm";
+      case "medium":
+        return "rounded-lg";
+      case "large":
+        return "rounded-xl";
+      case "full":
+        return "rounded-full";
+      default:
+        return "rounded-sm";
+    }
+  };
 
   const paddingClasses = getPaddingClasses(padding);
   const fontSizeClasses = getFontSizeClasses(fontSize);
@@ -87,7 +103,7 @@ export default function Button({
     ${borderColorClass ? `border ${borderColorClass}` : ""}
     ${fontSizeClasses}
     ${fontWeight}
-    ${isRound ? "rounded-full" : "rounded-sm"}
+    ${getRoundSizeClasses(roundSize)}
     ${isDisabled ? "opacity-30 cursor-not-allowed" : "opacity-90 cursor-pointer"}
     ${className}
     `
