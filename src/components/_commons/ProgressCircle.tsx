@@ -16,7 +16,7 @@ export default function ProgressCircle({ progress, text }: { progress: number; t
         viewBox={`0 0 ${svgDimension} ${svgDimension}`}
       >
         <circle
-          className="text-gray-200"
+          className="text-slate-200"
           strokeWidth={strokeWidth}
           stroke="currentColor"
           fill="transparent"

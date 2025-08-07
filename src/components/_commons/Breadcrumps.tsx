@@ -13,7 +13,7 @@ interface BreadcrumbsProps {
 export default function Breadcrumps({ items }: BreadcrumbsProps) {
   return (
     <nav aria-label="Breadcrumb">
-      <ol className="flex items-center gap-2 text-gray-500 text-base">
+      <ol className="flex items-center gap-2 text-slate-500 text-base">
         {items.map((item, index) => {
           const isLast = index === items.length - 1;
           return (
@@ -21,12 +21,12 @@ export default function Breadcrumps({ items }: BreadcrumbsProps) {
               {item.href && !isLast ? (
                 <Link
                   href={item.href}
-                  className="hover:text-gray-700 transition-colors duration-200"
+                  className="hover:text-slate-700 transition-colors duration-200"
                 >
                   {item.label}
                 </Link>
               ) : (
-                <span className={`${isLast ? "font-semibold text-gray-500" : ""}`}>
+                <span className={`${isLast ? "font-semibold text-slate-500" : ""}`}>
                   {item.label}
                 </span>
               )}

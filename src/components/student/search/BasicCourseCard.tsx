@@ -31,17 +31,17 @@ export default function BasicCourseCard({
   lecturer,
 }: CourseCardProps) {
   return (
-    <section className="bg-white border border-gray-300 rounded-lg overflow-hidden w-full max-w-sm mx-auto">
+    <section className="bg-white border border-slate-300 rounded-lg overflow-hidden w-full max-w-sm mx-auto">
       {/* Course Image Section */}
       <Link
         href={`/student/my-courses/${id}`}
-        className="w-full h-fit bg-gray-200 flex items-center justify-center relative"
+        className="w-full h-fit bg-slate-200 flex items-center justify-center relative"
       >
         {/* Image */}
         <img
           src={imageSrc}
           alt={imageAlt}
-          className="w-full h-55 object-cover"
+          className="w-full h-45 object-cover"
           onError={(e) => {
             e.currentTarget.src = "https://placehold.co/400x200/E0E0E0/FFFFFF?text=Image+Error";
             e.currentTarget.alt = "Image failed to load";
@@ -61,7 +61,7 @@ export default function BasicCourseCard({
       {/* Course Details Section */}
       <div className="flex flex-col gap-4 p-4 pt-6">
         <Link href={`/student/my-courses/${id}`}>
-          <Header element="h2" size="20px">{title}</Header>
+          <Header element="h2" size="18">{title}</Header>
         </Link>
 
         {/* Categories */}
@@ -73,7 +73,7 @@ export default function BasicCourseCard({
 
         {/* Lecturer Info */}
         <div>
-          <p className="text-sm font-medium text-gray-600 mb-2">Lecturer</p>
+          <p className="text-sm font-medium text-slate-600 mb-2">Lecturer</p>
           <div className="flex items-center space-x-3">
             {lecturer.avatarSrc ? (
               <img
@@ -90,8 +90,8 @@ export default function BasicCourseCard({
               <img src="/user-thumb.png" />
             )}
             <div>
-              <p className="text-sm font-medium text-gray-900">{lecturer.name}</p>
-              <p className="text-xs text-gray-500">{lecturer.title}</p>
+              <p className="text-sm font-medium text-slate-900">{lecturer.name}</p>
+              <p className="text-xs text-slate-500">{lecturer.title}</p>
             </div>
           </div>
         </div>

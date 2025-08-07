@@ -23,13 +23,13 @@ export default function ProgressDisplay({
           <p className="text-sm font-semibold">
             {progressLabel}: {progressPercentage}%
           </p>
-          <div className="w-full bg-gray-200 rounded-full h-2 my-1.5">
+          <div className="w-full bg-slate-200 rounded-full h-2 my-1.5">
             <div
               className="bg-blue-400 h-2 rounded-full"
               style={{ width: `${progressPercentage}%` }}
             ></div>
           </div>
-          <p className="text-gray-500">
+          <p className="text-slate-500">
             {countCompleted}/{countTotal} {countLabel}
           </p>
         </div>
@@ -41,10 +41,10 @@ export default function ProgressDisplay({
             text={`${progressPercentage}%`}
           />
           <div>
-            <p className="font-semibold text-gray-700">
+            <p className="font-semibold text-slate-700">
               {progressLabel}: {progressPercentage}%
             </p>
-            <p className="text-gray-500">
+            <p className="text-slate-500">
               {countCompleted}/{countTotal} {countLabel}
             </p>
           </div>
