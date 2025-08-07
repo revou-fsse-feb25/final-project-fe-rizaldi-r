@@ -1,18 +1,21 @@
 "use client";
 
 import { ItfSection } from "@/types/types";
-import { useState } from "react";
+import { ChevronDown } from "lucide-react";
+import { useEffect, useState } from "react";
 
 interface CourseContentAccordionProps {
   sections: ItfSection[];
   onItemToggle?: (moduleId: string, itemId: string) => void;
   onModuleChange?: (moduleId: string) => void;
+  initialActiveModuleId?: string;
 }
 
 export default function AccordionMenu({
   sections,
   onItemToggle,
   onModuleChange,
+  initialActiveModuleId,
 }: CourseContentAccordionProps) {
   const [activeModule, setActiveModule] = useState(sections[0].modules[0].id);
   const [expandedCourse, setexpandedCourse] = useState(true);
@@ -32,9 +35,14 @@ export default function AccordionMenu({
   };
 
   const handleModuleChange = (moduleId: string) => {
+    console.log("🚀 ~ moduleId:", moduleId);
     setActiveModule(moduleId);
     onModuleChange?.(moduleId);
   };
+
+  useEffect(() => {
+    if (initialActiveModuleId) setActiveModule(initialActiveModuleId);
+  }, []);
 
   const handleCheckboxChange = (sectionId: string, moduleId: string) => {
     // TODO: everytime checkbox is checked, it should hit the api from parent component
@@ -47,31 +55,36 @@ export default function AccordionMenu({
   return (
     <div
       // TODO: remove the class space and new line
-      className="border w-full border-gray-300 rounded-lg last:border-b-0 max-h-135 
+      className="border w-full border-slate-300 rounded-lg last:border-b-0 max-h-135 
       overflow-y-scroll
       [&::-webkit-scrollbar]:w-2
       [&::-webkit-scrollbar-track]:rounded-full
       [&::-webkit-scrollbar-thumb]:rounded-full
-    [&::-webkit-scrollbar-thumb]:bg-gray-300
+    [&::-webkit-scrollbar-thumb]:bg-slate-300
       "
     >
       {/* Menu Header */}
       <button
-        className="flex justify-between border-b bg-gray-50 border-gray-300 w-full font-medium p-3"
+        className="flex justify-between border-b bg-slate-50 border-slate-300 w-full font-medium p-3"
         onClick={() => setexpandedCourse(!expandedCourse)}
         aria-expanded={expandedCourse}
       >
         <span className="text-base">Course Content</span>
-        <img src="/chevron-down.svg" alt="" />
+        <ChevronDown
+          strokeWidth={1}
+          className={`inline mr-2 ${!expandedCourse ? "rotate-180" : ""}`}
+        />
+
+        {/* <img src="/chevron-down.svg" alt="" /> */}
       </button>
 
       {/* Section List */}
       {expandedCourse &&
         sections.map((section) => (
-          <section key={section.id} className="border-b border-gray-300">
+          <section key={section.id} className="border-b border-slate-300">
             {/* Section Header */}
             <button
-              className={`flex justify-between border-gray-300 bg-white w-full font-medium p-3 ${
+              className={`flex justify-between border-slate-300 bg-white w-full font-medium p-3 ${
                 expandedSections[section.id] ? "border-b" : "border-b-0"
               }`}
               onClick={() => toggleExtendSection(section.id)}
@@ -79,7 +92,10 @@ export default function AccordionMenu({
               aria-controls={`section-content-${section.id}`}
             >
               <span className="text-base">{section.title}</span>
-              <img src="/chevron-down.svg" alt="" />
+              <ChevronDown
+                strokeWidth={1}
+                className={`inline mr-2 ${!expandedSections[section.id] ? "rotate-180" : ""}`}
+              />
             </button>
 
             {/* Module List */}
@@ -100,7 +116,7 @@ export default function AccordionMenu({
                       className="h-4 w-4 rounded cursor-pointer"
                     />
                     <button
-                      className={`text-gray-700 text-sm cursor-pointer py-3`}
+                      className={`text-slate-700 text-sm cursor-pointer py-3`}
                       onClick={() => handleModuleChange(module.id)}
                     >
                       {module.label}

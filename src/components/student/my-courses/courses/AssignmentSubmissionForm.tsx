@@ -24,7 +24,7 @@ export default function AssignmentSubmissionForm({
     }
     return initialData;
   });
-  const [submitted, setSubmitted] = useState(false);
+  const [isSubmitted, setIsSubmitted] = useState(false);
 
   const handleTextInputChange = (name: string, value: string) => {
     setFormData((prevFormData) => ({
@@ -35,7 +35,7 @@ export default function AssignmentSubmissionForm({
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    setSubmitted(true);
+    setIsSubmitted(true);
 
     // validate input after submt
     let formIsValid = true;
@@ -50,9 +50,9 @@ export default function AssignmentSubmissionForm({
 
     // if valid, reset form and do api call
     if (formIsValid) {
-      // console.log("Form submitted successfully", formData);
+      // console.log("Form isSubmitted successfully", formData);
       setFormData({});
-      setSubmitted(false);
+      setIsSubmitted(false);
     } else {
       // console.log("Form has validation errors.");
     }
@@ -60,13 +60,13 @@ export default function AssignmentSubmissionForm({
 
   return (
     <form onSubmit={handleSubmit}>
-      <section className="bg-white py-6 px-7 rounded-lg border border-gray-300">
+      <section className="bg-white py-6 px-7 rounded-lg border border-slate-300">
         <ContentHeader title={submissionTitle} descriptionDetail={{ text: "Submission & Essay" }} />
         {submissions.map((submission, index) => (
           <div key={index} className="mb-4 w-full">
             <label
               htmlFor={`submission-${index}`}
-              className="block text-gray-700 text-sm font-medium mb-1"
+              className="block text-slate-700 text-sm font-medium mb-1"
             >
               {submission.label}
             </label>
@@ -76,7 +76,7 @@ export default function AssignmentSubmissionForm({
               required={true}
               value={formData[`submission-${index}`] || ""}
               onChange={(val) => handleTextInputChange(`submission-${index}`, val)}
-              submitted={submitted}
+              isSubmitted={isSubmitted}
               placeholder="Type your answer here"
             />
           </div>

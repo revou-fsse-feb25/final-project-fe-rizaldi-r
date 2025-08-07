@@ -41,7 +41,7 @@ export default function EnrollmentCard({
   lecturer,
 }: HorizontalCourseCardProps) {
   return (
-    <section className="flex flex-col sm:flex-row w-full bg-white border border-gray-300 rounded-md p-3">
+    <section className="flex flex-col sm:flex-row w-full bg-white border border-slate-300 rounded-md p-3">
       {/* Course Image Section */}
       <Link href={`/student/my-courses/${courseId}`} className="relative w-3/7">
         <img
@@ -66,7 +66,7 @@ export default function EnrollmentCard({
       {/* Course Details Section */}
       <div className="flex flex-col gap-3 w-3/7 m-4 my-2">
         <Link href={`/student/my-courses/${courseId}`}>
-          <Header element="h2" size="20px" className="text-gray-900 leading-tight">
+          <Header element="h2" size="18" className="text-slate-900 leading-tight">
             {title}
           </Header>
         </Link>
@@ -79,7 +79,7 @@ export default function EnrollmentCard({
         </div>
 
         {/* Due Date */}
-        <p className="text-sm text-gray-600">
+        <p className="text-sm text-slate-600">
           <span className="font-medium">Due date:</span> {endDate}
         </p>
 
@@ -94,9 +94,9 @@ export default function EnrollmentCard({
 
       {/* Lecturer Info */}
       <div className="w-fit ml-auto mt-3">
-        <p className="text-sm font-medium text-gray-600 mb-1">Lecturer</p>
+        <p className="text-sm font-medium text-slate-600 mb-1">Lecturer</p>
         <UserDetail
-          userName={lecturer.name}
+          username={lecturer.name}
           userTitle={lecturer.title}
           userAvatarSrc={lecturer.avatarSrc}
         />
