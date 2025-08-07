@@ -1,4 +1,22 @@
 /**
+ * Validation form
+ */
+export interface ValidationRuleItf {
+  type: "text" | "number" | "email" | "password";
+  required?: boolean;
+  maxValue?: number;
+  minLength?: number;
+  maxLength?: number;
+  label?: string;
+  isTextarea?: boolean;
+  placeholder?: string;
+}
+
+export interface ValidationConfigItf {
+  [fieldName: string]: ValidationRuleItf;
+}
+
+/**
  * Section
  */
 export interface ItfModuleItem {
@@ -59,27 +77,75 @@ export interface ItfmoduleProgressData {
   countTotal: number;
 }
 
-export interface itfAssignmentScoreDataList {
+export interface SubmittedListItf {
+  label: string;
+  submission: string;
+}
+
+export interface itfAssignmentScoreData {
+  moduleId: string;
   assignmentTitle: string;
   scorePercentage: number;
   scoreAchieved: number;
   scoreTotal: number;
+  submittedList?: SubmittedListItf[];
   feedback: string;
 }
 
 interface itfLecturerData {
-  userName: string;
+  username: string;
   userTitle: string;
   avatarSrc: string;
 }
 
-export interface ItfProgressDashboard {
-  enrollmentId: string;
+export interface CourseScoresItf {
+  moduleOverallProgressData: ItfmoduleProgressData;
+  moduleProgressDataList: ItfmoduleProgressData[];
+  assignmentOverallScoresData: ItfmoduleProgressData;
+  assignmentScoreDataList: itfAssignmentScoreData[];
+}
+
+export interface enrollmentDataItf extends CourseScoresItf {
+  courseId: string;
+  id: string;
   courseTitle: string;
   tags: string[];
   dueDate: string;
+  lecturerData: itfLecturerData;
+}
+
+export interface OverallScoresItf {
+  moduleOverallProgressDataList: ItfmoduleProgressData[];
+  assignmentOverallScoresData: ItfmoduleProgressData;
+}
+
+/**
+ * Course Performances
+ */
+export interface CoursePerformanceItf {
+  id: string;
+  courseTitle: string;
+  tags: string[];
+  dueDate: string;
+  lecturerData: itfLecturerData;
+  moduleOverallProgressData: ItfmoduleProgressData;
   moduleProgressDataList: ItfmoduleProgressData[];
   assignmentOverallScoresData: ItfmoduleProgressData;
-  assignmentScoreDataList: itfAssignmentScoreDataList[];
-  lecturerData: itfLecturerData;
+  // TODO: any
+  courseEnrollmentDataList: any[];
+}
+
+export interface AssignmentDetailsItf {
+  id: string;
+  type: "Lecture" | "Assignment";
+  title: string;
+  description: string;
+  subdescription?: ModuleSubdescription[];
+  links?: ModuleLink[];
+  embedVideoLink?: string;
+  submittedData?: {
+    submissionTitle: string;
+    submissionList: { label: string; submission: string }[];
+    scoreLimit: number;
+  };
 }
