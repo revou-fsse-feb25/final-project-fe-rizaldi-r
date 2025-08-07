@@ -6,7 +6,7 @@ export default function Layout({ children }: React.PropsWithChildren) {
   return (
     <>
       <Navbar />
-      {children}
+      <main className="flex flex-col gap-6.5 my-10">{children}</main>
       <Footer />
     </>
   );

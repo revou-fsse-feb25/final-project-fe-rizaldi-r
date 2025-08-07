@@ -14,17 +14,18 @@ export default function NavbarTabButton({
   return (
     <Link
       href={href}
-      className={`flex gap-2 h-full ${isActive ? "border-b-2 border-b-gray-800" : "text-gray-500"}`}
+      className={`flex gap-2 h-full ${isActive ? "border-b-2 border-b-blue-600 text-blue-600 font-bold" : "text-slate-500"}`}
     >
       {iconLink && (
         <img
           src={iconLink}
           alt=""
           width={24}
-          className={isActive ? "" : "opacity-70"}
+          className={isActive ? "filter-[var(--filter-blue)]" : "opacity-70"}
         />
       )}
       <span className="m-auto">{children}</span>
     </Link>
   );
 }
+// --filter-blue
