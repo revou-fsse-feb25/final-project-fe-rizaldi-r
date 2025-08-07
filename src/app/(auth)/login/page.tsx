@@ -1,8 +1,10 @@
 "use client";
 
 import TextInput from "@/components/_commons/TextInput";
+import { UserRole } from "@/types/jwtPayload";
+import { signIn, useSession } from "next-auth/react";
 import Link from "next/link";
-import { useRouter } from "next/router";
+import { redirect, useRouter } from "next/navigation";
 import { ChangeEvent, useState } from "react";
 
 export default function LoginPage() {
@@ -10,9 +12,10 @@ export default function LoginPage() {
   const [error, setError] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [formData, setFormData] = useState<Record<string, string>>({});
-  const [submitted, setSubmitted] = useState(false);
+  const [isSubmitted, setIsSubmitted] = useState(false);
 
-  const router = useRouter()
+  const { data: session, status, update } = useSession();
+  const router = useRouter();
 
   const handleInputChange = (name: string, value: string) => {
     setFormData((prevFormData) => ({
@@ -24,18 +27,25 @@ export default function LoginPage() {
   const handleFormSubmit = async (e: ChangeEvent<HTMLFormElement>) => {
     e.preventDefault();
     setError("");
-    setSubmitted(true);
+    setIsSubmitted(true);
     setIsLoading(true);
     try {
-      const email = (e.currentTarget.elements.namedItem("email") as HTMLInputElement)?.value;
-      const password = (e.currentTarget.elements.namedItem("password") as HTMLInputElement)?.value;
+      const result = await signIn("credentials", {
+        email: formData.email,
+        password: formData.password,
+        redirect: false,
+      });
 
-      if (email === "user@example.com" && password === "password123") {
-        setMessage("Login successful!");
-        router.
-      } else {
-        setMessage("Invalid email or password.");
+      if (result?.error) {
+        setError("Invalid email or password.");
+        setIsLoading(false);
+        return;
       }
+
+      if (session?.user.role === UserRole.ADMIN) {
+        router.push("/lecturer/my-courses");
+      } else router.push("/student/my-courses");
+      // redirect("/");
     } catch (error) {
       setError("An unexpected error occurred");
       setIsLoading(false);
@@ -52,16 +62,6 @@ export default function LoginPage() {
           {/* Email Input */}
           <div className="flex flex-col gap-2">
             <label htmlFor="email">Email Address</label>
-            {/* <input
-              type="email"
-              id="email"
-              name="email"
-              placeholder="you@example.com"
-              value={formData.email}
-              onChange={handleFormChange}
-              className="bg-gray-100 border-b border-b-gray-300 py-3 px-4"
-              required
-            /> */}
             <TextInput
               type="email"
               name="email"
@@ -69,22 +69,12 @@ export default function LoginPage() {
               onChange={(val) => handleInputChange("email", val)}
               value={formData["email"] || ""}
               required={true}
-              submitted={submitted}
+              isSubmitted={isSubmitted}
             />
           </div>
           {/* Password Input */}
           <div className="flex flex-col gap-2">
             <label htmlFor="password">Password</label>
-            {/* <input
-              type="password"
-              id="password"
-              name="password"
-              placeholder="********"
-              value={formData.password}
-              onChange={handleFormChange}
-              className="bg-gray-100 border-b border-b-gray-300 py-3 px-4"
-              required
-            /> */}
             <TextInput
               type="password"
               name="password"
@@ -92,7 +82,7 @@ export default function LoginPage() {
               onChange={(val) => handleInputChange("password", val)}
               value={formData["password"] || ""}
               required={true}
-              submitted={submitted}
+              isSubmitted={isSubmitted}
             />
           </div>
 
@@ -101,11 +91,12 @@ export default function LoginPage() {
           </Link>
 
           {/* Submit Button */}
+          {/* TODO: disable login button on loading */}
           <button type="submit" className="text-white bg-blue-600 w-full py-3 px-4 cursor-pointer">
             Login
           </button>
           {/* Message Display */}
-          {message && <p className="text-red-500">{message}</p>}
+          {error && <p className="text-red-500">{error}</p>}
         </form>
 
         {/* Sign Up Link */}

@@ -10,7 +10,7 @@ export default function SignUpPage() {
   const [error, setError] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [formData, setFormData] = useState<Record<string, string>>({});
-  const [submitted, setSubmitted] = useState(false);
+  const [isSubmitted, setIsSubmitted] = useState(false);
 
   const handleInputChange = (name: string, value: string) => {
     setFormData((prevFormData) => ({
@@ -22,7 +22,7 @@ export default function SignUpPage() {
   const handleFormSubmit = async (e: ChangeEvent<HTMLFormElement>) => {
     e.preventDefault();
     setError("");
-    setSubmitted(true);
+    setIsSubmitted(true);
 
     let formIsValid = true;
     for (const field of requiredFields) {
@@ -50,7 +50,7 @@ export default function SignUpPage() {
 
   return (
     <main className="">
-      <section className="flex flex-col items-center gap-12 h-fit w-170 border border-gray-200 bg-white p-20 my-15 m-auto">
+      <section className="flex flex-col items-center gap-12 h-fit w-170 border border-slate-200 bg-white p-20 my-15 m-auto">
         <h2 className="text-4xl font-bold">Sign Up</h2>
 
         <form onSubmit={handleFormSubmit} className="flex flex-col gap-4">
@@ -65,7 +65,7 @@ export default function SignUpPage() {
                 onChange={(val) => handleInputChange("firstName", val)}
                 value={formData["firstName"] || ""}
                 required={true}
-                submitted={submitted}
+                isSubmitted={isSubmitted}
               />
             </div>
             <div className="flex flex-col gap-2">
@@ -77,7 +77,7 @@ export default function SignUpPage() {
                 onChange={(val) => handleInputChange("lastName", val)}
                 value={formData["lastName"] || ""}
                 required={true}
-                submitted={submitted}
+                isSubmitted={isSubmitted}
               />
             </div>
           </div>
@@ -93,7 +93,7 @@ export default function SignUpPage() {
               onChange={(val) => handleInputChange("email", val)}
               value={formData["email"] || ""}
               required={true}
-              submitted={submitted}
+              isSubmitted={isSubmitted}
             />
           </div>
 
@@ -107,9 +107,9 @@ export default function SignUpPage() {
               onChange={(val) => handleInputChange("password", val)}
               value={formData["password"] || ""}
               required={true}
-              submitted={submitted}
+              isSubmitted={isSubmitted}
             />
-            <p className="text-xs text-gray-400">
+            <p className="text-xs text-slate-400">
               It must be a combination of minimum 8 letters, numbers, and symbols.
             </p>
           </div>
