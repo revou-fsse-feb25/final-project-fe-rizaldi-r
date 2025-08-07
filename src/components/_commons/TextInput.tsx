@@ -9,8 +9,10 @@ interface TextInputProps {
   placeholder?: string;
   required?: boolean;
   value: string;
+  maxValue?: number;
   onChange: (value: string) => void;
-  submitted?: boolean;
+  isSubmitted?: boolean;
+  className?: string;
 }
 
 export default function TextInput({
@@ -20,31 +22,59 @@ export default function TextInput({
   placeholder,
   required = false,
   value,
+  maxValue,
   onChange,
-  submitted,
+  isSubmitted,
+  className,
 }: TextInputProps) {
   const [error, setError] = useState<string | null>(null);
-  // const [formData, setFormData] = useState({
-  //   [name]: "",
-  // });
 
   const validateInput = (value: string) => {
+    let currentError: string | null = null;
+    let isValid = true;
+
+    // Required field validation
     if (required && value.trim() === "") {
-      setError("This field is required.");
-      return false;
+      currentError = "This field is required.";
+      isValid = false;
     }
-    setError(null);
-    return true;
+
+    // Max value/length validation based on input type
+    if (maxValue !== undefined) {
+      if (type === "number") {
+        const numValue = parseFloat(value);
+        if (!isNaN(numValue) && (numValue > maxValue || numValue < 0)) {
+          currentError = `Score cannot be less than 0 or exceed ${maxValue}.`;
+          isValid = false;
+        }
+      } else {
+        if (value.length > maxValue) {
+          currentError = `Maximum length is ${maxValue} characters.`;
+          isValid = false;
+        }
+      }
+    }
+
+    setError(currentError);
+    return isValid;
   };
 
+  // Effect to validate input when the form is submitted or value change
   useEffect(() => {
-    if (submitted) {
+    if (isSubmitted) {
       validateInput(value);
     }
-  }, [submitted, value, required]);
+  }, [isSubmitted, value, required]);
 
+  // Handles changes to the input or textarea element.
   const handleInputChange = (e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-    const newValue = e.target.value;
+    let newValue = e.target.value;
+
+    // truncate if over maxValue
+    if (type !== "number" && maxValue !== undefined && newValue.length > maxValue) {
+      newValue = newValue.slice(0, maxValue);
+    }
+
     onChange(newValue);
   };
 
@@ -59,8 +89,7 @@ export default function TextInput({
         placeholder={placeholder}
         value={value}
         onChange={handleInputChange}
-        className="bg-gray-100 border-b border-gray-300 py-3 px-4  w-full"
-        // required={required}
+        className={`bg-slate-100 border-b border-slate-300 py-3 px-4  ${className ?? "w-full"}`}
       />
       {error && <p className="text-red-500 text-sm mt-1">{error}</p>}
     </>
