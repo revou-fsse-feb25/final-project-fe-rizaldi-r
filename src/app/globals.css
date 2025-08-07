@@ -5,6 +5,8 @@
   --background: #fbfbfb;
   --foreground: #21272a;
 
+  --filter-blue: brightness(0) saturate(100%) invert(49%) sepia(53%) saturate(5471%) hue-rotate(203deg) brightness(80%) contrast(103%);
+
   --gradient-border: linear-gradient(
     90deg,
     rgba(193, 199, 205, 0) 0%,
