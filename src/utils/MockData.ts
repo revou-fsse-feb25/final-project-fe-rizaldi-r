@@ -1,4 +1,4 @@
-import { ItfModule, ItfProgressDashboard, ItfSection } from "@/types/types";
+import { ItfModule, ItfSection, enrollmentDataItf } from "@/types/types";
 
 export const courseCategoriesData = {
   statuses: [
@@ -11,6 +11,19 @@ export const courseCategoriesData = {
     { id: "backend", name: "Backend" },
     { id: "project-management", name: "Project Management" },
     { id: "javascript", name: "Javascript" },
+    { id: "typescript", name: "Typescript" },
+  ],
+};
+
+// depend on the lecturer
+export const courseCategoriesLecturerData = {
+  statuses: [
+    { id: "not-graded", name: "Not Graded" },
+    { id: "graded", name: "Graded" },
+  ],
+  categories: [
+    { id: "frontend", name: "Frontend" },
+    { id: "backend", name: "Backend" },
     { id: "typescript", name: "Typescript" },
   ],
 };
@@ -86,21 +99,29 @@ export const courseData = [
   },
 ];
 
-// shortened enrollmentData 
-export const enrollmentData = [
+// shortened enrollmentOverviewData
+export const enrollmentOverviewData = [
   {
     id: "enroll-nextjs-intro-101", // enrollment ID
     status: [{ label: "Required" }],
-    progressPercentage: 30,
-    modulesCompleted: 5,
-    totalModules: 12,
+    moduleOverallProgressData: {
+      progressLabel: "Overall Progress",
+      progressPercentage: 75,
+      countLabel: "module completed",
+      countCompleted: 9,
+      countTotal: 12,
+    },
   },
   {
     id: "enroll-backend-api-201",
     status: [{ label: "Enrolled" }],
-    progressPercentage: 75,
-    modulesCompleted: 9,
-    totalModules: 12,
+    moduleOverallProgressData: {
+      progressLabel: "Overall Progress",
+      progressPercentage: 75,
+      countLabel: "module completed",
+      countCompleted: 9,
+      countTotal: 12,
+    },
   },
 ];
 
@@ -123,9 +144,13 @@ export const enrolledCourseData = [
       avatarSrc: "https://placehold.co/32x32/F2F4F8/C1C7CD?text=JD",
     },
     status: [{ label: "Required" }],
-    progressPercentage: 30,
-    modulesCompleted: 5,
-    totalModules: 12,
+    moduleOverallProgressData: {
+      progressLabel: "Overall Progress",
+      progressPercentage: 75,
+      countLabel: "module completed",
+      countCompleted: 9,
+      countTotal: 12,
+    },
   },
   {
     id: "enroll-backend-api-201",
@@ -144,9 +169,13 @@ export const enrolledCourseData = [
       avatarSrc: "https://placehold.co/32x32/F2F4F8/C1C7CD?text=JS",
     },
     status: [{ label: "Enrolled" }],
-    progressPercentage: 75,
-    modulesCompleted: 9,
-    totalModules: 12,
+    moduleOverallProgressData: {
+      progressLabel: "Overall Progress",
+      progressPercentage: 75,
+      countLabel: "module completed",
+      countCompleted: 9,
+      countTotal: 12,
+    },
   },
 ];
 
@@ -250,21 +279,22 @@ export const modulesData: ItfModule[] = [
   },
 ];
 
-// enrollmentData
-export const coursePerformanceListData: ItfProgressDashboard[] = [
+// enrollment Data
+export const enrollmentDataList: enrollmentDataItf[] = [
   {
-    enrollmentId: "enroll-nextjs-intro-101",
+    id: "enroll-nextjs-intro-101",
+    courseId: "nextjs-intro-101",
     courseTitle: "Intro to NextJS",
     tags: ["Frontend", "Next.js", "React"],
     dueDate: "November 15, 2025",
+    moduleOverallProgressData: {
+      progressLabel: "Overall Progress",
+      progressPercentage: 75,
+      countLabel: "module completed",
+      countCompleted: 9,
+      countTotal: 12,
+    },
     moduleProgressDataList: [
-      {
-        progressLabel: "Overall Progress",
-        progressPercentage: 75,
-        countLabel: "module completed",
-        countCompleted: 9,
-        countTotal: 12,
-      },
       {
         progressLabel: "Lecture Completed",
         progressPercentage: 80,
@@ -289,41 +319,61 @@ export const coursePerformanceListData: ItfProgressDashboard[] = [
     },
     assignmentScoreDataList: [
       {
+        moduleId: "module-2-3",
         assignmentTitle: "Assignment 1: Create Something",
         scorePercentage: 70,
         scoreAchieved: 70,
         scoreTotal: 100,
+        submittedList: [
+          {
+            label: "Type your explaination for the solution",
+            submission:
+              "This module dives deep into one of Next.js's most powerful features: intelligent data fetching. You'll learn how Next.js optimizes the process of bringing data into your applications, offering various strategies to suit different needs.",
+          },
+          {
+            label: "Submit your repository link",
+            submission: "http://localhost:3000/lecturer/student-performance",
+          },
+        ],
         feedback:
           "This module dives deep into one of Next.js's most powerful features: intelligent data fetching. You'll learn how Next.js optimizes the process of bringing data into your applications, offering various strategies to suit different needs.",
       },
       {
+        moduleId: "module-2-4",
         assignmentTitle: "Assignment 1: Create Something",
         scorePercentage: 70,
         scoreAchieved: 70,
         scoreTotal: 100,
+        submittedList: [
+          {
+            label: "Submit your repository link here",
+            submission: "http://localhost:3000/lecturer/student-performance",
+          },
+        ],
         feedback:
           "This module dives deep into one of Next.js's most powerful features: intelligent data fetching. You'll learn how Next.js optimizes the process of bringing data into your applications, offering various strategies to suit different needs.",
       },
     ],
     lecturerData: {
-      userName: "Jane Doe",
+      username: "Jane Doe",
       userTitle: "Frontend Developer",
       avatarSrc: "https://placehold.co/32x32/F2F4F8/C1C7CD?text=JD",
     },
   },
-   {
-    enrollmentId: "enroll-nextjs-intro-101",
+  {
+    id: "enroll-nextjs-intro-101",
+    courseId: "nextjs-intro-101",
     courseTitle: "Intro to NextJS",
     tags: ["Frontend", "Next.js", "React"],
     dueDate: "November 15, 2025",
+    moduleOverallProgressData: {
+      progressLabel: "Overall Progress",
+      progressPercentage: 75,
+      countLabel: "module completed",
+      countCompleted: 9,
+      countTotal: 12,
+    },
     moduleProgressDataList: [
-      {
-        progressLabel: "Overall Progress",
-        progressPercentage: 75,
-        countLabel: "module completed",
-        countCompleted: 9,
-        countTotal: 12,
-      },
       {
         progressLabel: "Lecture Completed",
         progressPercentage: 80,
@@ -348,24 +398,228 @@ export const coursePerformanceListData: ItfProgressDashboard[] = [
     },
     assignmentScoreDataList: [
       {
+        moduleId: "module-2-3",
         assignmentTitle: "Assignment 1: Create Something",
         scorePercentage: 70,
         scoreAchieved: 70,
         scoreTotal: 100,
+        submittedList: [
+          {
+            label: "Type your explaination for the solution here",
+            submission:
+              "This module dives deep into one of Next.js's most powerful features: intelligent data fetching. You'll learn how Next.js optimizes the process of bringing data into your applications, offering various strategies to suit different needs.",
+          },
+          {
+            label: "Submit your repository link here",
+            submission: "http://localhost:3000/lecturer/student-performance",
+          },
+        ],
         feedback:
           "This module dives deep into one of Next.js's most powerful features: intelligent data fetching. You'll learn how Next.js optimizes the process of bringing data into your applications, offering various strategies to suit different needs.",
       },
       {
+        moduleId: "module-2-4",
         assignmentTitle: "Assignment 1: Create Something",
         scorePercentage: 70,
         scoreAchieved: 70,
         scoreTotal: 100,
+        submittedList: [
+          {
+            label: "Submit your repository link here",
+            submission: "http://localhost:3000/lecturer/student-performance",
+          },
+        ],
         feedback:
           "This module dives deep into one of Next.js's most powerful features: intelligent data fetching. You'll learn how Next.js optimizes the process of bringing data into your applications, offering various strategies to suit different needs.",
       },
     ],
     lecturerData: {
-      userName: "Jane Doe",
+      username: "Jane Doe",
+      userTitle: "Frontend Developer",
+      avatarSrc: "https://placehold.co/32x32/F2F4F8/C1C7CD?text=JD",
+    },
+  },
+];
+
+export const coursePerformanceDataList = [
+  {
+    id: "nextjs-intro-101",
+    courseTitle: "Intro to NextJS",
+    tags: ["Frontend", "Next.js", "React"],
+    dueDate: "November 15, 2025",
+    moduleOverallProgressData: {
+      progressLabel: "Overall Progress",
+      progressPercentage: 75,
+      countLabel: "average module completed",
+      countCompleted: 9,
+      countTotal: 12,
+    },
+    moduleProgressDataList: [
+      {
+        progressLabel: "Lecture Completed",
+        progressPercentage: 80,
+        countLabel: "average lecture completed",
+        countCompleted: 16,
+        countTotal: 20,
+      },
+      {
+        progressLabel: "Assignment Completed",
+        progressPercentage: 70,
+        countLabel: "average assignment completed",
+        countCompleted: 7,
+        countTotal: 10,
+      },
+    ],
+    assignmentOverallScoresData: {
+      progressLabel: "Overall Scores",
+      progressPercentage: 85,
+      countLabel: "average scores achieved",
+      countCompleted: 170,
+      countTotal: 200,
+    },
+    lecturerData: {
+      username: "Jane Doe",
+      userTitle: "Frontend Developer",
+      avatarSrc: "https://placehold.co/32x32/F2F4F8/C1C7CD?text=JD",
+    },
+  },
+  {
+    id: "nextjs-intro-101",
+    courseTitle: "Intro to NextJS",
+    tags: ["Frontend", "Next.js", "React"],
+    dueDate: "November 15, 2025",
+    moduleOverallProgressData: {
+      progressLabel: "Overall Progress",
+      progressPercentage: 75,
+      countLabel: "average module completed",
+      countCompleted: 9,
+      countTotal: 12,
+    },
+    moduleProgressDataList: [
+      {
+        progressLabel: "Lecture Completed",
+        progressPercentage: 80,
+        countLabel: "average lecture completed",
+        countCompleted: 16,
+        countTotal: 20,
+      },
+      {
+        progressLabel: "Assignment Completed",
+        progressPercentage: 70,
+        countLabel: "average assignment completed",
+        countCompleted: 7,
+        countTotal: 10,
+      },
+    ],
+    assignmentOverallScoresData: {
+      progressLabel: "Overall Scores",
+      progressPercentage: 85,
+      countLabel: "average scores achieved",
+      countCompleted: 170,
+      countTotal: 200,
+    },
+    lecturerData: {
+      username: "Jane Doe",
+      userTitle: "Frontend Developer",
+      avatarSrc: "https://placehold.co/32x32/F2F4F8/C1C7CD?text=JD",
+    },
+  },
+];
+
+// course 1
+export const courseEnrollmentDataList = [
+  {
+    id: "enroll-nextjs-intro-101",
+    userDetail: {
+      username: "Paul Pierce",
+      userTitle: "Web Dev Student",
+    },
+    courseId: "nextjs-intro-101",
+    courseTitle: "Intro to NextJS",
+    tags: ["Frontend", "Next.js", "React"],
+    dueDate: "November 15, 2025",
+    moduleOverallProgressData: {
+      progressLabel: "Overall Progress",
+      progressPercentage: 75,
+      countLabel: "module completed",
+      countCompleted: 9,
+      countTotal: 12,
+    },
+    moduleProgressDataList: [
+      {
+        progressLabel: "Lecture Completed",
+        progressPercentage: 80,
+        countLabel: "lecture completed",
+        countCompleted: 16,
+        countTotal: 20,
+      },
+      {
+        progressLabel: "Assignment Completed",
+        progressPercentage: 70,
+        countLabel: "assignment completed",
+        countCompleted: 7,
+        countTotal: 10,
+      },
+    ],
+    assignmentOverallScoresData: {
+      progressLabel: "Overall Scores",
+      progressPercentage: 85,
+      countLabel: "scores achieved",
+      countCompleted: 170,
+      countTotal: 200,
+    },
+    assignmentScoreDataList: [
+      {
+        moduleId: "module-2-3",
+        assignmentTitle: "Assignment 1: Create Something",
+        scorePercentage: 70,
+        scoreAchieved: 70,
+        scoreTotal: 100,
+        submittedData: {
+          submissionTitle: "Code Submission",
+          submissionList: [
+            {
+              label: "Type your explaination for the solution here",
+              submission:
+                "This module dives deep into one of Next.js's most powerful features: intelligent data fetching. You'll learn how Next.js optimizes the process of bringing data into your applications, offering various strategies to suit different needs.",
+            },
+            {
+              label: "Submit your repository link here",
+              submission: "http://localhost:3000/lecturer/student-performance",
+            },
+          ],
+          scoreLimit: 24,
+        },
+        feedback:
+          "This module dives deep into one of Next.js's most powerful features: intelligent data fetching. You'll learn how Next.js optimizes the process of bringing data into your applications, offering various strategies to suit different needs.",
+      },
+      {
+        moduleId: "module-2-4",
+        assignmentTitle: "Assignment 1: Create Something",
+        scorePercentage: 70,
+        scoreAchieved: 70,
+        scoreTotal: 100,
+        submittedData: {
+          submissionTitle: "Code Submission",
+          submissionList: [
+            {
+              label: "Type your explaination for the solution here",
+              submission:
+                "This module dives deep into one of Next.js's most powerful features: intelligent data fetching. You'll learn how Next.js optimizes the process of bringing data into your applications, offering various strategies to suit different needs.",
+            },
+            {
+              label: "Submit your repository link here",
+              submission: "http://localhost:3000/lecturer/student-performance",
+            },
+          ],
+          scoreLimit: 24,
+        },
+        feedback:
+          "This module dives deep into one of Next.js's most powerful features: intelligent data fetching. You'll learn how Next.js optimizes the process of bringing data into your applications, offering various strategies to suit different needs.",
+      },
+    ],
+    lecturerData: {
+      username: "Jane Doe",
       userTitle: "Frontend Developer",
       avatarSrc: "https://placehold.co/32x32/F2F4F8/C1C7CD?text=JD",
     },
