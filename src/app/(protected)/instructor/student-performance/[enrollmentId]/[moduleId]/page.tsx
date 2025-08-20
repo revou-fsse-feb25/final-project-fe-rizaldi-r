@@ -12,7 +12,7 @@ import {
   courseEnrollmentDataList,
   ModuleListData,
   modulesData,
-} from "@/utils/MockData";
+} from "@/utils/mock-data";
 import React from "react";
 
 interface ICoursesPageProps {
