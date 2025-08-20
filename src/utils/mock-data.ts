@@ -332,7 +332,7 @@ export const enrollmentDataList: enrollmentDataItf[] = [
           },
           {
             label: "Submit your repository link",
-            submission: "http://localhost:3000/lecturer/student-performance",
+            submission: "http://localhost:3000/instructor/student-performance",
           },
         ],
         feedback:
@@ -347,7 +347,7 @@ export const enrollmentDataList: enrollmentDataItf[] = [
         submittedList: [
           {
             label: "Submit your repository link here",
-            submission: "http://localhost:3000/lecturer/student-performance",
+            submission: "http://localhost:3000/instructor/student-performance",
           },
         ],
         feedback:
@@ -411,7 +411,7 @@ export const enrollmentDataList: enrollmentDataItf[] = [
           },
           {
             label: "Submit your repository link here",
-            submission: "http://localhost:3000/lecturer/student-performance",
+            submission: "http://localhost:3000/instructor/student-performance",
           },
         ],
         feedback:
@@ -426,7 +426,7 @@ export const enrollmentDataList: enrollmentDataItf[] = [
         submittedList: [
           {
             label: "Submit your repository link here",
-            submission: "http://localhost:3000/lecturer/student-performance",
+            submission: "http://localhost:3000/instructor/student-performance",
           },
         ],
         feedback:
@@ -585,7 +585,7 @@ export const courseEnrollmentDataList = [
             },
             {
               label: "Submit your repository link here",
-              submission: "http://localhost:3000/lecturer/student-performance",
+              submission: "http://localhost:3000/instructor/student-performance",
             },
           ],
           scoreLimit: 24,
@@ -609,7 +609,7 @@ export const courseEnrollmentDataList = [
             },
             {
               label: "Submit your repository link here",
-              submission: "http://localhost:3000/lecturer/student-performance",
+              submission: "http://localhost:3000/instructor/student-performance",
             },
           ],
           scoreLimit: 24,
