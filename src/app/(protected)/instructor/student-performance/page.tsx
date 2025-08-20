@@ -3,16 +3,20 @@
 import CourseFilterSection from "@/components/_commons/CourseFilterSection";
 import Header from "@/components/_commons/Header";
 import Layout from "@/components/_commons/layout/Layout";
-import StudentCoursePerformance from "@/components/student/performance/StudentCoursePerformance";
+import CoursePerformance from "@/components/lecturer/student-performance/CoursePerformance";
 import { useFetchData } from "@/hooks/useFetchData";
 import { fetchCategoryList } from "@/services/api";
-import { courseCategoriesData, enrollmentDataList } from "@/utils/mock-data";
+import {
+  courseEnrollmentDataList,
+  courseCategoriesLecturerData,
+  coursePerformanceDataList,
+} from "@/utils/mock-data";
 import { useSession } from "next-auth/react";
 import { useState } from "react";
 
 const courseStatusExcluded = ["Not Enrolled", "Enrolled"];
 
-export default function performancePage() {
+export default function studentPerformancePage() {
   // Handle category change
   const [categoryId, setCategoryId] = useState<string | null>(null);
   const onCategoryChange = (newCategoryId: string | null) => {
@@ -28,10 +32,12 @@ export default function performancePage() {
     error: errorCategoryList,
   } = useFetchData(fetchCategoryList, token);
 
+  // TODO: find lecturer id then find all the course they teach
+  // then find match student enrollment that enrolled with the sam e course
   return (
     <Layout>
       <Header element="h1" size="24" className="opacity-90 ml-2">
-        My Performance
+        Students Performance
       </Header>
 
       <CourseFilterSection
@@ -41,8 +47,11 @@ export default function performancePage() {
       />
 
       <section>
-        {enrollmentDataList.map((studentPerformanceData, index) => (
-          <StudentCoursePerformance {...studentPerformanceData} key={index} />
+        {coursePerformanceDataList.map((coursePerformanceData, index) => (
+          <CoursePerformance
+            {...{ ...coursePerformanceData, courseEnrollmentDataList }}
+            key={index}
+          />
         ))}
       </section>
     </Layout>
