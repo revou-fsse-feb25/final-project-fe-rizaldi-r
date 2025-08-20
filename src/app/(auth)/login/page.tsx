@@ -1,10 +1,11 @@
 "use client";
 
 import TextInput from "@/components/_commons/TextInput";
+import { setDefaultAuthHeader } from "@/services/api";
 import { UserRole } from "@/types/jwtPayload";
 import { signIn, useSession } from "next-auth/react";
 import Link from "next/link";
-import { redirect, useRouter } from "next/navigation";
+import { useRouter } from "next/navigation";
 import { ChangeEvent, useState } from "react";
 
 export default function LoginPage() {
@@ -16,6 +17,10 @@ export default function LoginPage() {
 
   const { data: session, status, update } = useSession();
   const router = useRouter();
+
+  // TODO: use form hooks 
+  // const token = session?.accessToken;
+  // if (token) setDefaultAuthHeader(token);
 
   const handleInputChange = (name: string, value: string) => {
     setFormData((prevFormData) => ({
@@ -42,9 +47,8 @@ export default function LoginPage() {
         return;
       }
 
-      if (session?.user.role === UserRole.ADMIN) {
-        router.push("/lecturer/my-courses");
-      } else router.push("/student/my-courses");
+      router.refresh();
+      // router.push("/student/my-courses");
       // redirect("/");
     } catch (error) {
       setError("An unexpected error occurred");

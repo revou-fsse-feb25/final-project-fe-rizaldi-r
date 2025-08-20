@@ -11,8 +11,10 @@ declare module "next-auth" {
   interface User {
     role: UserRole;
     accessToken: string;
+    imageAvatar: string
+    username: string
   }
-  
+
   /**
    * The session object returned by `useSession`, `getSession` and `getServerSession`.
    */
