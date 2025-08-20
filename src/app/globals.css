@@ -3,7 +3,7 @@
 :root {
   --font-size: 0.875rem;
   --background: #fbfbfb;
-  --foreground: #21272a;
+  --foreground: #444;
 
   --filter-blue: brightness(0) saturate(100%) invert(49%) sepia(53%) saturate(5471%) hue-rotate(203deg) brightness(80%) contrast(103%);
 
