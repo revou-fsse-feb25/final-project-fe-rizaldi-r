@@ -16,7 +16,7 @@ interface ButtonProps {
   iconLink?: string;
   iconSize?: number;
   type?: "button" | "submit" | "reset";
-  borderColorClass?: string;
+  // borderColorClass?: string;
   fontSize?: ButtonFontSize;
   fontWeight?: FontWeight;
   padding?: ButtonPaddingSize;
@@ -33,7 +33,7 @@ export default function Button({
   iconLink,
   iconSize = 20,
   type = "button",
-  borderColorClass,
+  // borderColorClass,
   fontSize = "small",
   fontWeight = "font-bold",
   padding = "small",
@@ -100,7 +100,6 @@ export default function Button({
   const buttonClasses = `
     flex items-center justify-center gap-2
     ${paddingClasses}
-    ${borderColorClass ? `border ${borderColorClass}` : ""}
     ${fontSizeClasses}
     ${fontWeight}
     ${getRoundSizeClasses(roundSize)}
