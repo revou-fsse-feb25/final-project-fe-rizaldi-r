@@ -1,8 +1,9 @@
 import { DefaultSession } from "next-auth";
 
 export enum UserRole {
-  CUSTOMER = 'customer',
-  ADMIN = 'admin',
+  STUDENT="STUDENT",
+  INSTRUCTOR="INSTRUCTOR",
+  ADMIN="ADMIN",
 }
 
 export interface SessionItf extends DefaultSession {
