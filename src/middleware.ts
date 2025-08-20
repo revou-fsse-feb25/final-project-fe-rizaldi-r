@@ -9,7 +9,7 @@ const routeConfig = {
   public: [],
   authPages: ["/login", "/signup"],
   protected: ["/student"],
-  adminOnly: ["/lecturer"],
+  adminOnly: ["/instructor"],
 };
 
 export async function middleware(request: NextRequest) {
@@ -25,10 +25,10 @@ export async function middleware(request: NextRequest) {
   const isAuthPage = routeConfig.authPages.some(
     (routePath) => path === routePath || path.startsWith(`${routePath}/`)
   );
-  if (isAuthPage && userRole === UserRole.ADMIN) {
-    const redirectPath = "/lecturer/my-courses";
+  if (isAuthPage && userRole === UserRole.INSTRUCTOR) {
+    const redirectPath = "/instructor/my-courses";
     return NextResponse.redirect(new URL(redirectPath, request.url));
-  } else if (isAuthPage && userRole === UserRole.CUSTOMER) {
+  } else if (isAuthPage && userRole === UserRole.STUDENT) {
     const redirectPath = "/student/my-courses";
     return NextResponse.redirect(new URL(redirectPath, request.url));
   }
@@ -43,12 +43,17 @@ export async function middleware(request: NextRequest) {
     return NextResponse.redirect(accountUrl);
   }
 
-  // --- Handle Admin-Only Routes (Require Admin Role) ---
+  // --- Handle Redirect Instructor to Instructor home page---
+  if (isProtected && userRole === UserRole.INSTRUCTOR) {
+    return NextResponse.redirect(new URL("/instructor/my-courses", request.url));
+  }
+
+  // --- Handle Instructor-Only Routes (Require Instructor Role) ---
   const isAdminRoute = routeConfig.adminOnly.some(
     (routePath) => path === routePath || path.startsWith(`${routePath}/`)
   );
   if (isAdminRoute) {
-    if (!isAuthenticated || userRole !== "admin")
+    if (!isAuthenticated || userRole !== UserRole.INSTRUCTOR)
       return NextResponse.redirect(new URL("/", request.url));
   }
 
