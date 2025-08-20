@@ -3,28 +3,40 @@
 import Button from "@/components/_commons/Button";
 import ContentHeader from "@/components/_commons/ContentHeader";
 import TextInput from "@/components/_commons/TextInput";
-import { ItfModuleSubmission } from "@/types/types";
+import { patchStudentSubmission } from "@/services/api";
+import { SubmissionField } from "@/types/module-interface";
+import { Submission } from "@/types/submission-interface";
+import { useSession } from "next-auth/react";
 import { useState } from "react";
 
 interface AssignmentSubmissionFormProps {
+  submissions: Submission[];
   submissionTitle: string;
-  submissions: ItfModuleSubmission[];
+  submissionFields: SubmissionField[];
+  submissionTemplateId: string;
 }
 
 export default function AssignmentSubmissionForm({
-  submissionTitle,
   submissions,
+  submissionTitle,
+  submissionFields,
+  submissionTemplateId,
 }: AssignmentSubmissionFormProps) {
   const [formData, setFormData] = useState<Record<string, string>>(() => {
     const initialData: Record<string, string> = {};
-    if (submissions) {
-      submissions.forEach((_, index) => {
-        initialData[`submission-${index}`] = "";
+    if (submissionFields) {
+      submissionFields.forEach((submissionfield) => {
+        initialData[`submission-field-${submissionfield.id}`] = "";
       });
     }
     return initialData;
   });
   const [isSubmitted, setIsSubmitted] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [apiError, setApiError] = useState<string | null>(null);
+
+  const { data: session } = useSession();
+  const token = session?.accessToken;
 
   const handleTextInputChange = (name: string, value: string) => {
     setFormData((prevFormData) => ({
@@ -33,15 +45,17 @@ export default function AssignmentSubmissionForm({
     }));
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsSubmitted(true);
+    setIsSubmitted(true);
 
-    // validate input after submt
+    // validate input after submit
     let formIsValid = true;
-    submissions.forEach((_, index) => {
-      const inputName = `submission-${index}`;
+    submissionFields.forEach((submissionfield) => {
+      const inputName = `submission-field-${submissionfield.id}`;
       const inputValue = formData[inputName];
+
       // Check is empty
       if (inputValue.trim() === "") {
         formIsValid = false;
@@ -50,8 +64,38 @@ export default function AssignmentSubmissionForm({
 
     // if valid, reset form and do api call
     if (formIsValid) {
-      // console.log("Form isSubmitted successfully", formData);
-      setFormData({});
+      setIsSubmitting(true);
+      try {
+        // Construct the request body as per the required structure
+        const submissionFieldValueData = submissionFields.map((submissionfield, index) => ({
+          submissionFieldId: submissionfield.id,
+          submitted: formData[`submission-field-${submissionfield.id}`] || "",
+        }));
+
+        // find the matching submission id
+        const submissionId = submissions.find((submission) => {
+          return submission.submissionTemplateId === submissionTemplateId;
+        })?.id;
+
+        // PATCH request
+        if (!token) throw new Error("Token not found");
+        if (!submissionId) throw new Error("Submission id not found");
+        
+        console.log("🚀 ~ submissionId:", submissionId)
+        const response = await patchStudentSubmission(
+          token,
+          submissionId,
+          submissionFieldValueData
+        );
+
+        console.log("Form submitted successfully", response.data);
+        // setFormData({}); // Clear the form on success
+        setIsSubmitted(false); // Reset validation flag
+      } catch (error) {
+        setApiError(error.message);
+      } finally {
+        setIsSubmitting(false);
+      }
       setIsSubmitted(false);
     } else {
       // console.log("Form has validation errors.");
@@ -62,20 +106,22 @@ export default function AssignmentSubmissionForm({
     <form onSubmit={handleSubmit}>
       <section className="bg-white py-6 px-7 rounded-lg border border-slate-300">
         <ContentHeader title={submissionTitle} descriptionDetail={{ text: "Submission & Essay" }} />
-        {submissions.map((submission, index) => (
+        {submissionFields.map((submissionfield, index) => (
           <div key={index} className="mb-4 w-full">
             <label
-              htmlFor={`submission-${index}`}
+              htmlFor={`submission-field-${submissionfield.id}`}
               className="block text-slate-700 text-sm font-medium mb-1"
             >
-              {submission.label}
+              {submissionfield.label}
             </label>
             <TextInput
-              isTextarea={submission.isTextfield}
-              name={`submission-${index}`}
+              isTextarea={submissionfield.isTextfield}
+              name={`submission-field-${submissionfield.id}`}
               required={true}
-              value={formData[`submission-${index}`] || ""}
-              onChange={(val) => handleTextInputChange(`submission-${index}`, val)}
+              value={formData[`submission-field-${submissionfield.id}`] || ""}
+              onChange={(val) =>
+                handleTextInputChange(`submission-field-${submissionfield.id}`, val)
+              }
               isSubmitted={isSubmitted}
               placeholder="Type your answer here"
             />
@@ -83,7 +129,14 @@ export default function AssignmentSubmissionForm({
         ))}
       </section>
 
-      <Button type="submit" fontWeight="font-medium" padding="large" isFilled={true} className="bg-blue-600 text-blue-50 mt-4">
+      <Button
+        type="submit"
+        fontWeight="font-medium"
+        padding="large"
+        isFilled={true}
+        className="bg-blue-600 text-blue-50 mt-4"
+        isDisabled={isSubmitting}
+      >
         Submit Assignment
       </Button>
     </form>

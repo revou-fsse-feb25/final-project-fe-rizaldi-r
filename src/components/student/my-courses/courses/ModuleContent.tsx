@@ -1,20 +1,22 @@
 import ContentHeader from "@/components/_commons/ContentHeader";
 import Header from "@/components/_commons/Header";
-import { ItfModule } from "@/types/types";
 import Link from "next/link";
 import AssignmentSubmissionForm from "./AssignmentSubmissionForm";
-import { BookMinus, PlayIcon } from "lucide-react";
+import { BookMinus, PlayIcon, TriangleAlert } from "lucide-react";
+import { CourseModuleDetails, DescriptionType, ModuleType } from "@/types/module-interface";
+import { Submission } from "@/types/submission-interface";
 
 export default function ModuleContent({
   title,
-  type,
+  moduleType,
   description,
   links,
   embedVideoLink,
-  subdescription,
-  submissionData,
-}: ItfModule) {
-  const isAssignment = type === "Assignment";
+  subdescriptions,
+  submissionTemplate,
+  submissions,
+}: CourseModuleDetails & { submissions?: Submission[] }) {
+  const isAssignment = moduleType === ModuleType.ASSIGNMENT;
 
   return (
     <>
@@ -33,7 +35,7 @@ export default function ModuleContent({
         <ContentHeader
           title={title}
           descriptionDetail={{
-            text: type,
+            text: moduleType.charAt(0).toUpperCase() + moduleType.slice(1).toLowerCase(),
             iconComponent: isAssignment ? (
               <BookMinus size={16} className="text-slate-400" />
             ) : (
@@ -42,20 +44,31 @@ export default function ModuleContent({
           }}
         />
 
+        {/* End Date */}
+        {isAssignment && (
+          <div className="text-sm text-slate-500 mb-6">
+            <TriangleAlert size={16} className="text-slate-400 inline mr-1 mb-1" />
+            <span>Deadline:</span>{" "}
+            {submissionTemplate?.endDate
+              ? new Date(submissionTemplate.endDate).toDateString()
+              : "No deadline"}
+          </div>
+        )}
+
         {/* Main Description */}
         <p className="text-slate-700 leading-relaxed mb-6 whitespace-pre-wrap">{description}</p>
 
         {/* Subdescriptions */}
-        {subdescription && subdescription.length > 0 && (
+        {subdescriptions && subdescriptions.length > 0 && (
           <section className="mb-6">
-            {subdescription.map((item, index) => (
+            {subdescriptions.map((item, index) => (
               <div key={index} className="mb-5">
                 {item.header && (
                   <Header element="h2" size="14" className="my-3">
                     {item.header}
                   </Header>
                 )}
-                {item.type === "list" ? (
+                {item.type === DescriptionType.LIST ? (
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-1.5 mb-6">
                     {item.description.split("\n").map((line, lineIndex) => (
                       <div key={lineIndex} className="flex items-start mb-1">
@@ -100,12 +113,16 @@ export default function ModuleContent({
       </section>
 
       {/* Submission */}
-      {isAssignment && submissionData?.submissionTitle && submissionData.submissions && (
-        <AssignmentSubmissionForm
-          submissionTitle={submissionData.submissionTitle}
-          submissions={submissionData.submissions}
-        />
-      )}
+      {isAssignment &&
+        submissionTemplate?.submissionTitle &&
+        submissionTemplate.submissionFields && (
+          <AssignmentSubmissionForm
+            submissions={submissions || []}
+            submissionTitle={submissionTemplate.submissionTitle}
+            submissionFields={submissionTemplate.submissionFields}
+            submissionTemplateId={submissionTemplate.id}
+          />
+        )}
     </>
   );
 }

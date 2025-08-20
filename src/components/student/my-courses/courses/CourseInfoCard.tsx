@@ -2,18 +2,18 @@ import Header from "@/components/_commons/Header";
 import UserDetail from "@/components/_commons/UserDetail";
 
 interface CourseInfoCardProps {
-  lecturerName: string;
-  lecturerTitle: string;
-  lecturerAvatarSrc?: string;
-  courseDescription: string;
-  startDate: string;
-  endDate: string;
+  instructorName: string;
+  instructorTitle: string;
+  instructorAvatarSrc?: string;
+  courseDescription: string | null;
+  startDate: Date | null;
+  endDate: Date | null;
 }
 
 export default function CourseInfoCard({
-  lecturerName,
-  lecturerTitle,
-  lecturerAvatarSrc,
+  instructorName,
+  instructorTitle,
+  instructorAvatarSrc,
   courseDescription,
   startDate,
   endDate,
@@ -26,9 +26,9 @@ export default function CourseInfoCard({
           Lecturer
         </Header>
         <UserDetail
-          username={lecturerName}
-          userTitle={lecturerTitle}
-          userAvatarSrc={lecturerAvatarSrc}
+          username={instructorName}
+          userTitle={instructorTitle}
+          userAvatarSrc={instructorAvatarSrc}
         />
       </div>
 
@@ -37,7 +37,9 @@ export default function CourseInfoCard({
         <Header element="h3" size="14" className="my-1">
           Course Description
         </Header>
-        <p className="text-slate-700 leading-relaxed">{courseDescription}</p>
+        <p className="text-slate-700 leading-relaxed">
+          {courseDescription || "No description available."}
+        </p>
       </div>
 
       {/* Course Details */}
@@ -46,8 +48,10 @@ export default function CourseInfoCard({
           Course Details
         </Header>
         <div className="text-slate-700 text-sm">
-          <p className="mb-0.5">Start date: {startDate}</p>
-          <p>End date: {endDate}</p>
+          <p className="mb-0.5">
+            Start date: {startDate ? new Date(startDate).toDateString() : "Anytime"}
+          </p>
+          <p>End date: {endDate ? new Date(endDate).toDateString() : "Anytime"}</p>
         </div>
       </div>
     </div>

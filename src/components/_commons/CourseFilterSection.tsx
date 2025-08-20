@@ -2,24 +2,36 @@ import { ArrowDownNarrowWide, ArrowUpDown } from "lucide-react";
 import Button from "./Button";
 import SearchInput from "./SearchInput";
 
-interface CategoryItem {
+// interface CategoryItem {
+//   id: string;
+//   name: string;
+// }
+
+// interface CourseCategoriesData {
+//   statuses: CategoryItem[];
+//   categories: CategoryItem[];
+// }
+
+interface Category {
   id: string;
   name: string;
-}
-
-interface CourseCategoriesData {
-  statuses: CategoryItem[];
-  categories: CategoryItem[];
+  programs: string[];
+  createdAt: string;
+  updatedAt: string;
 }
 
 interface CourseFilterSectionProps {
-  courseCategoriesData: CourseCategoriesData;
+  courseCategoriesData: Category[];
   courseStatusExcluded?: string[];
+  onEachButtonClicked: (newCategoryId: string | null) => void;
+  activeCategoryId: string | null;
 }
 
 export default function CourseFilterSection({
   courseCategoriesData,
   courseStatusExcluded = [],
+  onEachButtonClicked,
+  activeCategoryId,
 }: CourseFilterSectionProps) {
   return (
     <section className="flex flex-col gap-4">
@@ -42,7 +54,7 @@ export default function CourseFilterSection({
             isFilled={true}
             className="bg-slate-100 text-slate-500"
           >
-            <ArrowDownNarrowWide size={18} className="inline mr-2"/>
+            <ArrowDownNarrowWide size={18} className="inline mr-2" />
             Sort By
           </Button>
         </div>
@@ -54,16 +66,20 @@ export default function CourseFilterSection({
       <section className="flex flex-wrap items-center gap-2 mb-3">
         {/* All Categories */}
         <Button
-          roundSize = "full"
-          borderColorClass="border-slate-200"
+          roundSize="full"
           fontWeight="font-medium"
-          className="text-slate-600 px-6 bg-[#EBEEF1]"
+          onClick={() => onEachButtonClicked(null)}
+          className={`px-6 border-1 ${
+            activeCategoryId === null
+              ? "bg-blue-100 text-blue-600 border-blue-400"
+              : "text-slate-600 bg-[#EBEEF1] border-slate-200"
+          }`}
         >
           All
         </Button>
 
         {/* Categories */}
-        {courseCategoriesData.statuses.map((status) => {
+        {/* {courseCategoriesData.statuses.map((status) => {
           if (courseStatusExcluded.includes(status.name)) return;
           return (
             <Button
@@ -76,15 +92,19 @@ export default function CourseFilterSection({
               {status.name}
             </Button>
           );
-        })}
+        })} */}
         <div className="w-[2px] h-6 bg-slate-200 mx-2"></div>
-        {courseCategoriesData.categories.map((category) => (
+        {courseCategoriesData?.map((category) => (
           <Button
             key={category.id}
-            roundSize = "full"
-            borderColorClass="border-slate-200"
+            onClick={() => onEachButtonClicked(category.id)}
+            roundSize="full"
             fontWeight="font-medium"
-            className="text-slate-600 px-6 bg-[#EBEEF1]"
+            className={`px-6 border-1 ${
+              activeCategoryId === category.id
+                ? "bg-blue-100 text-blue-600 border-blue-400"
+                : "text-slate-600 bg-[#EBEEF1] border-slate-200"
+            }`}
           >
             {category.name}
           </Button>
@@ -92,8 +112,7 @@ export default function CourseFilterSection({
 
         {/* Others */}
         <Button
-          roundSize = "full"
-          borderColorClass="border-slate-200"
+          roundSize="full"
           fontWeight="font-medium"
           className="text-slate-600 px-6 bg-[#EBEEF1]"
         >

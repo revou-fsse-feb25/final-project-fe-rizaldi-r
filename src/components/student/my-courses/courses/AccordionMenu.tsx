@@ -1,11 +1,12 @@
 "use client";
 
-import { ItfSection } from "@/types/types";
-import { ChevronDown } from "lucide-react";
+import { CourseSection } from "@/types/course-interface";
+import { ModuleType } from "@/types/module-interface";
+import { BookMinus, ChevronDown } from "lucide-react";
 import { useEffect, useState } from "react";
 
 interface CourseContentAccordionProps {
-  sections: ItfSection[];
+  sections: CourseSection[];
   onItemToggle?: (moduleId: string, itemId: string) => void;
   onModuleChange?: (moduleId: string) => void;
   initialActiveModuleId?: string;
@@ -22,7 +23,7 @@ export default function AccordionMenu({
   const [expandedSections, setExpandedSections] = useState(() => {
     const initialExpanded: Record<string, boolean> = {};
     sections.forEach((section) => {
-      initialExpanded[section.id] = section.isExpanded !== undefined ? section.isExpanded : false;
+      initialExpanded[section.id] = true;
     });
     return initialExpanded;
   });
@@ -35,7 +36,6 @@ export default function AccordionMenu({
   };
 
   const handleModuleChange = (moduleId: string) => {
-    console.log("🚀 ~ moduleId:", moduleId);
     setActiveModule(moduleId);
     onModuleChange?.(moduleId);
   };
@@ -74,8 +74,6 @@ export default function AccordionMenu({
           strokeWidth={1}
           className={`inline mr-2 ${!expandedCourse ? "rotate-180" : ""}`}
         />
-
-        {/* <img src="/chevron-down.svg" alt="" /> */}
       </button>
 
       {/* Section List */}
@@ -104,25 +102,25 @@ export default function AccordionMenu({
                 {section.modules.map((module) => (
                   <div
                     key={module.id}
-                    className={`flex items-center gap-3 pl-4 pr-2 rounded-md ${
+                    className={`flex items-center gap-3 px-3 rounded-md ${
                       module.id === activeModule ? "bg-blue-50" : ""
                     }`}
                   >
                     <input
                       type="checkbox"
                       id={`checkbox-${module.id}`}
-                      checked={module.completed}
+                      // checked={module.completed}
                       onChange={() => handleCheckboxChange(section.id, module.id)}
                       className="h-4 w-4 rounded cursor-pointer"
                     />
                     <button
-                      className={`text-slate-700 text-sm cursor-pointer py-3`}
+                      className={`text-left text-slate-700 text-sm cursor-pointer py-3 `}
                       onClick={() => handleModuleChange(module.id)}
                     >
-                      {module.label}
+                      {module.title}
                     </button>
-                    {module.type === "assignment" && (
-                      <img src="/book.svg" className="opacity-75 ml-auto" />
+                    {module.moduleType === ModuleType.ASSIGNMENT && (
+                      <BookMinus size={16} className="text-slate-400 ml-auto" />
                     )}
                   </div>
                 ))}

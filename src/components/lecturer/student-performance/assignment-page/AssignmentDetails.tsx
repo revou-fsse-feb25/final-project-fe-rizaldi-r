@@ -2,8 +2,8 @@ import ContentHeader from "@/components/_commons/ContentHeader";
 import Header from "@/components/_commons/Header";
 import Link from "next/link";
 import { BookMinus, PlayIcon } from "lucide-react";
-import Grading from "@/components/lecturer/student-performance/assignment-page/Grading";
 import { AssignmentDetailsItf } from "@/types/types";
+import Grading from "@/components/lecturer/student-performance/assignment-page/Grading";
 
 export default function AssignmentDetails({
   title,

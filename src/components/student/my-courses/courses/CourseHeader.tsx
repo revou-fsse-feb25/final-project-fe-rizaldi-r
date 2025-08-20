@@ -2,22 +2,23 @@
 
 import Header from "@/components/_commons/Header";
 import Label from "@/components/_commons/Label";
+import { CourseCategory } from "@/types/course-interface";
 import { useRouter } from "next/navigation";
 
 interface CourseHeaderProps {
   title: string;
-  status: {
-    label: string;
-    dotColorClass: string;
-  }[];
-  categories: string[];
-  endDate?: string;
+  // status?: {
+  //   label: string;
+  //   dotColorClass: string;
+  // }[];
+  categories: CourseCategory[];
+  endDate: Date | null;
   onBackClick?: () => void;
 }
 
 export default function CourseHeader({
   title,
-  status,
+  // status,
   categories,
   endDate,
   onBackClick,
@@ -48,13 +49,13 @@ export default function CourseHeader({
 
           {/* Status and Categories */}
           <span className="flex flex-wrap items-center gap-2">
-            {status.map((s, index) => (
+            {/* {status.map((s, index) => (
               <Label key={index} dotColorClass={s.dotColorClass}>
                 {s.label}
               </Label>
-            ))}
+            ))} */}
             {categories?.map((category, index) => (
-              <Label key={index}>{category}</Label>
+              <Label key={index}>{category.category.name}</Label>
             ))}
           </span>
         </div>
@@ -62,7 +63,8 @@ export default function CourseHeader({
         {/* End Date */}
         {endDate && (
           <div className="text-sm text-slate-600">
-            <span className="font-medium">End date:</span> {endDate}
+            <span className="font-medium">End date:</span>{" "}
+            {new Date(endDate).toDateString()}
           </div>
         )}
       </div>

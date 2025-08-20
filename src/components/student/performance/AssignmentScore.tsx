@@ -88,7 +88,7 @@ export default function AssignmentScore({
 
           <Link
             href={
-              userRole === UserRole.ADMIN
+              userRole === UserRole.INSTRUCTOR
                 ? `student-performance/${identifier}/${moduleId}`
                 : `/student/my-courses/${identifier}/${moduleId}`
             }
