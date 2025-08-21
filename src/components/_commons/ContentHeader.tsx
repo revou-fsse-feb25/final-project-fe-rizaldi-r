@@ -11,10 +11,6 @@ export default function ContentHeader({ title, descriptionDetail }: AssignmentHe
       {descriptionDetail && (
         <div className="flex items-center gap-1.5 text-slate-500 mb-1">
           {descriptionDetail.iconComponent &&
-            // <img
-            //   src={descriptionDetail?.iconComponent}
-            //   className={`opacity-50 ${descriptionDetail.iconClass}`}
-            // />
             descriptionDetail.iconComponent}
           {descriptionDetail?.text}
         </div>
