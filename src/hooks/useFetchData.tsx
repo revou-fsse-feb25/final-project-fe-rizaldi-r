@@ -23,7 +23,7 @@ export function useFetchData<TData, TParams extends any[]>(
       // Check if a token is provided and if it's explicitly null.
       // If so, we'll skip the fetch and set a loading state to false.
       if (!token) {
-        setIsLoading(false);
+        // setIsLoading(false);
         return;
       }
       setIsLoading(true);

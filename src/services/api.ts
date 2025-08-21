@@ -1,4 +1,6 @@
-import { SubmissionFieldValue } from "@/types/submission-interface";
+import { CourseCreateData } from "@/types/course-interface";
+import { DescriptionType, ModuleType } from "@/types/module-interface";
+import { GradeSubmission, SubmissionFieldValue } from "@/types/submission-interface";
 import axios, { AxiosError } from "axios";
 
 // API base URL
@@ -30,12 +32,13 @@ export const createAuthHeaders = (token?: string) => {
 // Error handling
 const handleAxiosError = (error: unknown): void => {
   if (axios.isAxiosError(error)) {
-    // Now 'error' is safely typed as AxiosError
     console.error("Axios Error:", error.response?.data);
     console.error("Status:", error.response?.status);
+    throw error;
   } else {
     // Handle other types of errors
     console.error("Unexpected Error:", error);
+    throw error;
   }
 };
 
@@ -90,7 +93,8 @@ export const fetchEnrollmentWithCourseList = async (token: string, categoryId?: 
   try {
     const config = createAuthHeaders(token);
     const filterCategory = categoryId ? `&courseCategoryId=${categoryId}` : "";
-    const params: string = "/enrollments/by-student?includeCourse=true" + filterCategory;
+    const params: string =
+      "/enrollments/by-student?includeCourse=true&includeSections=true" + filterCategory;
     const response = await axios.get(params, config);
     return response.data;
   } catch (error) {
@@ -98,11 +102,17 @@ export const fetchEnrollmentWithCourseList = async (token: string, categoryId?: 
   }
 };
 
-export const fetchEnrollmentWithSubmission = async (token: string, courseId?: string | null) => {
+export const fetchEnrollmentWithSubmissionByStudent = async (
+  token: string,
+  courseId?: string | null,
+  includeCourse?: boolean | null
+) => {
   try {
     const config = createAuthHeaders(token);
-    const filterCategory = courseId ? `&courseId=${courseId}` : "";
-    const params: string = "/enrollments/by-student?includeSubmissions=true" + filterCategory;
+    const filterCourse = courseId ? `&courseId=${courseId}` : "";
+    const queryincludeCourse = includeCourse ? `&includeCourse=true` : "";
+    const params: string =
+      "/enrollments/by-student?includeSubmissions=true" + queryincludeCourse + filterCourse;
     const response = await axios.get(params, config);
     return response.data;
   } catch (error) {
@@ -110,7 +120,71 @@ export const fetchEnrollmentWithSubmission = async (token: string, courseId?: st
   }
 };
 
-// POST
+export const fetchEnrollmentsWithSubmissionAndProgressByStudent = async (token: string) => {
+  try {
+    const config = createAuthHeaders(token);
+    const params: string =
+      "/enrollments/by-student?includeCourse=true&includeSubmissions=true&includeAllProgress=true";
+    const response = await axios.get(params, config);
+    return response.data;
+  } catch (error) {
+    throw handleAxiosError(error);
+  }
+};
+
+// instructor students performace page
+
+export const fetchCourseByInstructor = async (
+  token: string,
+  categoryId?: string,
+  showSections?: boolean | null
+) => {
+  try {
+    const config = createAuthHeaders(token);
+    const filterCategory = categoryId ? `categoryId=${categoryId}` : "";
+    const queryShowSections = showSections ? `showSections=true` : "";
+    const params: string = `/courses/by-instructor?showCategories=true&${queryShowSections}&${filterCategory}`;
+    const response = await axios.get(params, config);
+    return response.data;
+  } catch (error) {
+    throw handleAxiosError(error);
+  }
+};
+
+export const fetchEnrollmentWithSubmission = async (token: string, enrollmentId: string) => {
+  try {
+    const config = createAuthHeaders(token);
+    const params: string = `/enrollments/${enrollmentId}?includeSubmissions=true&includeCourse=true`;
+    const response = await axios.get(params, config);
+    return response.data;
+  } catch (error) {
+    throw handleAxiosError(error);
+  }
+};
+
+export const fetchEnrollmentsByCourse = async (token: string, courseId: string) => {
+  try {
+    const config = createAuthHeaders(token);
+    const params: string = `/enrollments/by-course/${courseId}`;
+    const response = await axios.get(params, config);
+    return response.data;
+  } catch (error) {
+    throw handleAxiosError(error);
+  }
+};
+
+export const fetchSubmissionsByEnrollment = async (token: string, enrollmentId: string) => {
+  try {
+    const config = createAuthHeaders(token);
+    const params: string = `/submissions/by-enrollment/${enrollmentId}`;
+    const response = await axios.get(params, config);
+    return response.data;
+  } catch (error) {
+    throw handleAxiosError(error);
+  }
+};
+
+// PATCH and POST
 
 export const patchStudentSubmission = async (
   token: string,
@@ -123,6 +197,214 @@ export const patchStudentSubmission = async (
       submissionFieldValueData,
     };
     const response = await axios.patch(`/submissions/${submissionId}`, requestBody, config);
+  } catch (error) {
+    throw handleAxiosError(error);
+  }
+};
+
+export const patchGradeSubmission = async (
+  token: string,
+  submissionId: string,
+  submissionGradeData: GradeSubmission
+) => {
+  try {
+    const config = createAuthHeaders(token);
+    const requestBody = {
+      ...submissionGradeData,
+    };
+    const response = await axios.patch(`/submissions/grade/${submissionId}`, requestBody, config);
+  } catch (error) {
+    throw handleAxiosError(error);
+  }
+};
+
+export const postSection = async (token: string, courseId: string, title: string) => {
+  try {
+    const config = createAuthHeaders(token);
+    const requestBody = {
+      courseId,
+      title,
+    };
+    const response = await axios.post(`/sections`, requestBody, config);
+  } catch (error) {
+    throw handleAxiosError(error);
+  }
+};
+
+export const deleteSection = async (token: string, sectionId: string) => {
+  try {
+    const config = createAuthHeaders(token);
+    const response = await axios.delete(`/sections/${sectionId}`, config);
+  } catch (error) {
+    throw handleAxiosError(error);
+  }
+};
+
+export const postModule = async (
+  token: string,
+  createModuleData: {
+    sectionId: string;
+    title: string;
+    description: string;
+    moduleType: ModuleType;
+  }
+) => {
+  try {
+    const config = createAuthHeaders(token);
+    const response = await axios.post(`/modules`, createModuleData, config);
+  } catch (error) {
+    throw handleAxiosError(error);
+  }
+};
+
+export const patchModule = async (
+  token: string,
+  moduleId: string,
+  editModuleData: { title?: string; description?: string; moduleType?: string }
+) => {
+  try {
+    const config = createAuthHeaders(token);
+    const requestBody = editModuleData;
+    const response = await axios.patch(`/modules/${moduleId}`, requestBody, config);
+  } catch (error) {
+    throw handleAxiosError(error);
+  }
+};
+
+export const patchSubdescription = async (
+  token: string,
+  subdescId: string,
+  editModuleData: { header?: string; description?: string; type?: DescriptionType }
+) => {
+  try {
+    const config = createAuthHeaders(token);
+    const requestBody = editModuleData;
+    const response = await axios.patch(`/subdescriptions/${subdescId}`, requestBody, config);
+  } catch (error) {
+    throw handleAxiosError(error);
+  }
+};
+
+export const deleteSubdescription = async (token: string, subdescId: string) => {
+  try {
+    const config = createAuthHeaders(token);
+    const response = await axios.delete(`/subdescriptions/${subdescId}`, config);
+  } catch (error) {
+    throw handleAxiosError(error);
+  }
+};
+
+export const patchLink = async (
+  token: string,
+  linkId: string,
+  editLinkData: { label?: string; href?: string }
+) => {
+  try {
+    const config = createAuthHeaders(token);
+    const requestBody = editLinkData;
+    const response = await axios.patch(`/links/${linkId}`, requestBody, config);
+  } catch (error) {
+    throw handleAxiosError(error);
+  }
+};
+
+export const deleteLink = async (token: string, linkId: string) => {
+  try {
+    const config = createAuthHeaders(token);
+    const response = await axios.delete(`/links/${linkId}`, config);
+  } catch (error) {
+    throw handleAxiosError(error);
+  }
+};
+
+export const addLink = async (
+  token: string,
+  addLinkData: { label?: string; href?: string; moduleId: string }
+) => {
+  try {
+    const config = createAuthHeaders(token);
+    const response = await axios.post(`/links`, addLinkData, config);
+    return response;
+  } catch (error) {
+    throw handleAxiosError(error);
+  }
+};
+
+export const addSubdescription = async (
+  token: string,
+  addSubdescData: { header?: string; type?: DescriptionType; description: string; moduleId: string }
+) => {
+  try {
+    const config = createAuthHeaders(token);
+    const response = await axios.post(`/subdescriptions`, addSubdescData, config);
+    return response;
+  } catch (error) {
+    throw handleAxiosError(error);
+  }
+};
+
+export const postSubmissionField = async (
+  token: string,
+  addSubmissionFieldData: { label?: string; isTextfield?: boolean; submissionTemplateId: string }
+) => {
+  try {
+    const config = createAuthHeaders(token);
+    const response = await axios.post(`/submission-fields`, addSubmissionFieldData, config);
+    return response;
+  } catch (error) {
+    throw handleAxiosError(error);
+  }
+};
+
+export const deleteSubmissionField = async (token: string, submissionFieldId: string) => {
+  try {
+    const config = createAuthHeaders(token);
+    const response = await axios.delete(`/submission-fields/${submissionFieldId}`, config);
+  } catch (error) {
+    throw handleAxiosError(error);
+  }
+};
+
+export const deleteCourse = async (token: string, courseId: string) => {
+  try {
+    const config = createAuthHeaders(token);
+    const response = await axios.delete(`/courses/${courseId}`, config);
+  } catch (error) {
+    throw handleAxiosError(error);
+  }
+};
+
+export const postCourse = async (token: string, addCourseData: CourseCreateData) => {
+  try {
+    const config = createAuthHeaders(token);
+    const response = await axios.post(`/courses`, addCourseData, config);
+    return response;
+  } catch (error) {
+    throw handleAxiosError(error);
+  }
+};
+
+export const postRegister = async (addUserData: {
+  username: string;
+  email: string;
+  password: string;
+  firstName: string;
+  lastName: string;
+  program: string;
+}) => {
+  try {
+    const response = await axios.post(`/auth/register`, addUserData);
+    return response;
+  } catch (error) {
+    throw handleAxiosError(error);
+  }
+};
+
+export const createEnrollment = async (token: string, courseId: string) => {
+  try {
+    const config = createAuthHeaders(token);
+    const response = await axios.post(`/enrollments`, { courseId }, config);
+    return response;
   } catch (error) {
     throw handleAxiosError(error);
   }
