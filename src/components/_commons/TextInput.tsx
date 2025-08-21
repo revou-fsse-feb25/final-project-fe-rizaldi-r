@@ -11,6 +11,7 @@ interface TextInputProps {
   value: string;
   maxValue?: number;
   onChange: (value: string) => void;
+  onFocus?: () => void;
   isSubmitted?: boolean;
   className?: string;
 }
@@ -24,6 +25,7 @@ export default function TextInput({
   value,
   maxValue,
   onChange,
+  onFocus,
   isSubmitted,
   className,
 }: TextInputProps) {
@@ -89,6 +91,7 @@ export default function TextInput({
         placeholder={placeholder}
         value={value}
         onChange={handleInputChange}
+        onFocus={onFocus}
         className={`bg-slate-100 border-b border-slate-300 py-3 px-4  ${className ?? "w-full"}`}
       />
       {error && <p className="text-red-500 text-sm mt-1">{error}</p>}
