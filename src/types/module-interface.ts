@@ -23,7 +23,7 @@ export interface SubmissionField {
 /**
  * Interface for the assignment submission template.
  */
-interface SubmissionTemplate {
+export interface SubmissionTemplate {
   id: string;
   moduleId: string;
   submissionTitle: string;

@@ -1,5 +1,12 @@
 import { UserRole } from "@/types/jwtPayload";
 
+enum MembershipStatus {
+  PENDING = "PENDING",
+  APPROVED = "APPROVED",
+  REJECTED = "REJECTED",
+  NONMEMBER = "NONMEMBER",
+}
+
 /**
  * Interface for the user information associated with an instructor.
  */
@@ -24,4 +31,15 @@ export interface InstructorInfo {
   user: UserInfo;
   userTitle: string;
   program: string;
+}
+
+export interface StudentInfo {
+  id: string;
+  userId: string;
+  program: string;
+  batchYear: number;
+  membershipStatus: MembershipStatus;
+  user: UserInfo;
+  // createdAt: Date;
+  // updatedAt: Date;
 }

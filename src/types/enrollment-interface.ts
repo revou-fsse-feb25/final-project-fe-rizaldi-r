@@ -1,6 +1,6 @@
 import { CourseDetails } from "@/types/course-interface";
 import { Submission } from "@/types/submission-interface";
-import { InstructorInfo } from "@/types/user-interface";
+import { InstructorInfo, StudentInfo } from "@/types/user-interface";
 
 /**
  * Interface for the progress objects, which share a common structure.
@@ -30,6 +30,7 @@ export interface Enrollment {
   createdAt: string;
   updatedAt: string;
   instructor: InstructorInfo;
+  student: StudentInfo;
   moduleProgress: ProgressDetails;
   lectureProgress: ProgressDetails;
   assignmentProgress: ProgressDetails;

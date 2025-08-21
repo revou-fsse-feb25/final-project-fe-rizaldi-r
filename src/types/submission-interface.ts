@@ -1,3 +1,11 @@
+import { SubmissionField, SubmissionTemplate } from "@/types/module-interface";
+
+export interface GradeSubmission {
+  isPassed: boolean;
+  scoreAchieved: string;
+  feedback: string;
+}
+
 export interface SubmissionFieldValue {
   id?: string;
   submitted: string;
@@ -5,7 +13,7 @@ export interface SubmissionFieldValue {
   submissionFieldId: string;
   createdAt?: string;
   updatedAt?: string;
-  // submissionField: SubmissionField;
+  submissionField?: SubmissionField;
 }
 
 export interface Submission {
@@ -17,11 +25,12 @@ export interface Submission {
   isLocked: boolean;
   isGraded: boolean;
   isPassed: boolean;
-  scorePercentage: string;
-  scoreAchieved: string;
+  scorePercentage: number;
+  scoreAchieved: number;
   scoreTotal: number;
   feedback: string | null;
   createdAt?: string;
   updatedAt?: string;
+  submissionTemplate: SubmissionTemplate;
   submissionFieldValue: SubmissionFieldValue[];
 }

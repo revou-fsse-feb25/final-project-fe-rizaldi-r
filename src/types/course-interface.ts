@@ -58,3 +58,17 @@ export interface CourseDetails {
   categories: CourseCategory[];
   sections: CourseSection[];
 }
+
+export interface CourseCreateData {
+  title: string;
+  imageSrc: string;
+  imageAlt?: string;
+  description: string;
+  startDate?: string;
+  endDate?: string;
+  isMemberOnly: boolean;
+  isLocked?: boolean;
+  allowedPrograms: string[];
+  allowedBatchYears: number[];
+  categoryIds: string[];
+}
