@@ -12,21 +12,16 @@ export default function EnrollmentCard({
   studentId,
   courseId,
   status,
-  createdAt,
-  updatedAt,
   instructor,
   moduleProgress,
-  lectureProgress,
-  assignmentProgress,
-  assignmentScore,
   course,
 }: Enrollment) {
   const instructorUser = instructor.user;
   const instructorFullName = `${instructorUser.firstName} ${instructorUser.lastName}`;
 
-  const firstSection = course.sections[0];
-  const firstModule = firstSection.modules[0];
-  const firstModuleId = firstModule.id;
+  const firstSection = course?.sections?.[0];
+  const firstModule = firstSection?.modules[0];
+  const firstModuleId = firstModule?.id || "module-not-found";
 
   return (
     <section className="flex flex-col sm:flex-row w-full bg-white border border-slate-300 rounded-md p-3">
@@ -82,9 +77,9 @@ export default function EnrollmentCard({
         {/* Progress Bar */}
         <ProgressBar
           progressPercentage={moduleProgress.progressPercentage || 0}
-          countCompleted={moduleProgress.moduleCompleted || 0}
-          countTotal={moduleProgress.moduleTotal || 0}
-          countLabel="module completed"
+          moduleCompleted={moduleProgress.moduleCompleted || 0}
+          moduleTotal={moduleProgress.moduleTotal || 0}
+          moduleLabel="module completed"
         />
       </div>
 

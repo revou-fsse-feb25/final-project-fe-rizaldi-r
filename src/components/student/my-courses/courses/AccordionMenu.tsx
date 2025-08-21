@@ -18,7 +18,7 @@ export default function AccordionMenu({
   onModuleChange,
   initialActiveModuleId,
 }: CourseContentAccordionProps) {
-  const [activeModule, setActiveModule] = useState(sections[0].modules[0].id);
+  const [activeModule, setActiveModule] = useState(sections?.[0]?.modules?.[0]?.id);
   const [expandedCourse, setexpandedCourse] = useState(true);
   const [expandedSections, setExpandedSections] = useState(() => {
     const initialExpanded: Record<string, boolean> = {};

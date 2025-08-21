@@ -30,7 +30,7 @@ export default function CourseHeader({
   };
 
   return (
-    <section id="overview" className="flex items-start gap-4">
+    <section className="flex items-start gap-4" id="overview">
       {/* Back Button */}
       <button
         onClick={onBackClick ? onBackClick : handleDefaultBackClick}
@@ -63,8 +63,7 @@ export default function CourseHeader({
         {/* End Date */}
         {endDate && (
           <div className="text-sm text-slate-600">
-            <span className="font-medium">End date:</span>{" "}
-            {new Date(endDate).toDateString()}
+            <span className="font-medium">End date:</span> {new Date(endDate).toDateString()}
           </div>
         )}
       </div>

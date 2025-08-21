@@ -7,7 +7,7 @@ import { patchStudentSubmission } from "@/services/api";
 import { SubmissionField } from "@/types/module-interface";
 import { Submission } from "@/types/submission-interface";
 import { useSession } from "next-auth/react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 interface AssignmentSubmissionFormProps {
   submissions: Submission[];
@@ -33,7 +33,7 @@ export default function AssignmentSubmissionForm({
   });
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [apiError, setApiError] = useState<string | null>(null);
+  const [message, setMessage] = useState<string | null>(null);
 
   const { data: session } = useSession();
   const token = session?.accessToken;
@@ -44,6 +44,21 @@ export default function AssignmentSubmissionForm({
       [name]: value,
     }));
   };
+
+  // Effect to fill in submission field
+  useEffect(() => {
+    const existingSubmission = submissions?.find(
+      (submission) => submission.submissionTemplateId === submissionTemplateId
+    );
+
+    if (existingSubmission && existingSubmission.submissionFieldValue) {
+      const newFormData: Record<string, string> = {};
+      existingSubmission.submissionFieldValue.forEach((fieldValue) => {
+        newFormData[`submission-field-${fieldValue.submissionFieldId}`] = fieldValue.submitted;
+      });
+      setFormData(newFormData);
+    }
+  }, [submissions, submissionTemplateId]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -77,28 +92,24 @@ export default function AssignmentSubmissionForm({
           return submission.submissionTemplateId === submissionTemplateId;
         })?.id;
 
-        // PATCH request
         if (!token) throw new Error("Token not found");
         if (!submissionId) throw new Error("Submission id not found");
         
-        console.log("🚀 ~ submissionId:", submissionId)
+        // PATCH request
         const response = await patchStudentSubmission(
           token,
           submissionId,
           submissionFieldValueData
         );
 
-        console.log("Form submitted successfully", response.data);
-        // setFormData({}); // Clear the form on success
-        setIsSubmitted(false); // Reset validation flag
+        setMessage("Form submitted successfully");
+        setIsSubmitted(false);
       } catch (error) {
-        setApiError(error.message);
+        setMessage("Failed to submit");
       } finally {
         setIsSubmitting(false);
       }
       setIsSubmitted(false);
-    } else {
-      // console.log("Form has validation errors.");
     }
   };
 
@@ -123,6 +134,7 @@ export default function AssignmentSubmissionForm({
                 handleTextInputChange(`submission-field-${submissionfield.id}`, val)
               }
               isSubmitted={isSubmitted}
+              onFocus={() => setMessage("")}
               placeholder="Type your answer here"
             />
           </div>
@@ -139,6 +151,7 @@ export default function AssignmentSubmissionForm({
       >
         Submit Assignment
       </Button>
+      <p className="mt-2">{message}</p>
     </form>
   );
 }
