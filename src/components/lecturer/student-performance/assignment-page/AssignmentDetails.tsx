@@ -4,18 +4,33 @@ import Link from "next/link";
 import { BookMinus, PlayIcon } from "lucide-react";
 import { AssignmentDetailsItf } from "@/types/types";
 import Grading from "@/components/lecturer/student-performance/assignment-page/Grading";
+import { Submission } from "@/types/submission-interface";
+import { Enrollment } from "@/types/enrollment-interface";
+import { CourseModuleDetails, DescriptionType } from "@/types/module-interface";
 
 export default function AssignmentDetails({
+  id,
+  studentId,
+  enrollmentId,
+  moduleId,
+  submissionTemplateId,
+  isLocked,
+  isGraded,
+  isPassed,
+  scorePercentage,
+  scoreAchieved,
+  scoreTotal,
+  feedback,
+  createdAt,
+  updatedAt,
+  submissionTemplate,
+  submissionFieldValue,
+  embedVideoLink,
   title,
-  type,
   description,
   links,
-  embedVideoLink,
-  subdescription,
-  submittedData,
-}: AssignmentDetailsItf) {
-  const isAssignment = type === "Assignment";
-
+  subdescriptions,
+}: Submission & Partial<CourseModuleDetails>) {
   return (
     <>
       {embedVideoLink && (
@@ -33,14 +48,10 @@ export default function AssignmentDetails({
       <section className="bg-white py-6 px-7 rounded-lg border border-slate-300">
         {/* Module Header */}
         <ContentHeader
-          title={title}
+          title={title || "No Title"}
           descriptionDetail={{
-            text: type,
-            iconComponent: isAssignment ? (
-              <BookMinus size={16} className="text-slate-400" />
-            ) : (
-              <PlayIcon size={16} className="text-slate-400" />
-            ),
+            text: "Assignment",
+            iconComponent: <BookMinus size={16} className="text-slate-400" />,
           }}
         />
 
@@ -48,16 +59,16 @@ export default function AssignmentDetails({
         <p className="text-slate-700 leading-relaxed mb-6 whitespace-pre-wrap">{description}</p>
 
         {/* Subdescriptions */}
-        {subdescription && subdescription.length > 0 && (
+        {subdescriptions && subdescriptions.length > 0 && (
           <section className="mb-6">
-            {subdescription.map((item, index) => (
+            {subdescriptions.map((item, index) => (
               <div key={index} className="mb-5">
                 {item.header && (
                   <Header element="h2" size="14" className="my-3">
                     {item.header}
                   </Header>
                 )}
-                {item.type === "list" ? (
+                {item.type === DescriptionType.LIST ? (
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-1.5 mb-6">
                     {item.description.split("\n").map((line, lineIndex) => (
                       <div key={lineIndex} className="flex items-start mb-1">
@@ -102,18 +113,24 @@ export default function AssignmentDetails({
       </section>
 
       {/* submission details and grading */}
-      {/* {isAssignment && submittedList?.submissionTitle && submittedList.submissions && (
+      {submissionTemplate && (
         <Grading
-          submissionTitle={"dw"}
-          submissions={submittedList}
+          submissionId={id || "submission-id-not-found"}
+          scoreLimit={scoreTotal}
+          initialFeedback={feedback || ""}
+          initialScore={scoreAchieved.toString() || ""}
+          initialPassStatus={isPassed || false}
+          submissionTitle={submissionTemplate.submissionTitle}
+          submissionFieldValueList={submissionFieldValue}
         />
-      )} */}
-      {submittedData?.submissionTitle && submittedData.submissionList && (
-        <Grading {...submittedData}
+      )}
+      {/* {submittedData?.submissionTitle && submittedData.submissionList && (
+        <Grading
+          {...submittedData}
           // submissionTitle={submittedData?.submissionTitle}
           // submissions={submittedData?.submissionList}
         />
-      )}
+      )} */}
     </>
   );
 }
