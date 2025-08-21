@@ -40,9 +40,9 @@ export default function BasicCourseCard({
   const instructorUser = instructor.user;
   const instructorFullName = `${instructorUser.firstName} ${instructorUser.lastName}`;
 
-  const firstSection = sections[0];
-  const firstModule = firstSection.modules[0];
-  const firstModuleId = firstModule.id;
+  const firstSection = sections?.[0];
+  const firstModule = firstSection?.modules[0];
+  const firstModuleId = firstModule?.id || "module-not-found";
 
   return (
     <section className="bg-white border border-slate-300 rounded-lg overflow-hidden w-full max-w-sm mx-auto">

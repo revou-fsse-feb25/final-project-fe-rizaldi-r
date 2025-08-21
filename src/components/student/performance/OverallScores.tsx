@@ -1,12 +1,22 @@
 import Header from "@/components/_commons/Header";
 import ProgressDisplay from "@/components/_commons/ProgressDisplay";
-import { OverallScoresItf } from "@/types/types";
 import React from "react";
 
+export interface OverallScoresItf {
+  moduleProgress: EnrollmentProgress;
+  lectureProgress: EnrollmentProgress;
+  assignmentProgress: EnrollmentProgress;
+  assignmentScore: EnrollmentProgress;
+}
+
 export default function OverallScores({
-  moduleOverallProgressDataList,
-  assignmentOverallScoresData,
+  moduleProgress,
+  lectureProgress,
+  assignmentProgress,
+  assignmentScore,
 }: OverallScoresItf) {
+  console.log("🚀 ~ assignmentScore:", assignmentScore);
+
   return (
     <>
       <section>
@@ -14,9 +24,21 @@ export default function OverallScores({
           Module Completed
         </Header>
         <div className="flex flex-col md:flex-row  items-center gap-20">
-          {moduleOverallProgressDataList.map((moduleProgress, index) => (
-            <ProgressDisplay key={index} {...moduleProgress} displayType="Circle" />
-          ))}
+          <ProgressDisplay
+            {...moduleProgress}
+            displayType="Circle"
+            progressLabel="Module Overall Progress"
+          />
+          <ProgressDisplay
+            {...lectureProgress}
+            displayType="Circle"
+            progressLabel="Lecture Completed"
+          />
+          <ProgressDisplay
+            {...assignmentProgress}
+            displayType="Circle"
+            progressLabel="Assignment Completed"
+          />
         </div>
       </section>
 
@@ -25,7 +47,11 @@ export default function OverallScores({
         <Header element="h3" size="18" className="mb-2">
           Scores
         </Header>
-        <ProgressDisplay {...assignmentOverallScoresData} />
+        <ProgressDisplay
+          {...assignmentScore}
+          progressLabel="Assignment Overall Scores"
+          moduleLabel="scores achived"
+        />
       </section>
     </>
   );

@@ -5,6 +5,7 @@ import ExpandableSection from "@/components/_commons/ExpandableSection";
 import Header from "@/components/_commons/Header";
 import ProgressDisplay from "@/components/_commons/ProgressDisplay";
 import { UserRole } from "@/types/jwtPayload";
+import { Submission } from "@/types/submission-interface";
 import { itfAssignmentScoreData } from "@/types/types";
 import { useSession } from "next-auth/react";
 import Link from "next/link";
@@ -15,22 +16,23 @@ const generateUniqueId = () => {
 };
 
 export default function AssignmentScore({
-  identifier,
+  courseId,
+  enrollmentId,
   moduleId,
-  assignmentTitle,
+  submissionTemplate,
   scorePercentage,
   scoreAchieved,
   scoreTotal,
-  submittedList,
+  submissionFieldValue,
   feedback,
-}: itfAssignmentScoreData & { identifier: string }) {
+}: Submission & { courseId: string }) {
   const { data: session } = useSession();
   const userRole = session?.user.role;
 
-  const submittedListWithIds = submittedList?.map((item) => ({
-    ...item,
-    id: generateUniqueId(),
-  }));
+  // const submittedListWithIds = submissionFieldValue?.map((item) => ({
+  //   ...item,
+  //   id: generateUniqueId(),
+  // }));
 
   // handle toggle expand submitted section
   const [expandedSections, setExpandedSections] = useState<Record<string, boolean>>({});
@@ -49,7 +51,7 @@ export default function AssignmentScore({
           <div className="flex items-center gap-2 ">
             {/* <img src="/book.svg" /> */}
             <Header element="h3" size="18">
-              {assignmentTitle}
+              {submissionTemplate.submissionTitle}
             </Header>
           </div>
         }
@@ -59,10 +61,10 @@ export default function AssignmentScore({
           <div className="max-w-60">
             <ProgressDisplay
               progressLabel="Score"
-              countLabel="scores achieved"
+              moduleLabel="scores achieved"
               progressPercentage={scorePercentage}
-              countCompleted={scoreAchieved}
-              countTotal={scoreTotal}
+              moduleCompleted={scoreAchieved}
+              moduleTotal={scoreTotal}
             />
           </div>
 
@@ -70,10 +72,12 @@ export default function AssignmentScore({
           <div className="bg-white border border-slate-200 rounded-lg p-4">
             <h3 className="font-semibold text-slate-800 mb-2">Submitted</h3>
             <ul className="flex flex-col gap-4">
-              {submittedListWithIds?.map((submitted, index) => (
+              {submissionFieldValue?.map((submissionField, index) => (
                 <li key={index}>
-                  <ExpandableSection headerComponent={submitted.label}>
-                    <p className="text-slate-500 leading-relaxed ml-12 mt-2">{submitted.submission}</p>
+                  <ExpandableSection headerComponent={submissionField.submissionField?.label}>
+                    <p className="text-slate-500 leading-relaxed ml-12 mt-2">
+                      {submissionField.submitted || "No submission yet"}
+                    </p>
                   </ExpandableSection>
                 </li>
               ))}
@@ -83,14 +87,14 @@ export default function AssignmentScore({
           {/* Feedback Section */}
           <div className="bg-white border border-slate-200 rounded-lg p-4">
             <h3 className="font-semibold text-slate-800 mb-2">Feedback</h3>
-            <p className="text-slate-500 leading-relaxed">{feedback}</p>
+            <p className="text-slate-500 leading-relaxed">{feedback || "No feedback yet"}</p>
           </div>
 
           <Link
             href={
               userRole === UserRole.INSTRUCTOR
-                ? `student-performance/${identifier}/${moduleId}`
-                : `/student/my-courses/${identifier}/${moduleId}`
+                ? `student-performance/${enrollmentId}/${moduleId}`
+                : `/student/my-courses/${courseId}/${moduleId}`
             }
             className="ml-auto"
           >
