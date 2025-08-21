@@ -3,11 +3,14 @@
 import { signOut, useSession } from "next-auth/react";
 import NavbarTabButton from "./NavbarTabButton";
 import { usePathname } from "next/navigation";
-import { useEffect, useRef, useState } from "react";
+import React, { ReactElement, useEffect, useRef, useState } from "react";
 import { UserRole } from "@/types/jwtPayload";
 import Link from "next/link";
+import { UserPen } from "lucide-react";
 
 enum TabNames {
+  USERS,
+  COURSES,
   MY_COURSES,
   SEARCH,
   ASSIGNMENTS,
@@ -19,7 +22,8 @@ interface TabConfig {
   id: TabNames;
   label: string;
   href: string;
-  iconLink: string;
+  iconLink?: string;
+  iconComponent?: ReactElement<any, any>;
 }
 
 // Array containing the configuration for all tabs
@@ -45,12 +49,12 @@ const tabsStudent: TabConfig[] = [
 ];
 
 const tabsLecturer: TabConfig[] = [
-  {
-    id: TabNames.SEARCH,
-    label: "Search",
-    href: "/instructor/search",
-    iconLink: "/search.svg",
-  },
+  // {
+  //   id: TabNames.SEARCH,
+  //   label: "Search",
+  //   href: "/instructor/search",
+  //   iconLink: "/search.svg",
+  // },
   {
     id: TabNames.MY_COURSES,
     label: "My Courses",
@@ -62,6 +66,21 @@ const tabsLecturer: TabConfig[] = [
     label: "Students Performance",
     href: "/instructor/student-performance",
     iconLink: "/speedometer.svg",
+  },
+];
+
+const tabsAdmin: TabConfig[] = [
+  {
+    id: TabNames.MY_COURSES,
+    label: "Courses",
+    href: "/admin/my-courses",
+    iconLink: "/folder-open.svg",
+  },
+  {
+    id: TabNames.STUDENT_PERFORMANCE,
+    label: "User List",
+    href: "/admin/student-performance",
+    iconComponent: <UserPen className="inline mr-2"/>,
   },
 ];
 
@@ -87,7 +106,7 @@ export default function Navbar() {
   const pathname = usePathname();
 
   const { data: session } = useSession();
-  const tabs = [...tabsStudent, ...tabsLecturer];
+  const tabs = [...tabsStudent, ...tabsLecturer, ...tabsAdmin];
 
   // determine the active tab based on the current pathname
   const getActiveTabFromPath = (path: string): TabNames => {
@@ -104,6 +123,7 @@ export default function Navbar() {
   };
 
   const [activeTab, setActiveTab] = useState(getActiveTabFromPath(pathname));
+  console.log("🚀 ~ activeTab:", activeTab)
 
   useEffect(() => {
     setActiveTab(getActiveTabFromPath(pathname));
@@ -117,6 +137,21 @@ export default function Navbar() {
 
         {/* Tab Buttons */}
         <div className="flex items-center gap-10 text-sm font-medium h-full">
+          {session?.user.role === UserRole.STUDENT ? (
+            tabsStudent.map((tab) => (
+              <NavbarTabButton
+                key={tab.id}
+                iconLink={tab.iconLink}
+                href={tab.href}
+                isActive={activeTab === tab.id}
+              >
+                {tab.label}
+              </NavbarTabButton>
+            ))
+          ) : (
+            <></>
+          )}
+
           {session?.user.role === UserRole.INSTRUCTOR ? (
             tabsLecturer.map((tab) => (
               <NavbarTabButton
@@ -132,14 +167,15 @@ export default function Navbar() {
             <></>
           )}
 
-          {session?.user.role === UserRole.STUDENT ? (
-            tabsStudent.map((tab) => (
+          {session?.user.role === UserRole.ADMIN ? (
+            tabsAdmin.map((tab) => (
               <NavbarTabButton
                 key={tab.id}
                 iconLink={tab.iconLink}
                 href={tab.href}
                 isActive={activeTab === tab.id}
               >
+                {tab.iconComponent}
                 {tab.label}
               </NavbarTabButton>
             ))

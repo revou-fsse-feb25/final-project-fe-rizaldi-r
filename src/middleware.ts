@@ -9,22 +9,32 @@ const routeConfig = {
   public: [],
   authPages: ["/login", "/signup"],
   protected: ["/student"],
-  adminOnly: ["/instructor"],
+  instructorPath: ["/instructor"],
+  adminPath: ["/admin"],
 };
 
 export async function middleware(request: NextRequest) {
   const path = request.nextUrl.pathname;
 
   // --- Check Authentication Status ---
-  // TODO: use config so it can be dynamic
   const token = await getToken({ req: request, secret: process.env.NEXTAUTH_SECRET });
   const isAuthenticated = !!token;
   const userRole = token?.role as UserRole;
 
-  // --- Handle Auth Pages (Redirect from auth pages if Authenticated) ---
   const isAuthPage = routeConfig.authPages.some(
     (routePath) => path === routePath || path.startsWith(`${routePath}/`)
   );
+  const isAdminRoute = routeConfig.adminPath.some(
+    (routePath) => path === routePath || path.startsWith(`${routePath}/`)
+  );
+  const isInstructorRoute = routeConfig.instructorPath.some(
+    (routePath) => path === routePath || path.startsWith(`${routePath}/`)
+  );
+  const isProtected = routeConfig.protected.some(
+    (routePath) => path === routePath || path.startsWith(`${routePath}/`)
+  );
+
+  // --- Handle Auth Pages (Redirect from auth pages if Authenticated) ---
   if (isAuthPage && userRole === UserRole.INSTRUCTOR) {
     const redirectPath = "/instructor/my-courses";
     return NextResponse.redirect(new URL(redirectPath, request.url));
@@ -34,25 +44,25 @@ export async function middleware(request: NextRequest) {
   }
 
   // --- Handle Protected Routes (Require Authentication) ---
-  const isProtected = routeConfig.protected.some(
-    (routePath) => path === routePath || path.startsWith(`${routePath}/`)
-  );
-  if (isProtected && !isAuthenticated) {
+  console.log("🚀 ~ isAuthenticated:", isAuthenticated);
+  if ((isProtected || isAdminRoute || isInstructorRoute) && !isAuthenticated) {
     const accountUrl = new URL("/login", request.url);
     accountUrl.searchParams.set("redirect", path);
     return NextResponse.redirect(accountUrl);
   }
 
   // --- Handle Redirect Instructor to Instructor home page---
-  if (isProtected && userRole === UserRole.INSTRUCTOR) {
+  if (isAuthPage && userRole === UserRole.INSTRUCTOR) {
     return NextResponse.redirect(new URL("/instructor/my-courses", request.url));
   }
 
+  // --- Handle Redirect Instructor to admin home page---
+  if (isAuthPage && userRole === UserRole.ADMIN) {
+    return NextResponse.redirect(new URL("/admin/my-courses", request.url));
+  }
+
   // --- Handle Instructor-Only Routes (Require Instructor Role) ---
-  const isAdminRoute = routeConfig.adminOnly.some(
-    (routePath) => path === routePath || path.startsWith(`${routePath}/`)
-  );
-  if (isAdminRoute) {
+  if (isInstructorRoute) {
     if (!isAuthenticated || userRole !== UserRole.INSTRUCTOR)
       return NextResponse.redirect(new URL("/", request.url));
   }
