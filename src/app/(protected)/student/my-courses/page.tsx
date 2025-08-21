@@ -22,7 +22,6 @@ export default function MyCoursesPage() {
 
   // fetch categories
   const { data: session } = useSession();
-  console.log("🚀 ~ session:", session)
   const token = session?.accessToken;
   const {
     data: CategoryDataList,

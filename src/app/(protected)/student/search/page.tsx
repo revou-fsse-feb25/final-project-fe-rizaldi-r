@@ -7,7 +7,6 @@ import BasicCourseCard from "@/components/student/search/BasicCourseCard";
 import { useFetchData } from "@/hooks/useFetchData";
 import { fetchCategoryList, fetchCoursesList, setDefaultAuthHeader } from "@/services/api";
 import { CourseDetails } from "@/types/course-interface";
-import { courseCategoriesData } from "@/utils/mock-data";
 import { useSession } from "next-auth/react";
 import { useState } from "react";
 
