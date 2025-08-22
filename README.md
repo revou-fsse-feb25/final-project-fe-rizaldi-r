@@ -99,9 +99,11 @@ You can use the following credentials to test the different user roles on the de
 
 ## 📸 Screenshoots
 
-![alt text](https://github-production-user-asset-6210df.s3.amazonaws.com/64939575/481010651-a048e4f5-9949-4446-b8b4-781a5648036d.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=AKIAVCODYLSA53PQK4ZA%2F20250822%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-Date=20250822T143237Z&X-Amz-Expires=300&X-Amz-Signature=a89db1f7f05e03b269abe0344a54b10f99db445c34a6bcf4ad45a132cadd4583&X-Amz-SignedHeaders=host)
+- Student Page
 
-![alt text](https://github-production-user-asset-6210df.s3.amazonaws.com/64939575/481012088-88ed1289-0246-49fd-873f-1732b440523b.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Credential=AKIAVCODYLSA53PQK4ZA%2F20250822%2Fus-east-1%2Fs3%2Faws4_request&X-Amz-Date=20250822T143333Z&X-Amz-Expires=300&X-Amz-Signature=491804652f3db98b801df782017558fb75cdd4e3d7e08c96500114306a029e8f&X-Amz-SignedHeaders=host)
+<img width="1919" height="969" alt="Image" src="https://github.com/user-attachments/assets/e8b2b0ee-213a-462d-a2e8-f64df48e8833" />
+
+<img width="1919" height="968" alt="Image" src="https://github.com/user-attachments/assets/4f5c9c45-9690-40a2-a86d-46385c86a5ee" />
 
 ![alt text](https://github.com/user-attachments/assets/3e387c19-a111-488d-94da-f5a2e5771a50)
 
@@ -111,11 +113,15 @@ You can use the following credentials to test the different user roles on the de
 
 <img width="1899" height="957" alt="Image" src="https://github.com/user-attachments/assets/2d9484a7-5a03-4d60-b588-e4b7e5f7bb8e" />
 
+- Instructor Page
+
 <img width="1838" height="962" alt="Image" src="https://github.com/user-attachments/assets/3d3609c0-57a4-4232-b389-a0bcb4783132" />
 
 <img width="1853" height="969" alt="Image" src="https://github.com/user-attachments/assets/7c904de3-ff53-4d0b-84e7-c18cfedb3b2e" />
 
 <img width="1845" height="970" alt="Image" src="https://github.com/user-attachments/assets/07766374-7b5a-4d63-8bb0-76bfb87c13f7" />
+
+- Admin Page
 
 <img width="1891" height="961" alt="Image" src="https://github.com/user-attachments/assets/a5c00bf3-d1a2-413d-8f2f-827416a175fe" />
 
