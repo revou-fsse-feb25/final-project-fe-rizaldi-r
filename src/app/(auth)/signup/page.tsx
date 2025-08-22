@@ -2,12 +2,31 @@
 
 import TextInput from "@/components/_commons/TextInput";
 import { postRegister } from "@/services/api";
+import { AxiosErrorItf } from "@/types/axios-error";
+import { UserInfo } from "@/types/user-interface";
 import { signIn } from "next-auth/react";
+import { ApiError } from "next/dist/server/api-utils";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { ChangeEvent, useState } from "react";
 
-// const requiredFields: string[] = ["firstName", "lastName", "email", "password"];
+interface FormData {
+  firstName?: string;
+  lastName?: string;
+  username?: string;
+  email?: string;
+  password?: string;
+  program?: string;
+}
+
+interface ValidationErrors {
+  firstName?: string;
+  lastName?: string;
+  username?: string;
+  email?: string;
+  password?: string;
+  program?: string;
+}
 
 enum Program {
   WEBDEV = "WEBDEV",
@@ -16,26 +35,27 @@ enum Program {
 }
 
 export default function SignUpPage() {
-  const [message, setMessage] = useState("");
-  const [error, setError] = useState("");
-  const [isLoading, setIsLoading] = useState(false);
-  const [formData, setFormData] = useState({});
-  const [validationErrors, setValidationErrors] = useState({});
+  const [message, setMessage] = useState<string>("");
+  const [error, setError] = useState<string>("");
+  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [formData, setFormData] = useState<FormData>({});
+  const [validationErrors, setValidationErrors] = useState<ValidationErrors>({});
   const router = useRouter();
 
-  const handleInputChange = (name, value) => {
+  const handleInputChange = (name: string, value: string): void => {
     setFormData((prevFormData) => ({
       ...prevFormData,
       [name]: value,
     }));
     // Clear validation error when the user starts typing
-    if (validationErrors[name]) {
+    if (validationErrors[name as keyof ValidationErrors]) {
       setValidationErrors((prev) => ({ ...prev, [name]: "" }));
     }
   };
 
-  const validateForm = () => {
-    const errors = {};
+  const validateForm = (): boolean => {
+    const errors: ValidationErrors = {};
+
     if (!formData.firstName || formData.firstName.trim() === "") {
       errors.firstName = "First name is required.";
     }
@@ -58,18 +78,18 @@ export default function SignUpPage() {
     if (!formData.program || formData.program.trim() === "") {
       errors.program = "Program selection is required.";
     }
+
     setValidationErrors(errors);
     return Object.keys(errors).length === 0;
   };
 
-  const handleFormSubmit = async (e) => {
+  const handleFormSubmit = async (e: React.FormEvent<HTMLFormElement>): Promise<void> => {
     e.preventDefault();
     setError("");
     setMessage("");
 
     const isValid = validateForm();
     if (!isValid) {
-      setIsLoading(false);
       return;
     }
 
@@ -77,33 +97,46 @@ export default function SignUpPage() {
 
     try {
       const response = await postRegister({
-        firstName: formData.firstName,
-        lastName: formData.lastName,
-        username: formData.username,
-        email: formData.email,
-        password: formData.password,
-        program: formData.program,
+        firstName: formData.firstName!,
+        lastName: formData.lastName!,
+        username: formData.username!,
+        email: formData.email!,
+        password: formData.password!,
+        program: formData.program!,
       });
-
-      const result = await signIn("credentials", {
-        email: formData.email,
-        password: formData.password,
-        redirect: false,
-      });
-
-      router.refresh();
 
       if (response.status === 201) {
-        setMessage("Registration successful!");
+        const result = await signIn("credentials", {
+          email: formData.email,
+          password: formData.password,
+          redirect: false,
+        });
+
+        if (result?.error) {
+          setError("Login failed after registration. Please try logging in manually.");
+        } else {
+          setMessage("Registration successful!");
+          router.refresh();
+        }
       }
 
-      setFormData({});
-    } catch (err) {
-      if (err.response?.data?.message === "User with this email or username already exists") {
+      setFormData({
+        firstName: "",
+        lastName: "",
+        username: "",
+        email: "",
+        password: "",
+        program: "",
+      });
+    } catch (err: unknown) {
+      const apiError = err as AxiosErrorItf;
+      if (apiError.response?.data?.message === "User with this email or username already exists") {
         setError("This email address or username is already in use. Please use a different one.");
       } else {
         setError(
-          err.response?.data?.message || "An unexpected error occurred during registration."
+          apiError.response?.data?.message ||
+            apiError.message ||
+            "An unexpected error occurred during registration."
         );
       }
     } finally {

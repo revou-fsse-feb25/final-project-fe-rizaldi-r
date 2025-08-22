@@ -1,9 +1,37 @@
 import { postCourse, postCourseByAdmin } from "@/services/api";
+import { AxiosErrorItf } from "@/types/axios-error";
+import { CourseCreateData } from "@/types/course-interface";
+import { InstructorInfo, UserInfo } from "@/types/user-interface";
 import { createFullName } from "@/utils/create-full-name";
 import { Plus, X } from "lucide-react";
-import { useState } from "react";
+import React, { useState } from "react";
 
-const Modal = ({ isOpen, onClose, children }) => {
+interface CourseCategory {
+  id: string | number;
+  name: string;
+}
+
+interface ValidationErrors {
+  title?: string;
+  description?: string;
+  categoryIds?: string;
+  instructorId?: string;
+}
+
+interface ModalProps {
+  isOpen: boolean;
+  onClose: () => void;
+  children: React.ReactNode;
+}
+
+interface CreateCourseFormProps {
+  refetchCourses: (params_0: string, params_1: boolean) => Promise<void>;
+  token: string;
+  courseCategories?: CourseCategory[];
+  userInstructors?: UserInfo[];
+}
+
+const Modal: React.FC<ModalProps> = ({ isOpen, onClose, children }) => {
   if (!isOpen) return null;
 
   return (
@@ -21,13 +49,12 @@ const Modal = ({ isOpen, onClose, children }) => {
   );
 };
 
-export const CreateCourseFormForAdmin = ({
+export const CreateCourseFormForAdmin: React.FC<CreateCourseFormProps> = ({
   refetchCourses,
   token,
   courseCategories,
   userInstructors,
 }) => {
-  console.log("🚀 ~ userInstructors:", userInstructors);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [formData, setFormData] = useState({
     title: "",
@@ -44,22 +71,25 @@ export const CreateCourseFormForAdmin = ({
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [message, setMessage] = useState("");
   const [isSuccess, setIsSuccess] = useState(false);
-  const [validationErrors, setValidationErrors] = useState({});
+  const [validationErrors, setValidationErrors] = useState<ValidationErrors>({});
 
-  const handleChange = (e) => {
-    const { name, value, type, checked } = e.target;
+  const handleChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
+  ) => {
+    const { name, value, type } = e.target;
+    const checked = (e.target as HTMLInputElement).checked;
     setFormData((prevData) => ({
       ...prevData,
       [name]: type === "checkbox" ? checked : value,
     }));
     // Clear validation error when the user starts typing
-    if (validationErrors[name]) {
+    if (validationErrors[name as keyof ValidationErrors]) {
       setValidationErrors((prev) => ({ ...prev, [name]: "" }));
     }
   };
 
   const validateForm = () => {
-    const errors = {};
+    const errors: ValidationErrors = {};
     if (!formData.title.trim()) {
       errors.title = "Title is required.";
     }
@@ -76,7 +106,7 @@ export const CreateCourseFormForAdmin = ({
     return Object.keys(errors).length === 0;
   };
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsSubmitting(true);
     setMessage("");
@@ -89,7 +119,7 @@ export const CreateCourseFormForAdmin = ({
     }
 
     try {
-      const payload = {
+      const payload: CourseCreateData = {
         title: formData.title,
         imageSrc: formData.imageSrc,
         description: formData.description,
@@ -101,13 +131,12 @@ export const CreateCourseFormForAdmin = ({
         categoryIds: [formData.categoryIds],
         instructorId: formData.instructorId,
       };
-      console.log("🚀 ~ token.token:", token)
 
       const response = await postCourseByAdmin(token, payload);
       if (response.status === 201) {
         setMessage("Course added successfully!");
         setIsSuccess(true);
-        refetchCourses();
+        refetchCourses("", true);
         setFormData({
           title: "",
           imageSrc: "",
@@ -122,8 +151,9 @@ export const CreateCourseFormForAdmin = ({
         });
         setTimeout(() => setIsModalOpen(false), 2000);
       }
-    } catch (error) {
-      setMessage(`Error: ${error.response?.data?.message || "Failed to add course."}`);
+    } catch (error: unknown) {
+      const axiosError = error as AxiosErrorItf;
+      setMessage(`Error: ${axiosError.response?.data?.message || "Failed to add course."}`);
       setIsSuccess(false);
     } finally {
       setIsSubmitting(false);
@@ -252,7 +282,7 @@ export const CreateCourseFormForAdmin = ({
             >
               <option value="">Select an instructor</option>
               {userInstructors?.map((userInstructor) => (
-                <option key={userInstructor.instructor.id} value={userInstructor.instructor.id}>
+                <option key={userInstructor?.instructor?.id} value={userInstructor?.instructor?.id}>
                   {createFullName(userInstructor)}
                 </option>
               ))}

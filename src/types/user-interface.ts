@@ -21,6 +21,7 @@ export interface UserInfo {
   lastLogin: string; // ISO 8601 date string
   createdAt: string; // ISO 8601 date string
   updatedAt: string; // ISO 8601 date string
+  instructor?: InstructorInfo;
 }
 
 /**

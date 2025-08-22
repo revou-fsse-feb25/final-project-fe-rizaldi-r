@@ -4,7 +4,6 @@ import CourseFilterSection from "@/components/_commons/CourseFilterSection";
 import Header from "@/components/_commons/Header";
 import Layout from "@/components/_commons/layout/Layout";
 import { CreateCourseFormForAdmin } from "@/components/admin/courses/CreateCourseFormForAdmin";
-import { CreateCourseForm } from "@/components/lecturer/my-courses/CreateCourseForm";
 import InstructorCourseCard from "@/components/lecturer/my-courses/InstructorCourseCard";
 import { useFetchData } from "@/hooks/useFetchData";
 import {
@@ -33,6 +32,7 @@ export default function CoursesPage() {
     data: CategoryDataList,
     isLoading: isLoadingCategoryList,
     error: errorCategoryList,
+    refetch
   } = useFetchData(fetchCategoryList, token);
 
   // fetch courses
@@ -70,7 +70,7 @@ export default function CoursesPage() {
       <section className="w-3/5">
         <CreateCourseFormForAdmin
           refetchCourses={refetchCourses}
-          token={token}
+          token={token || ""}
           courseCategories={CategoryDataList}
           userInstructors={UserInstructors}
         />

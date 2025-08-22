@@ -18,16 +18,44 @@ import { Trash2 } from "lucide-react";
 import { useSession } from "next-auth/react";
 import { useState } from "react";
 
-const courseStatusExcluded = ["Not Enrolled", "Enrolled"];
+// Define interface for user data
+interface User {
+  id: string;
+  firstName: string;
+  lastName: string;
+  email: string;
+  role: UserRole;
+  program?: string;
+  batchYear?: number;
+}
+
+// Define interface for role update payload
+interface RoleUpdatePayload {
+  role: UserRole;
+  program?: string;
+  batchYear?: number;
+}
+
+// Define interface for Axios error response
+interface AxiosError {
+  response?: {
+    data?: {
+      message?: string;
+    };
+    status?: number;
+  };
+  request?: any;
+  message?: string;
+  config?: any;
+}
 
 export default function userListPage() {
-  // const [users, setUsers] = useState(mockUsers);
-  const [deletingUserId, setDeletingUserId] = useState(null);
-  const [deletingStatus, setDeletingStatus] = useState("");
-  const [message, setMessage] = useState("");
+  const [deletingUserId, setDeletingUserId] = useState<string | null>(null);
+  const [deletingStatus, setDeletingStatus] = useState<string>("");
+  const [message, setMessage] = useState<string>("");
 
   const { data: session } = useSession();
-  const token = session?.accessToken;
+  const token = session?.accessToken as string;
 
   // fetch users
   const {
@@ -35,14 +63,13 @@ export default function userListPage() {
     isLoading: isLoadingUsers,
     error: errorUsers,
     refetch: refetchUsers,
-  } = useFetchData(fetchUsers, token);
-  console.log("🚀 ~ users:", users);
+  } = useFetchData<User[], []>(fetchUsers, token);
 
   // Handles updating a user's role in the state.
-  const handleRoleChange = async (userId, newRole) => {
+  const handleRoleChange = async (userId: string, newRole: UserRole): Promise<void> => {
     setMessage("");
 
-    const payload = { role: newRole };
+    const payload: RoleUpdatePayload = { role: newRole };
     if (newRole === UserRole.INSTRUCTOR) {
       payload.program = "WEBDEV";
     } else if (newRole === UserRole.STUDENT) {
@@ -60,14 +87,13 @@ export default function userListPage() {
     }
   };
 
-  // Initiates the deletion confirmation process.
-  const initiateDelete = (userId) => {
+  const initiateDelete = (userId: string): void => {
     setDeletingUserId(userId);
     setDeletingStatus("");
     setMessage("");
   };
 
-  const confirmDelete = async (userId) => {
+  const confirmDelete = async (userId: string): Promise<void> => {
     setDeletingStatus("deleting");
     setMessage("Deleting user...");
 
@@ -119,7 +145,7 @@ export default function userListPage() {
                 </tr>
               </thead>
               <tbody className="bg-white divide-y divide-gray-200">
-                {users.map((user) => (
+                {users?.map((user) => (
                   <tr key={user.id}>
                     <td className="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
                       {user.firstName} {user.lastName}
@@ -130,7 +156,9 @@ export default function userListPage() {
                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 min-w-40">
                       <select
                         value={user.role}
-                        onChange={(e) => handleRoleChange(user.id, e.target.value)}
+                        onChange={(e: React.ChangeEvent<HTMLSelectElement>) =>
+                          handleRoleChange(user.id, e.target.value as UserRole)
+                        }
                         className="mt-1 block w-full pl-3 pr-10 py-2 text-base border border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md"
                       >
                         <option value="ADMIN">ADMIN</option>
@@ -179,7 +207,7 @@ export default function userListPage() {
 
           {/* User list cards for small screens */}
           <div className="md:hidden">
-            {users.map((user) => (
+            {users?.map((user) => (
               <div key={user.id} className="bg-white rounded-lg p-4 mb-4 border border-gray-200">
                 <div className="flex justify-between items-center mb-2">
                   <h3 className="text-lg font-semibold text-gray-900">
@@ -224,7 +252,7 @@ export default function userListPage() {
                   <span className="text-sm font-medium text-gray-700">Role:</span>
                   <select
                     value={user.role}
-                    onChange={(e) => handleRoleChange(user.id, e.target.value)}
+                    onChange={(e) => handleRoleChange(user.id, e.target.value as UserRole)}
                     className="mt-1 block pl-3 pr-10 py-1 text-base border border-gray-300 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm rounded-md"
                   >
                     <option value="ADMIN">ADMIN</option>

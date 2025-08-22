@@ -57,7 +57,7 @@ export default function myCoursesPage() {
       <section className="w-3/5">
         <CreateCourseForm
           refetchCourses={refetchCourses}
-          token={token}
+          token={token || ""}
           courseCategories={CategoryDataList}
         />
       </section>

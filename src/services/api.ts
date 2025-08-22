@@ -56,7 +56,7 @@ export const fetchUsers = async (token: string) => {
   }
 };
 
-export const patchUserRole = async (token: string, userId: string, payload) => {
+export const patchUserRole = async (token: string, userId: string, payload: any) => {
   try {
     const config = createAuthHeaders(token);
     const response = await axios.patch(`/users/${userId}/role`, payload, config);

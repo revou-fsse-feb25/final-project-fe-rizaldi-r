@@ -1,8 +1,35 @@
 import { postCourse } from "@/services/api";
+import { AxiosErrorItf } from "@/types/axios-error";
+import { CourseCreateData } from "@/types/course-interface";
+import { UserInfo } from "@/types/user-interface";
 import { Plus, X } from "lucide-react";
 import { useState } from "react";
 
-const Modal = ({ isOpen, onClose, children }) => {
+interface CourseCategory {
+  id: string | number;
+  name: string;
+}
+
+interface ValidationErrors {
+  title?: string;
+  description?: string;
+  categoryIds?: string;
+  instructorId?: string;
+}
+
+interface ModalProps {
+  isOpen: boolean;
+  onClose: () => void;
+  children: React.ReactNode;
+}
+
+interface CreateCourseFormProps {
+  refetchCourses: (params_0: string, params_1: boolean) => Promise<void>;
+  token: string;
+  courseCategories?: CourseCategory[];
+  userInstructors?: UserInfo[];
+}
+const Modal: React.FC<ModalProps> = ({ isOpen, onClose, children }) => {
   if (!isOpen) return null;
 
   return (
@@ -20,7 +47,11 @@ const Modal = ({ isOpen, onClose, children }) => {
   );
 };
 
-export const CreateCourseForm = ({ refetchCourses, token, courseCategories }) => {
+export const CreateCourseForm: React.FC<CreateCourseFormProps> = ({
+  refetchCourses,
+  token,
+  courseCategories,
+}) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [formData, setFormData] = useState({
     title: "",
@@ -36,22 +67,25 @@ export const CreateCourseForm = ({ refetchCourses, token, courseCategories }) =>
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [message, setMessage] = useState("");
   const [isSuccess, setIsSuccess] = useState(false);
-  const [validationErrors, setValidationErrors] = useState({});
+  const [validationErrors, setValidationErrors] = useState<ValidationErrors>({});
 
-  const handleChange = (e) => {
-    const { name, value, type, checked } = e.target;
+  const handleChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
+  ) => {
+    const { name, value, type } = e.target;
+    const checked = (e.target as HTMLInputElement).checked;
     setFormData((prevData) => ({
       ...prevData,
       [name]: type === "checkbox" ? checked : value,
     }));
     // Clear validation error when the user starts typing
-    if (validationErrors[name]) {
+    if (validationErrors[name as keyof ValidationErrors]) {
       setValidationErrors((prev) => ({ ...prev, [name]: "" }));
     }
   };
 
   const validateForm = () => {
-    const errors = {};
+    const errors: ValidationErrors = {};
     if (!formData.title.trim()) {
       errors.title = "Title is required.";
     }
@@ -65,7 +99,7 @@ export const CreateCourseForm = ({ refetchCourses, token, courseCategories }) =>
     return Object.keys(errors).length === 0;
   };
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsSubmitting(true);
     setMessage("");
@@ -78,7 +112,7 @@ export const CreateCourseForm = ({ refetchCourses, token, courseCategories }) =>
     }
 
     try {
-      const payload = {
+      const payload: CourseCreateData = {
         title: formData.title,
         imageSrc: formData.imageSrc,
         description: formData.description,
@@ -94,7 +128,7 @@ export const CreateCourseForm = ({ refetchCourses, token, courseCategories }) =>
       if (response.status === 201) {
         setMessage("Course added successfully!");
         setIsSuccess(true);
-        refetchCourses();
+        refetchCourses("", true);
         setFormData({
           title: "",
           imageSrc: "",
@@ -109,7 +143,8 @@ export const CreateCourseForm = ({ refetchCourses, token, courseCategories }) =>
         setTimeout(() => setIsModalOpen(false), 2000);
       }
     } catch (error) {
-      setMessage(`Error: ${error.response?.data?.message || "Failed to add course."}`);
+      const axiosError = error as AxiosErrorItf;
+      setMessage(`Error: ${axiosError.response?.data?.message || "Failed to add course."}`);
       setIsSuccess(false);
     } finally {
       setIsSubmitting(false);
@@ -118,7 +153,7 @@ export const CreateCourseForm = ({ refetchCourses, token, courseCategories }) =>
 
   const handleCloseModal = () => {
     setIsModalOpen(false);
-    setMessage(""); 
+    setMessage("");
     setIsSubmitting(false);
   };
 

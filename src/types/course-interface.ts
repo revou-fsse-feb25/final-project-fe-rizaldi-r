@@ -64,11 +64,12 @@ export interface CourseCreateData {
   imageSrc: string;
   imageAlt?: string;
   description: string;
-  startDate?: string;
-  endDate?: string;
+  startDate?: string | null;
+  endDate?: string | null;
   isMemberOnly: boolean;
   isLocked?: boolean;
   allowedPrograms: string[];
   allowedBatchYears: number[];
   categoryIds: string[];
+  instructorId?: string;
 }
