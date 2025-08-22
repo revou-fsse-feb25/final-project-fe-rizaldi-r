@@ -31,7 +31,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body
-        className={`${geistSans.variable} ${geistMono.variable} ${roboto.variable} antialiased md:px-50`}
+        className={`${geistSans.variable} ${geistMono.variable} ${roboto.variable} antialiased max-w-10/11 md:max-w-5/7 mx-auto block`}
       >
         <SessionProviderWrapper>{children}</SessionProviderWrapper>
       </body>

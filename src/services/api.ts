@@ -1,4 +1,5 @@
 import { CourseCreateData } from "@/types/course-interface";
+import { UserRole } from "@/types/jwtPayload";
 import { DescriptionType, ModuleType } from "@/types/module-interface";
 import { GradeSubmission, SubmissionFieldValue } from "@/types/submission-interface";
 import axios, { AxiosError } from "axios";
@@ -43,6 +44,48 @@ const handleAxiosError = (error: unknown): void => {
 };
 
 // FETCH
+
+export const fetchUsers = async (token: string) => {
+  try {
+    const config = createAuthHeaders(token);
+    const response = await axios.get("/users", config);
+    response.status;
+    return response.data;
+  } catch (error) {
+    throw handleAxiosError(error);
+  }
+};
+
+export const patchUserRole = async (token: string, userId: string, payload) => {
+  try {
+    const config = createAuthHeaders(token);
+    const response = await axios.patch(`/users/${userId}/role`, payload, config);
+    return response.data;
+  } catch (error) {
+    throw handleAxiosError(error);
+  }
+};
+
+export const deleteUser = async (token: string, userId: string) => {
+  try {
+    const config = createAuthHeaders(token);
+    const response = await axios.delete(`/users/${userId}`, config);
+    return response.data;
+  } catch (error) {
+    throw handleAxiosError(error);
+  }
+};
+
+export const fetchInstructorList = async (token: string) => {
+  try {
+    const config = createAuthHeaders(token);
+    const response = await axios.get("/users?role=INSTRUCTOR", config);
+    response.status;
+    return response.data;
+  } catch (error) {
+    throw handleAxiosError(error);
+  }
+};
 
 export const fetchCategoryList = async (token: string) => {
   try {
@@ -271,6 +314,15 @@ export const patchModule = async (
   }
 };
 
+export const deleteModule = async (token: string, moduleId: string) => {
+  try {
+    const config = createAuthHeaders(token);
+    const response = await axios.delete(`/modules/${moduleId}`, config);
+  } catch (error) {
+    throw handleAxiosError(error);
+  }
+};
+
 export const patchSubdescription = async (
   token: string,
   subdescId: string,
@@ -343,6 +395,19 @@ export const addSubdescription = async (
   }
 };
 
+export const postSubmissionTemplate = async (
+  token: string,
+  payload: { submissionTitle?: string; moduleId: string }
+) => {
+  try {
+    const config = createAuthHeaders(token);
+    const response = await axios.post(`/submission-templates`, payload, config);
+    return response;
+  } catch (error) {
+    throw handleAxiosError(error);
+  }
+};
+
 export const postSubmissionField = async (
   token: string,
   addSubmissionFieldData: { label?: string; isTextfield?: boolean; submissionTemplateId: string }
@@ -384,6 +449,16 @@ export const postCourse = async (token: string, addCourseData: CourseCreateData)
   }
 };
 
+export const postCourseByAdmin = async (token: string, addCourseData: CourseCreateData) => {
+  try {
+    const config = createAuthHeaders(token);
+    const response = await axios.post(`/courses/by-admin`, addCourseData, config);
+    return response;
+  } catch (error) {
+    throw handleAxiosError(error);
+  }
+};
+
 export const postRegister = async (addUserData: {
   username: string;
   email: string;
@@ -393,6 +468,7 @@ export const postRegister = async (addUserData: {
   program: string;
 }) => {
   try {
+    console.log("🚀 ~ program:", addUserData)
     const response = await axios.post(`/auth/register`, addUserData);
     return response;
   } catch (error) {

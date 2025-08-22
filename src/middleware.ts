@@ -21,9 +21,21 @@ export async function middleware(request: NextRequest) {
   const isAuthenticated = !!token;
   const userRole = token?.role as UserRole;
 
+  
+  // --- Handle Auth Pages (Redirect from auth pages if Authenticated) ---
   const isAuthPage = routeConfig.authPages.some(
     (routePath) => path === routePath || path.startsWith(`${routePath}/`)
   );
+
+  if (isAuthPage && userRole === UserRole.INSTRUCTOR) {
+    const redirectPath = "/instructor/my-courses";
+    return NextResponse.redirect(new URL(redirectPath, request.url));
+  } else if (isAuthPage && userRole === UserRole.STUDENT) {
+    const redirectPath = "/student/my-courses";
+    return NextResponse.redirect(new URL(redirectPath, request.url));
+  }
+
+  // --- Handle Protected Routes (Require Authentication) ---
   const isAdminRoute = routeConfig.adminPath.some(
     (routePath) => path === routePath || path.startsWith(`${routePath}/`)
   );
@@ -34,17 +46,6 @@ export async function middleware(request: NextRequest) {
     (routePath) => path === routePath || path.startsWith(`${routePath}/`)
   );
 
-  // --- Handle Auth Pages (Redirect from auth pages if Authenticated) ---
-  if (isAuthPage && userRole === UserRole.INSTRUCTOR) {
-    const redirectPath = "/instructor/my-courses";
-    return NextResponse.redirect(new URL(redirectPath, request.url));
-  } else if (isAuthPage && userRole === UserRole.STUDENT) {
-    const redirectPath = "/student/my-courses";
-    return NextResponse.redirect(new URL(redirectPath, request.url));
-  }
-
-  // --- Handle Protected Routes (Require Authentication) ---
-  console.log("🚀 ~ isAuthenticated:", isAuthenticated);
   if ((isProtected || isAdminRoute || isInstructorRoute) && !isAuthenticated) {
     const accountUrl = new URL("/login", request.url);
     accountUrl.searchParams.set("redirect", path);
@@ -56,14 +57,20 @@ export async function middleware(request: NextRequest) {
     return NextResponse.redirect(new URL("/instructor/my-courses", request.url));
   }
 
-  // --- Handle Redirect Instructor to admin home page---
+  // --- Handle Redirect admin to admin home page---
   if (isAuthPage && userRole === UserRole.ADMIN) {
-    return NextResponse.redirect(new URL("/admin/my-courses", request.url));
+    return NextResponse.redirect(new URL("/admin/courses", request.url));
   }
 
   // --- Handle Instructor-Only Routes (Require Instructor Role) ---
   if (isInstructorRoute) {
     if (!isAuthenticated || userRole !== UserRole.INSTRUCTOR)
+      return NextResponse.redirect(new URL("/", request.url));
+  }
+
+  // --- Handle Admin-Only Routes (Require Admin Role) ---
+  if (isAdminRoute) {
+    if (!isAuthenticated || userRole !== UserRole.ADMIN)
       return NextResponse.redirect(new URL("/", request.url));
   }
 
