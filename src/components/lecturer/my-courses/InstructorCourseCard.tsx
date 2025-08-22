@@ -6,7 +6,9 @@ import ProgressBar from "@/components/_commons/ProgressDisplay";
 import UserDetail from "@/components/_commons/UserDetail";
 import { CourseDetails } from "@/types/course-interface";
 import { Enrollment } from "@/types/enrollment-interface";
+import { SessionItf, UserRole } from "@/types/jwtPayload";
 import { transformDate } from "@/utils/transform-date";
+import { Session } from "inspector/promises";
 import Link from "next/link";
 
 export default function InstructorCourseCard({
@@ -25,15 +27,22 @@ export default function InstructorCourseCard({
   instructor,
   categories,
   sections,
-}: CourseDetails) {
+  session,
+}: CourseDetails & { session: SessionItf | null}) {
   const firstSection = sections?.[0];
   const firstModule = firstSection?.modules[0];
   const firstModuleId = firstModule?.id || "module-not-found";
 
+  const userRole = session?.user.role;
+  const redirectLink =
+    userRole === UserRole.INSTRUCTOR
+      ? `/instructor/my-courses/${id}/${firstModuleId}`
+      : `/admin/courses/${id}/${firstModuleId}`;
+
   return (
     <section className="flex flex-col sm:flex-row w-full bg-white border border-slate-300 rounded-md p-3">
       {/* Course Image Section */}
-      <Link href={`/instructor/my-courses/${id}/${firstModuleId}`} className="relative w-3/7">
+      <Link href={redirectLink} className="relative sm:w-3/7">
         {imageSrc ? (
           <img
             src={imageSrc}
@@ -62,8 +71,8 @@ export default function InstructorCourseCard({
       </Link>
 
       {/* Course Details Section */}
-      <div className="flex flex-col gap-3 w-3/7 m-4 my-2">
-        <Link href={`/instructor/my-courses/${id}/${firstModuleId}`}>
+      <div className="flex flex-col gap-3 sm:w-3/7 m-4 my-2">
+        <Link href={redirectLink}>
           <Header element="h2" size="18" className="text-slate-900 leading-tight">
             {title}
           </Header>

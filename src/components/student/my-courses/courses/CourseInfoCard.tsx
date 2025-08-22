@@ -19,7 +19,7 @@ export default function CourseInfoCard({
   endDate,
 }: CourseInfoCardProps) {
   return (
-    <div className="flex flex-col gap-4 bg-white py-6 px-7 rounded-lg max-w-sm border border-slate-300">
+    <div className="flex flex-col gap-4 bg-white py-6 px-7 rounded-lg max-w-sm border border-slate-300 w-full">
       {/* Lecturer */}
       <div>
         <Header element="h3" size="14" className="mb-2">

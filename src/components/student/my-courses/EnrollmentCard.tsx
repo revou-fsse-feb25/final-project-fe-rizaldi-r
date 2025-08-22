@@ -26,7 +26,7 @@ export default function EnrollmentCard({
   return (
     <section className="flex flex-col sm:flex-row w-full bg-white border border-slate-300 rounded-md p-3">
       {/* Course Image Section */}
-      <Link href={`/student/my-courses/${courseId}/${firstModuleId}`} className="relative w-3/7">
+      <Link href={`/student/my-courses/${courseId}/${firstModuleId}`} className="relative sm:w-3/7">
         {course.imageSrc ? (
           <img
             src={course.imageSrc}
@@ -55,7 +55,7 @@ export default function EnrollmentCard({
       </Link>
 
       {/* Course Details Section */}
-      <div className="flex flex-col gap-3 w-3/7 m-4 my-2">
+      <div className="flex flex-col gap-3 sm:w-3/7 mx-2 sm:m-4 my-2">
         <Link href={`/student/my-courses/${courseId}/${firstModuleId}`}>
           <Header element="h2" size="18" className="text-slate-900 leading-tight">
             {course.title}
@@ -84,7 +84,7 @@ export default function EnrollmentCard({
       </div>
 
       {/* Lecturer Info */}
-      <div className="w-fit ml-auto mt-3">
+      <div className="w-fit sm:ml-auto mt-3 mx-2">
         <p className="text-sm font-medium text-slate-600 mb-1">Lecturer</p>
         <UserDetail
           username={instructorFullName}

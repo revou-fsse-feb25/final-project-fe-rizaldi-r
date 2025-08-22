@@ -37,7 +37,7 @@ export default function CourseHeader({
         className="rounded-sm border-2 border-slate-300 text-slate-700 cursor-pointer hover:bg-slate-200 transition-colors duration-200 focus:outline-none focus:ring-slate-300 p-1 my-1.5"
         aria-label="Go back"
       >
-        <img src="/chevron-back.svg" />
+        <img src="/chevron-back.svg" className="min-w-8 sm:w-fit" />
       </button>
 
       <div className="flex flex-col gap-1">

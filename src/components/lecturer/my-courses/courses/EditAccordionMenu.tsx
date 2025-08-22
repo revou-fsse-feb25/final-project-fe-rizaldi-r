@@ -256,7 +256,7 @@ export default function EditAccordionMenu({
             </div>
 
             {confirmDeleteSectionId === section.id && (
-              <div className="p-3 bg-red-50 text-red-700 text-sm flex items-center justify-between gap-4">
+              <div className="p-3 bg-red-50 text-red-700 text-sm flex items-center justify-between gap-4 flex-wrap lg:flex-nowrap">
                 <span>Are you sure you want to delete this section?</span>
                 <div className="flex gap-2">
                   <button
@@ -287,13 +287,6 @@ export default function EditAccordionMenu({
                       module.id === activeModule ? "bg-blue-50" : ""
                     }`}
                   >
-                    <input
-                      type="checkbox"
-                      id={`checkbox-${module.id}`}
-                      // checked={module.completed}
-                      onChange={() => handleCheckboxChange(section.id, module.id)}
-                      className="h-4 w-4 rounded cursor-pointer"
-                    />
                     <button
                       className={`text-left text-slate-700 text-sm cursor-pointer py-3 `}
                       onClick={() => handleModuleChange(module.id)}
@@ -301,7 +294,7 @@ export default function EditAccordionMenu({
                       {module.title}
                     </button>
                     {module.moduleType === ModuleType.ASSIGNMENT && (
-                      <BookMinus size={16} className="text-slate-400 ml-auto" />
+                      <BookMinus size={16} className="text-slate-400 ml-auto min-w-8" />
                     )}
                   </div>
                 ))}

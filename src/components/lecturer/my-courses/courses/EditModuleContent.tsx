@@ -14,12 +14,14 @@ import {
   addLink,
   addSubdescription,
   deleteLink,
+  deleteModule,
   deleteSubdescription,
   patchLink,
   patchModule,
   patchSubdescription,
 } from "@/services/api";
 import { useSession } from "next-auth/react";
+import { useRouter } from "next/navigation";
 
 export default function EditModuleContent({
   refetchModule,
@@ -38,6 +40,8 @@ export default function EditModuleContent({
   courseId: string;
   refetchModule: (params_0: string) => Promise<void>;
 }) {
+  const router = useRouter()
+
   const { data: session } = useSession();
   const token = session?.accessToken;
 
@@ -303,6 +307,20 @@ export default function EditModuleContent({
     }
   };
 
+  const [isConfirmingDeleteModule, setIsConfirmingDeleteModule] = useState(false);
+  const handleDeleteModule = async () => {
+    try {
+      const response = await deleteModule(token || "", id || "");
+      router.push("module-not-found")
+      setIsDeleting(true);
+    } catch (error) {
+      setIsDeleting(false);
+      console.error("Failed to delete module:", error);
+    } finally {
+      setIsDeleting(false);
+    }
+  };
+
   return (
     <>
       <section className="bg-blue-50 py-4 px-7 rounded-lg border border-blue-300 text-blue-500">
@@ -319,7 +337,7 @@ export default function EditModuleContent({
           className="aspect-video rounded-xl"
         ></iframe>
       )}
-      <section className="bg-white py-6 px-7 rounded-lg border border-slate-300">
+      <section className="bg-white py-6 px-7 rounded-lg border border-slate-300 ">
         {/* Module Header */}
         <form onSubmit={handleHeaderAndDescriptionSubmit}>
           <section className="mb-4 text-slate-700">
@@ -349,7 +367,7 @@ export default function EditModuleContent({
                   type="text"
                   value={editedTitle}
                   onChange={(e) => setEditedTitle(e.target.value)}
-                  className="flex-1 text-2xl font-bold border-b-2 border-blue-500 focus:outline-none focus:border-blue-700"
+                  className=" text-2xl font-bold border-b-2 border-blue-500 focus:outline-none focus:border-blue-700"
                   disabled={isUpdatingHeaderAndDescription}
                   autoFocus
                 />
@@ -386,7 +404,7 @@ export default function EditModuleContent({
           {/* Main Description */}
           <div className="flex items-start gap-2 group mb-6">
             {isEditingHeaderAndDescription ? (
-              <div className="flex flex-1 flex-col items-end gap-2">
+              <div className="flex  flex-col items-end gap-2">
                 <textarea
                   value={editedDescription}
                   onChange={(e) => setEditedDescription(e.target.value)}
@@ -417,7 +435,7 @@ export default function EditModuleContent({
                 </div>
               </div>
             ) : (
-              <p className="text-slate-700 leading-relaxed flex-1 whitespace-pre-wrap">
+              <p className="text-slate-700 leading-relaxed  whitespace-pre-wrap">
                 {description}
               </p>
             )}
@@ -482,11 +500,11 @@ export default function EditModuleContent({
                   <div className="group">
                     <div className="flex items-center gap-2">
                       {item.header && (
-                        <Header element="h2" size="14" className="my-3 flex-1">
+                        <Header element="h2" size="14" className="my-3 ">
                           {item.header}
                         </Header>
                       )}
-                      <div className="flex items-center gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                      <div className="flex items-center gap-2  transition-opacity">
                         <button
                           onClick={() => setEditingSubdescriptionId(item.id)}
                           className="p-1 rounded-full text-slate-400 hover:bg-slate-100 transition-colors"
@@ -541,7 +559,7 @@ export default function EditModuleContent({
             onSubmit={handleAddSubdescriptionSubmit}
             className="p-4 border border-slate-300 rounded-md mb-8"
           >
-            <h4 className="text-lg font-semibold mb-2">Add New Section</h4>
+            <h4 className="text-lg font-semibold mb-2">Add New Subdescription</h4>
             <div className="mb-3">
               <label htmlFor="header" className="block text-sm font-medium mb-1">
                 Header
@@ -681,7 +699,7 @@ export default function EditModuleContent({
                     </form>
                   ) : (
                     <>
-                      <div className="flex-1 flex flex-col">
+                      <div className=" flex flex-col">
                         <span className="text-slate-700 font-medium">{link.label}</span>
                         <Link
                           href={link.href}
@@ -691,7 +709,7 @@ export default function EditModuleContent({
                           {link.href}
                         </Link>
                       </div>
-                      <div className="flex items-center gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+                      <div className="flex items-center gap-2  transition-opacity">
                         <button
                           onClick={() => setEditingLinkId(link.id)}
                           className="p-1 rounded-full text-slate-400 hover:bg-slate-100 transition-colors"
@@ -827,6 +845,24 @@ export default function EditModuleContent({
           submissionTemplateId={submissionTemplate?.id || ""}
         />
       )}
+
+      {/* delete module */}
+      <div className="ml-auto">
+        {isConfirmingDeleteModule && (
+          <ConfirmationModal
+            message="Are you sure you want to delete this Module?"
+            onConfirm={handleDeleteModule}
+            onCancel={() => setIsConfirmingDeleteModule(false)}
+            isDeleting={isDeleting}
+          />
+        )}
+        <button
+          onClick={() => setIsConfirmingDeleteModule(true)}
+          className="px-4 py-2 rounded-md bg-red-500 text-white font-medium hover:bg-red-700 transition-colors"
+        >
+          Delete Module
+        </button>
+      </div>
     </>
   );
 }

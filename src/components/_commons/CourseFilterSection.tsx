@@ -36,9 +36,9 @@ export default function CourseFilterSection({
   return (
     <section className="flex flex-col gap-4">
       {/* Search Section */}
-      <section className="flex justify-between items-center">
+      <section className="flex flex-wrap sm:flex-nowrap gap-4 justify-between items-center">
         <SearchInput type="text" name="search" placeholder="Search for..." className="w-full" />
-        <div className="flex items-center gap-4 px-4">
+        <div className="flex items-center gap-4 sm:px-4">
           <Button
             // iconLink="/filter.svg"
             isDisabled={true}

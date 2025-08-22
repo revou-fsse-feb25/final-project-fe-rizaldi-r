@@ -15,7 +15,6 @@ export default function OverallScores({
   assignmentProgress,
   assignmentScore,
 }: OverallScoresItf) {
-  console.log("🚀 ~ assignmentScore:", assignmentScore);
 
   return (
     <>
@@ -23,7 +22,7 @@ export default function OverallScores({
         <Header element="h3" size="18" className="mb-2">
           Module Completed
         </Header>
-        <div className="flex flex-col md:flex-row  items-center gap-20">
+        <div className="flex flex-col flex-wrap xl:flex-nowrap lg:flex-row lg:items-center gap-8 xl:gap-20">
           <ProgressDisplay
             {...moduleProgress}
             displayType="Circle"

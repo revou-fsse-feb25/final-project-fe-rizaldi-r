@@ -1,4 +1,5 @@
-import { postCourse } from "@/services/api";
+import { postCourse, postCourseByAdmin } from "@/services/api";
+import { createFullName } from "@/utils/create-full-name";
 import { Plus, X } from "lucide-react";
 import { useState } from "react";
 
@@ -20,7 +21,13 @@ const Modal = ({ isOpen, onClose, children }) => {
   );
 };
 
-export const CreateCourseForm = ({ refetchCourses, token, courseCategories }) => {
+export const CreateCourseFormForAdmin = ({
+  refetchCourses,
+  token,
+  courseCategories,
+  userInstructors,
+}) => {
+  console.log("🚀 ~ userInstructors:", userInstructors);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [formData, setFormData] = useState({
     title: "",
@@ -32,6 +39,7 @@ export const CreateCourseForm = ({ refetchCourses, token, courseCategories }) =>
     allowedPrograms: ["WEBDEV"],
     allowedBatchYears: [2023, 2024],
     categoryIds: "",
+    instructorId: "",
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [message, setMessage] = useState("");
@@ -61,6 +69,9 @@ export const CreateCourseForm = ({ refetchCourses, token, courseCategories }) =>
     if (!formData.categoryIds) {
       errors.categoryIds = "Category is required.";
     }
+    if (!formData.instructorId) {
+      errors.instructorId = "Instructor is required.";
+    }
     setValidationErrors(errors);
     return Object.keys(errors).length === 0;
   };
@@ -88,9 +99,11 @@ export const CreateCourseForm = ({ refetchCourses, token, courseCategories }) =>
         allowedPrograms: formData.allowedPrograms,
         allowedBatchYears: formData.allowedBatchYears,
         categoryIds: [formData.categoryIds],
+        instructorId: formData.instructorId,
       };
+      console.log("🚀 ~ token.token:", token)
 
-      const response = await postCourse(token, payload);
+      const response = await postCourseByAdmin(token, payload);
       if (response.status === 201) {
         setMessage("Course added successfully!");
         setIsSuccess(true);
@@ -105,6 +118,7 @@ export const CreateCourseForm = ({ refetchCourses, token, courseCategories }) =>
           allowedPrograms: ["WEBDEV"],
           allowedBatchYears: [2023, 2024],
           categoryIds: "",
+          instructorId: "",
         });
         setTimeout(() => setIsModalOpen(false), 2000);
       }
@@ -118,7 +132,7 @@ export const CreateCourseForm = ({ refetchCourses, token, courseCategories }) =>
 
   const handleCloseModal = () => {
     setIsModalOpen(false);
-    setMessage(""); 
+    setMessage("");
     setIsSubmitting(false);
   };
 
@@ -223,6 +237,28 @@ export const CreateCourseForm = ({ refetchCourses, token, courseCategories }) =>
             </select>
             {validationErrors.categoryIds && (
               <p className="text-red-500 text-xs mt-1">{validationErrors.categoryIds}</p>
+            )}
+          </label>
+          {/* dropdown for userInstructors */}
+          <label className="flex flex-col">
+            Instructor:
+            <select
+              name="instructorId"
+              value={formData.instructorId}
+              onChange={handleChange}
+              className={`mt-1 p-2 border rounded-sm ${
+                validationErrors.instructorId ? "border-red-500" : "border-gray-300"
+              }`}
+            >
+              <option value="">Select an instructor</option>
+              {userInstructors?.map((userInstructor) => (
+                <option key={userInstructor.instructor.id} value={userInstructor.instructor.id}>
+                  {createFullName(userInstructor)}
+                </option>
+              ))}
+            </select>
+            {validationErrors.instructorId && (
+              <p className="text-red-500 text-xs mt-1">{validationErrors.instructorId}</p>
             )}
           </label>
           <div className="flex justify-end gap-2">

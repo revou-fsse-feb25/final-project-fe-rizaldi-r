@@ -38,9 +38,9 @@ export default function CoursePerformance({
   } = useFetchData<Enrollment[], [string]>(fetchEnrollmentsByCourse, token, id);
 
   return (
-    <div className="bg-white rounded-lg p-6 sm:p-8 border border-slate-300 flex gap-8 mb-4">
+    <div className="bg-white rounded-lg p-4 sm:p-8 border border-slate-300 flex flex-col sm:flex-row sm:gap-8 mb-4">
       {/* Section Header */}
-      <section className="sticky top-4 w-1/5 h-fit">
+      <section className="sm:sticky top-4 sm:w-1/5 h-fit">
         <section className="flex flex-col gap-4 mb-4">
           <Header element="h2" size="20">
             {title}
@@ -66,7 +66,7 @@ export default function CoursePerformance({
         /> */}
       </section>
 
-      <section className=" flex flex-col gap-6 w-4/5">
+      <section className=" flex flex-col gap-6 sm:w-4/5">
         {/* Section Overall Performance */}
         {/* <OverallScores
           moduleOverallProgressDataList={[moduleOverallProgressData, ...moduleProgressDataList]}
@@ -76,9 +76,9 @@ export default function CoursePerformance({
         {enrollments?.map((enrollment, index) => (
           <div
             key={index}
-            className="border-1 border-slate-300 rounded-lg flex items-start gap-12 p-6 sm:p-8"
+            className="border-1 border-slate-300 rounded-lg flex flex-col sm:flex-row items-start gap-12 p-4 sm:p-8"
           >
-            <div className="sticky top-4">
+            <div className="sm:sticky top-4">
               <p className="mb-2">Student</p>
               <UserDetail
                 username={createFullName(enrollment.student.user)}

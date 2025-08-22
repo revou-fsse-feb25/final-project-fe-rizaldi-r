@@ -5,7 +5,7 @@ import ContentHeader from "@/components/_commons/ContentHeader";
 import DeleteConfirmation from "@/components/_commons/DeleteConfirmation";
 import SmallSpinner from "@/components/_commons/icons/SmallSpinner";
 import TextInput from "@/components/_commons/TextInput";
-import { deleteSubmissionField, postSubmissionField } from "@/services/api";
+import { deleteSubmissionField, postSubmissionField, postSubmissionTemplate } from "@/services/api";
 import { SubmissionField } from "@/types/module-interface";
 import { Submission } from "@/types/submission-interface";
 import { Plus, Trash2 } from "lucide-react";
@@ -46,11 +46,22 @@ export default function EditAssignmentSubmissionForm({
   const handleAddField = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsSubmittingNewField(true);
+
+    let responseTemplate;
     try {
+      if (!submissionTemplateId) {
+        const payload = {
+          submissionTitle: "Assignment",
+          moduleId: moduleId,
+        };
+        responseTemplate = await postSubmissionTemplate(token || "", payload);
+        refetchModule(moduleId);
+      }
+
       const reqBody = {
         label: newField.label,
         isTextfield: newField.isTextfield,
-        submissionTemplateId: submissionTemplateId,
+        submissionTemplateId: submissionTemplateId || responseTemplate?.data.id,
       };
       const response = await postSubmissionField(token || "", reqBody);
       refetchModule(moduleId);

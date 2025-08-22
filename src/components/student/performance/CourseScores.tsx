@@ -23,7 +23,7 @@ export default function CourseScores({
   submissions,
 }: CourseScoresItf) {
   return (
-    <section className=" flex flex-col gap-6 w-4/5">
+    <section className=" flex flex-col gap-6 sm:w-4/5">
       {/* Module Completed Section */}
       <OverallScores
         {...{ moduleProgress, lectureProgress, assignmentProgress, assignmentScore }}

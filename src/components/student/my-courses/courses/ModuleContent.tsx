@@ -93,15 +93,15 @@ export default function ModuleContent({
             <Header size="14" element="h2" className="my-2">
               Links
             </Header>
-            <div className="flex flex-col gap-2">
+            <div className="flex flex-col flex-wrap gap-2">
               {links.map((link, index) => (
-                <span key={index}>
+                <span key={index} className="flex flex-wrap">
                   {link.label}
                   <Link
                     key={index}
                     href={link.href}
                     target="_blank"
-                    className="text-blue-600 hover:underline text-sm ml-2"
+                    className="text-blue-600 hover:underline text-sm ml-2 text-wrap"
                   >
                     {link.href}
                   </Link>

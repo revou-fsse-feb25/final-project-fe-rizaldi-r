@@ -120,7 +120,7 @@ export default function AccordionMenu({
                       {module.title}
                     </button>
                     {module.moduleType === ModuleType.ASSIGNMENT && (
-                      <BookMinus size={16} className="text-slate-400 ml-auto" />
+                      <BookMinus size={16} className="text-slate-400 ml-auto min-w-8" />
                     )}
                   </div>
                 ))}

@@ -27,9 +27,9 @@ export default function StudentCoursePerformance({
   const instructorUser = instructor.user;
 
   return (
-    <div className="bg-white rounded-lg p-6 sm:p-8 w-7/8 border border-slate-300 flex gap-8 mb-4">
+    <div className="bg-white rounded-lg p-6 sm:p-8 sm:w-7/8 border border-slate-300 flex flex-wrap sm:flex-nowrap gap-8 mb-4">
       {/* Section Header */}
-      <section className="sticky top-4 w-1/5 h-fit">
+      <section className="sm:sticky top-4 sm:w-1/5 h-fit">
         <section className="flex flex-col gap-4 mb-4">
           <Header element="h2" size="20">
             {course.title}
