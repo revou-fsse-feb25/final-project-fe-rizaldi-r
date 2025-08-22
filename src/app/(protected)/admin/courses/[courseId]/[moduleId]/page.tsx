@@ -26,7 +26,7 @@ interface BreadcrumbItem {
 }
 
 const breadcrumbsData: BreadcrumbItem[] = [
-  { label: "My Courses", href: "/" },
+  { label: "Courses", href: "/admin/courses" },
   { label: "" },
   { label: "" },
 ];
@@ -64,7 +64,7 @@ export default function instructorCoursePage({ params }: ICoursesPageProps) {
 
   // Update the URL to reflect the new active module
   const handleModuleChange = (newactiveModuleId: string) => {
-    router.push(`/instructor/my-courses/${courseId}/${newactiveModuleId}#overview`);
+    router.push(`/admin/courses/${courseId}/${newactiveModuleId}#overview`);
   };
 
   // TODO: handle not found
@@ -85,8 +85,8 @@ export default function instructorCoursePage({ params }: ICoursesPageProps) {
       />
 
       {/* Course Content */}
-      <section className="flex gap-4">
-        <section className="flex flex-col gap-4 w-5/7">
+      <section className="flex flex-col lg:flex-row gap-4">
+        <section className="flex flex-col gap-4 lg:w-5/7">
           {moduleData ? (
             <EditModuleContent
               {...moduleData}
@@ -101,7 +101,7 @@ export default function instructorCoursePage({ params }: ICoursesPageProps) {
         </section>
 
         {/* Course Menu & Detail */}
-        <section className="flex flex-col gap-4 w-2/7">
+        <section className="flex flex-col gap-4 lg:w-2/7">
           {/* Course Menu */}
           <EditAccordionMenu
             refetchCourse={refetchCourse}

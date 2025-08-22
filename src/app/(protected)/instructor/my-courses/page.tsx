@@ -34,7 +34,7 @@ export default function myCoursesPage() {
     data: courses,
     isLoading: isLoadingCourses,
     error: errorCourses,
-    refetch: refetchCourses
+    refetch: refetchCourses,
   } = useFetchData<CourseDetails[], [string, boolean]>(
     fetchCourseByInstructor,
     token,
@@ -55,13 +55,17 @@ export default function myCoursesPage() {
       />
 
       <section className="w-3/5">
-        <CreateCourseForm refetchCourses={refetchCourses} token={token} courseCategories={CategoryDataList} />
+        <CreateCourseForm
+          refetchCourses={refetchCourses}
+          token={token}
+          courseCategories={CategoryDataList}
+        />
       </section>
 
       {/* Enrollment Card List */}
       <section className="grid grid-cols-1 sm:grid-cols-1 md:grid-cols-1 lg:grid-cols-2 gap-4">
         {courses?.map((course) => (
-          <InstructorCourseCard {...course} key={course.id} />
+          <InstructorCourseCard {...course} key={course.id} session={session} />
         ))}
       </section>
     </Layout>

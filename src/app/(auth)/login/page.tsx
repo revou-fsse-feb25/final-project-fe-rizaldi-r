@@ -57,9 +57,9 @@ export default function LoginPage() {
   };
 
   return (
-    <main className="grid grid-cols-2 bg-white h-dvh">
-      <img src="/img-placeholder.png" alt="" className="object-cover h-full" />
-      <section className="flex flex-col gap-12 p-20">
+    <main className="grid lg:grid-cols-2 bg-white h-dvh">
+      <img src="/img-placeholder.png" alt="" className="object-cover h-full w-full" />
+      <section className="flex flex-col gap-12 p-10 sm:p-20">
         <h2 className="text-4xl font-bold">Log In</h2>
 
         <form onSubmit={handleFormSubmit} className="flex flex-col gap-4">

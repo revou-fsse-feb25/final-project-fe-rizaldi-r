@@ -115,8 +115,8 @@ export default function coursePage({ params }: ICoursesPageProps) {
       />
 
       {/* Course Content */}
-      <section className="flex gap-4">
-        <section className="flex flex-col gap-4 w-5/7">
+      <section className="flex flex-wrap lg:flex-nowrap gap-4">
+        <section className="flex flex-col gap-4 w-full lg:w-5/7">
           {moduleData ? (
             <ModuleContent {...moduleData} submissions={enrollment?.[0]?.submissions} />
           ) : (
@@ -126,7 +126,7 @@ export default function coursePage({ params }: ICoursesPageProps) {
         </section>
 
         {/* Course Menu & Detail */}
-        <section className="flex flex-col gap-4 w-2/7">
+        <section className="flex flex-col gap-4 w-full lg:w-2/7">
           {/* Course Menu */}
           {enrollment?.[0] ? (
             <AccordionMenu

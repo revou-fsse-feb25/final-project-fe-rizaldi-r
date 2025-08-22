@@ -112,13 +112,13 @@ export default function SignUpPage() {
   };
 
   return (
-    <main className="">
-      <section className="flex flex-col items-center gap-12 h-fit w-170 border border-slate-200 bg-white p-20 my-15 m-auto">
+    <main className="w-full">
+      <section className="flex flex-col items-center gap-12 h-fit lg:w-170 border border-slate-200 bg-white p-10 sm:p-20 my-15 mx-auto">
         <h2 className="text-4xl font-bold">Sign Up</h2>
 
         <form onSubmit={handleFormSubmit} className="flex flex-col gap-4 w-full">
           {/* Name Input */}
-          <div className="flex gap-4">
+          <div className="flex flex-col md:flex-row gap-4">
             <div className="flex flex-col flex-1">
               <label htmlFor="first-name" className="text-gray-600 mb-1 text-sm">
                 First Name

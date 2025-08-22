@@ -85,8 +85,8 @@ export default function instructorCoursePage({ params }: ICoursesPageProps) {
       />
 
       {/* Course Content */}
-      <section className="flex gap-4">
-        <section className="flex flex-col gap-4 w-5/7">
+      <section className="flex flex-wrap lg:flex-nowrap gap-4">
+        <section className="flex flex-col gap-4 w-full lg:w-5/7">
           {moduleData ? (
             <EditModuleContent
               {...moduleData}
@@ -101,7 +101,7 @@ export default function instructorCoursePage({ params }: ICoursesPageProps) {
         </section>
 
         {/* Course Menu & Detail */}
-        <section className="flex flex-col gap-4 w-2/7">
+        <section className="flex flex-col gap-4 w-full lg:w-2/7">
           {/* Course Menu */}
           <EditAccordionMenu
             refetchCourse={refetchCourse}
