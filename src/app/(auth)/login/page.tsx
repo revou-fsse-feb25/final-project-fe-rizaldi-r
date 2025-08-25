@@ -1,8 +1,6 @@
 "use client";
 
 import TextInput from "@/components/_commons/TextInput";
-import { setDefaultAuthHeader } from "@/services/api";
-import { UserRole } from "@/types/jwtPayload";
 import { signIn, useSession } from "next-auth/react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
@@ -18,7 +16,7 @@ export default function LoginPage() {
   const { data: session, status, update } = useSession();
   const router = useRouter();
 
-  // TODO: use form hooks 
+  // TODO: use form hooks
   // const token = session?.accessToken;
   // if (token) setDefaultAuthHeader(token);
 
@@ -58,7 +56,25 @@ export default function LoginPage() {
 
   return (
     <main className="grid lg:grid-cols-2 bg-white h-dvh">
-      <img src="/img-placeholder.png" alt="" className="object-cover h-full w-full" />
+      <section className="h-full relative">
+        <img src="/login-image.jpg" alt="" className="object-cover h-full w-full" />
+        <p className="absolute left-0 bottom-0 px-2 py-0.5 bg-slate-50 text-xs">
+          Photo by{" "}
+          <Link
+            target="_blank"
+            href="https://unsplash.com/@flipboo?utm_content=creditCopyText&utm_medium=referral&utm_source=unsplash"
+          >
+            Philippe Bout
+          </Link>{" "}
+          on{" "}
+          <Link
+            target="_blank"
+            href="https://unsplash.com/photos/mens-black-long-sleeved-top-93W0xn4961g?utm_content=creditCopyText&utm_medium=referral&utm_source=unsplash"
+          >
+            Unsplash
+          </Link>
+        </p>
+      </section>
       <section className="flex flex-col gap-12 p-10 sm:p-20">
         <h2 className="text-4xl font-bold">Log In</h2>
 

@@ -3,9 +3,7 @@
 import TextInput from "@/components/_commons/TextInput";
 import { postRegister } from "@/services/api";
 import { AxiosErrorItf } from "@/types/axios-error";
-import { UserInfo } from "@/types/user-interface";
 import { signIn } from "next-auth/react";
-import { ApiError } from "next/dist/server/api-utils";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { ChangeEvent, useState } from "react";
@@ -105,7 +103,7 @@ export default function SignUpPage() {
         program: formData.program!,
       });
 
-      if (response.status === 201) {
+      if (response) {
         const result = await signIn("credentials", {
           email: formData.email,
           password: formData.password,
@@ -198,6 +196,9 @@ export default function SignUpPage() {
               required={true}
             />
           </div>
+          {validationErrors.username && (
+            <p className="text-red-500 text-xs mt-1">{validationErrors.username}</p>
+          )}
 
           {/* Email input */}
           <div className="flex flex-col">
