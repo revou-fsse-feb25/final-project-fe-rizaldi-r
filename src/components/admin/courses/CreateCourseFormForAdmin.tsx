@@ -1,6 +1,6 @@
 import { postCourse, postCourseByAdmin } from "@/services/api";
 import { AxiosErrorItf } from "@/types/axios-error";
-import { CourseCreateData } from "@/types/course-interface";
+import { CourseCreateData, SearchData, SortOption } from "@/types/course-interface";
 import { InstructorInfo, UserInfo } from "@/types/user-interface";
 import { createFullName } from "@/utils/create-full-name";
 import { Plus, X } from "lucide-react";
@@ -25,7 +25,11 @@ interface ModalProps {
 }
 
 interface CreateCourseFormProps {
-  refetchCourses: (params_0: string, params_1: boolean) => Promise<void>;
+  refetchCourses: (
+    params_0: string | null,
+    params_1: SearchData | null,
+    params_2: SortOption | null
+  ) => Promise<void>;
   token: string;
   courseCategories?: CourseCategory[];
   userInstructors?: UserInfo[];
@@ -132,11 +136,11 @@ export const CreateCourseFormForAdmin: React.FC<CreateCourseFormProps> = ({
         instructorId: formData.instructorId,
       };
 
-      const response = await postCourseByAdmin(token, payload);
-      if (response.status === 201) {
+      const response = (await postCourseByAdmin(token, payload)) as { status: number };
+      if (response) {
         setMessage("Course added successfully!");
         setIsSuccess(true);
-        refetchCourses("", true);
+        refetchCourses("", null, null);
         setFormData({
           title: "",
           imageSrc: "",
@@ -149,7 +153,8 @@ export const CreateCourseFormForAdmin: React.FC<CreateCourseFormProps> = ({
           categoryIds: "",
           instructorId: "",
         });
-        setTimeout(() => setIsModalOpen(false), 2000);
+        setIsModalOpen(false)
+        // setTimeout(() => setIsModalOpen(false), 2000);
       }
     } catch (error: unknown) {
       const axiosError = error as AxiosErrorItf;

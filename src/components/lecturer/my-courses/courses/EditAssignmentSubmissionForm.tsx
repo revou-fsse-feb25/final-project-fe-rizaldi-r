@@ -61,12 +61,12 @@ export default function EditAssignmentSubmissionForm({
       const reqBody = {
         label: newField.label,
         isTextfield: newField.isTextfield,
-        submissionTemplateId: submissionTemplateId || responseTemplate?.data.id,
+        submissionTemplateId: submissionTemplateId || responseTemplate?.id || "",
       };
       const response = await postSubmissionField(token || "", reqBody);
       refetchModule(moduleId);
 
-      const addedField = response.data;
+      const addedField = response;
       setLocalSubmissionFields((prevFields) => [...prevFields, addedField]);
       setNewField({ label: "", isTextfield: false });
       setIsAddingField(false);

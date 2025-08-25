@@ -125,7 +125,7 @@ export const CreateCourseForm: React.FC<CreateCourseFormProps> = ({
       };
 
       const response = await postCourse(token, payload);
-      if (response.status === 201) {
+      if (response) {
         setMessage("Course added successfully!");
         setIsSuccess(true);
         refetchCourses("", true);
@@ -140,7 +140,8 @@ export const CreateCourseForm: React.FC<CreateCourseFormProps> = ({
           allowedBatchYears: [2023, 2024],
           categoryIds: "",
         });
-        setTimeout(() => setIsModalOpen(false), 2000);
+        setIsModalOpen(false)
+        // setTimeout(() => setIsModalOpen(false), 2000);
       }
     } catch (error) {
       const axiosError = error as AxiosErrorItf;

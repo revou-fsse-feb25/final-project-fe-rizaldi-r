@@ -40,7 +40,7 @@ export default function EditModuleContent({
   courseId: string;
   refetchModule: (params_0: string) => Promise<void>;
 }) {
-  const router = useRouter()
+  const router = useRouter();
 
   const { data: session } = useSession();
   const token = session?.accessToken;
@@ -311,7 +311,7 @@ export default function EditModuleContent({
   const handleDeleteModule = async () => {
     try {
       const response = await deleteModule(token || "", id || "");
-      router.push("module-not-found")
+      router.push("module-not-found");
       setIsDeleting(true);
     } catch (error) {
       setIsDeleting(false);
@@ -435,9 +435,7 @@ export default function EditModuleContent({
                 </div>
               </div>
             ) : (
-              <p className="text-slate-700 leading-relaxed  whitespace-pre-wrap">
-                {description}
-              </p>
+              <p className="text-slate-700 leading-relaxed  whitespace-pre-wrap">{description}</p>
             )}
           </div>
         </form>
