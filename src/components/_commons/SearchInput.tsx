@@ -1,10 +1,14 @@
 "use client";
 
-import { ChangeEvent, useState } from "react";
+import Button from "@/components/_commons/Button";
+import { SearchBy } from "@/types/course-interface";
+import { ArrowUpDown, Search, SearchIcon } from "lucide-react";
+import { ChangeEvent, FormEvent, useState } from "react";
 
 interface SearchInputProps {
-  type?: string;
+  onSearchSubmit: (searchQuery: string, searchBy: SearchBy) => void;
   name: string;
+  type?: string;
   placeholder?: string;
   className?: string;
 }
@@ -12,35 +16,92 @@ interface SearchInputProps {
 export default function SearchInput({
   type,
   name,
-  placeholder,
   className,
+  placeholder,
+  onSearchSubmit,
 }: SearchInputProps) {
-  const [formData, setFormData] = useState({
-    [name]: "",
-  });
+  const [isSearchDropdownOpen, setIsSearchDropdownOpen] = useState(false);
+  const [searchBy, setSearchBy] = useState<SearchBy>(SearchBy.TTILE);
+  const [searchQuery, setSearchQuery] = useState("");
 
-  const handleFormChange = (e: ChangeEvent<HTMLInputElement>) => {
-    setFormData({
-      ...formData,
-      [e.target.name]: e.target.value,
-    });
+  const toggleSearchDropdown = () => {
+    setIsSearchDropdownOpen(!isSearchDropdownOpen);
   };
 
+  const handleSearchOptionSelect = (option: SearchBy) => {
+    setSearchBy(option);
+    // The submission is now handled by the form's onSubmit handler.
+    setIsSearchDropdownOpen(false);
+  };
+
+  const handleSearchInputChange = (e: ChangeEvent<HTMLInputElement>) => {
+    setSearchQuery(e.target.value);
+  };
+
+  const handleFormSubmit = (e: FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    onSearchSubmit(searchQuery, searchBy);
+  };
+
+  const searchPlaceholder =
+    searchBy === SearchBy.TTILE ? "Search by Course" : "Search by Instructor";
+
   return (
-    <div
-      className={`flex gap-2 bg-slate-100 border border-slate-300 rounded-md py-2.5 px-3.5 ${className}`}
-    >
-      <img src="/search.svg" className="w-5.5 opacity-50" />
-      <input
-        type={type}
-        id={name}
-        name={name}
-        placeholder={placeholder}
-        value={formData[name]}
-        onChange={handleFormChange}
-        className="w-full focus:outline-none"
-        required
-      />
-    </div>
+    <form onSubmit={handleFormSubmit} className={`flex w-full gap-2 ${className}`}>
+      {/* Search input field */}
+      <div className="flex items-center gap-2 bg-slate-100 border border-slate-300 rounded-md py-1 pr-1 pl-4 w-full">
+        <Search className="w-5 h-5 text-gray-400" />
+        <input
+          type="text"
+          name="search"
+          placeholder={`${searchPlaceholder} name ...`}
+          value={searchQuery}
+          onChange={handleSearchInputChange}
+          className="w-full bg-transparent focus:outline-none placeholder:text-gray-400"
+        />
+
+        {/* Search dropdown button */}
+        <div className="relative">
+          <Button
+            onClick={toggleSearchDropdown}
+            isFilled={true}
+            className="text-slate-500 border border-slate-300"
+            fontWeight="font-medium"
+          >
+            {searchPlaceholder}
+          </Button>
+          {isSearchDropdownOpen && (
+            <div className="absolute right-0 mt-2 w-48 bg-white border border-slate-300 rounded-md z-10">
+              <button
+                onClick={() => handleSearchOptionSelect(SearchBy.TTILE)}
+                className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+              >
+                Course Name
+              </button>
+              <button
+                onClick={() => handleSearchOptionSelect(SearchBy.INSTRUCTOR_NAME)}
+                className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+              >
+                Instructor
+              </button>
+            </div>
+          )}
+        </div>
+
+        {/* Search submit button */}
+        <Button
+          type="submit"
+          isFilled={true}
+          padding="small"
+          fontWeight="font-normal"
+          className="bg-blue-600 text-white rounded-sm"
+        >
+          <span className="flex items-center gap-1">
+            <SearchIcon className="inline" size={16} />
+            Search
+          </span>
+        </Button>
+      </div>
+    </form>
   );
 }

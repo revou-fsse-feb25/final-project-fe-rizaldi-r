@@ -52,7 +52,6 @@ export default function BasicCourseCard({
         className="w-full h-fit bg-slate-200 flex items-center justify-center relative"
       >
         {/* Image */}
-        {/* TODO: default image */}
         {imageSrc ? (
           <img
             src={imageSrc || ""}

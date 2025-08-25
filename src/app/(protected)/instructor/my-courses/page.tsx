@@ -7,7 +7,7 @@ import { CreateCourseForm } from "@/components/lecturer/my-courses/CreateCourseF
 import InstructorCourseCard from "@/components/lecturer/my-courses/InstructorCourseCard";
 import { useFetchData } from "@/hooks/useFetchData";
 import { fetchCategoryList, fetchCourseByInstructor } from "@/services/api";
-import { CourseDetails } from "@/types/course-interface";
+import { CourseDetails, SearchData, SortOption } from "@/types/course-interface";
 import { useSession } from "next-auth/react";
 import { useState } from "react";
 
@@ -16,6 +16,18 @@ export default function myCoursesPage() {
   const [categoryId, setCategoryId] = useState<string | null>(null);
   const onCategoryChange = (newCategoryId: string | null) => {
     setCategoryId(newCategoryId);
+  };
+
+  // Handle sorting
+  const [sortOption, setsortOption] = useState<SortOption | null>(null);
+  const onSortOptionChange = (newSortOption: SortOption | null) => {
+    setsortOption(newSortOption);
+  };
+
+  // Handle searching
+  const [searchData, setSearchData] = useState<SearchData | null>(null);
+  const onSearchDataChange = (newSearchData: SearchData | null) => {
+    setSearchData(newSearchData);
   };
 
   const { data: session } = useSession();
@@ -49,9 +61,11 @@ export default function myCoursesPage() {
       </Header>
 
       <CourseFilterSection
-        courseCategoriesData={CategoryDataList}
+        courseCategoriesData={CategoryDataList || []}
         onEachButtonClicked={onCategoryChange}
+        onEachSortButtonClicked={onSortOptionChange}
         activeCategoryId={categoryId}
+        onSearchFieldSubmitted={onSearchDataChange}
       />
 
       <section className="w-3/5">

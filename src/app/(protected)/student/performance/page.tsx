@@ -5,7 +5,11 @@ import Header from "@/components/_commons/Header";
 import Layout from "@/components/_commons/layout/Layout";
 import StudentCoursePerformance from "@/components/student/performance/StudentCoursePerformance";
 import { useFetchData } from "@/hooks/useFetchData";
-import { fetchCategoryList, fetchEnrollmentsWithSubmissionAndProgressByStudent } from "@/services/api";
+import {
+  fetchCategoryList,
+  fetchEnrollmentsWithSubmissionAndProgressByStudent,
+} from "@/services/api";
+import { SearchData, SortOption } from "@/types/course-interface";
 import { Enrollment } from "@/types/enrollment-interface";
 import { useSession } from "next-auth/react";
 import { useState } from "react";
@@ -17,6 +21,18 @@ export default function performancePage() {
   const [categoryId, setCategoryId] = useState<string | null>(null);
   const onCategoryChange = (newCategoryId: string | null) => {
     setCategoryId(newCategoryId);
+  };
+
+  // Handle sorting
+  const [sortOption, setsortOption] = useState<SortOption | null>(null);
+  const onSortOptionChange = (newSortOption: SortOption | null) => {
+    setsortOption(newSortOption);
+  };
+
+  // Handle searching
+  const [searchData, setSearchData] = useState<SearchData | null>(null);
+  const onSearchDataChange = (newSearchData: SearchData | null) => {
+    setSearchData(newSearchData);
   };
 
   // fetch categories
@@ -48,9 +64,11 @@ export default function performancePage() {
       </Header>
 
       <CourseFilterSection
-        courseCategoriesData={CategoryDataList}
+        courseCategoriesData={CategoryDataList || []}
         onEachButtonClicked={onCategoryChange}
+        onEachSortButtonClicked={onSortOptionChange}
         activeCategoryId={categoryId}
+        onSearchFieldSubmitted={onSearchDataChange}
       />
 
       <section>

@@ -10,6 +10,7 @@ import { useSession } from "next-auth/react";
 import { useFetchData } from "@/hooks/useFetchData";
 import { fetchCategoryList, fetchEnrollmentWithCourseList } from "@/services/api";
 import { Enrollment } from "@/types/enrollment-interface";
+import { SearchData, SortOption } from "@/types/course-interface";
 
 const courseStatusExcluded = ["Not Enrolled", "Enrolled"];
 
@@ -18,6 +19,18 @@ export default function MyCoursesPage() {
   const [categoryId, setCategoryId] = useState<string | null>(null);
   const onCategoryChange = (newCategoryId: string | null) => {
     setCategoryId(newCategoryId);
+  };
+
+  // Handle sorting
+  const [sortOption, setsortOption] = useState<SortOption | null>(null);
+  const onSortOptionChange = (newSortOption: SortOption | null) => {
+    setsortOption(newSortOption);
+  };
+
+  // Handle searching
+  const [searchData, setSearchData] = useState<SearchData | null>(null);
+  const onSearchDataChange = (newSearchData: SearchData | null) => {
+    setSearchData(newSearchData);
   };
 
   // fetch categories
@@ -30,6 +43,7 @@ export default function MyCoursesPage() {
   } = useFetchData(fetchCategoryList, token);
 
   // fetch enrollments + courses
+  // TODO: enrollments
   const {
     data: EnrollmentDataList,
     isLoading: isLoadingProductList,
@@ -43,10 +57,11 @@ export default function MyCoursesPage() {
       </Header>
 
       <CourseFilterSection
-        courseCategoriesData={CategoryDataList}
+        courseCategoriesData={CategoryDataList || []}
         onEachButtonClicked={onCategoryChange}
+        onEachSortButtonClicked={onSortOptionChange}
         activeCategoryId={categoryId}
-        // courseStatusExcluded={courseStatusExcluded}
+        onSearchFieldSubmitted={onSearchDataChange}
       />
 
       {/* Enrollment Card List */}

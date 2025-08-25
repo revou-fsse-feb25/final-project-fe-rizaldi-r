@@ -1,6 +1,8 @@
 import { ArrowDownNarrowWide, ArrowUpDown } from "lucide-react";
 import Button from "./Button";
 import SearchInput from "./SearchInput";
+import { useState } from "react";
+import { SearchBy, SearchData, SortBy, SortOption, SortOrder } from "@/types/course-interface";
 
 // interface CategoryItem {
 //   id: string;
@@ -23,23 +25,53 @@ interface Category {
 interface CourseFilterSectionProps {
   courseCategoriesData: Category[];
   courseStatusExcluded?: string[];
-  onEachButtonClicked: (newCategoryId: string | null) => void;
   activeCategoryId: string | null;
+  onEachButtonClicked: (newCategoryId: string | null) => void;
+  onEachSortButtonClicked: (newSortOption: SortOption | null) => void;
+  onSearchFieldSubmitted: (newSortOption: SearchData | null) => void;
 }
 
 export default function CourseFilterSection({
   courseCategoriesData,
   courseStatusExcluded = [],
   onEachButtonClicked,
+  onEachSortButtonClicked,
+  onSearchFieldSubmitted,
   activeCategoryId,
 }: CourseFilterSectionProps) {
+  // Manage the sort by dropdown
+  const [isSortDropdownOpen, setIsSortDropdownOpen] = useState(false);
+  const toggleSortDropdown = () => {
+    setIsSortDropdownOpen(!isSortDropdownOpen);
+  };
+  const handleSortSelection = (sortBy: SortBy, sortOrder: SortOrder) => {
+    onEachSortButtonClicked({ sortBy, sortOrder });
+    setIsSortDropdownOpen(false);
+  };
+
+  // Handle search submission from the SearchInput component
+  const [searchQuery, setSearchQuery] = useState("");
+  const [searchBy, setSearchBy] = useState<SearchBy>(SearchBy.TTILE);
+  const handleSearchSubmit = (newQuery: string, newSearchBy: SearchBy) => {
+    setSearchQuery(newQuery);
+    setSearchBy(newSearchBy);
+    onSearchFieldSubmitted({ searchQuery: newQuery, searchBy: newSearchBy });
+    console.log(`Search submitted! Query: ${newQuery}, Search by: ${newSearchBy}`);
+  };
+
   return (
     <section className="flex flex-col gap-4">
       {/* Search Section */}
       <section className="flex flex-wrap sm:flex-nowrap gap-4 justify-between items-center">
-        <SearchInput type="text" name="search" placeholder="Search for..." className="w-full" />
-        <div className="flex items-center gap-4 sm:px-4">
-          <Button
+        <SearchInput
+          type="text"
+          name="search"
+          placeholder="Search for..."
+          className="w-full"
+          onSearchSubmit={handleSearchSubmit}
+        />
+        <div className="flex items-center gap-4">
+          {/* <Button
             // iconLink="/filter.svg"
             isDisabled={true}
             padding="medium"
@@ -47,22 +79,45 @@ export default function CourseFilterSection({
             className="bg-slate-200"
           >
             Add Filter
-          </Button>
-          <Button
-            // iconLink="/arrows-sort.svg"
-            padding="medium"
-            isFilled={true}
-            className="bg-slate-100 text-slate-500"
-          >
-            <ArrowDownNarrowWide size={18} className="inline mr-2" />
-            Sort By
-          </Button>
+          </Button> */}
+          <div className="relative">
+            <Button
+              onClick={toggleSortDropdown}
+              padding="medium"
+              isFilled={true}
+              className="bg-slate-100 text-slate-500"
+            >
+              <ArrowDownNarrowWide size={18} className="inline mr-2" />
+              Sort By
+            </Button>
+            {isSortDropdownOpen && (
+              <div className="absolute top-10 right-0 mt-2 w-48 bg-white border border-slate-300 rounded-md z-10">
+                <button
+                  onClick={() => handleSortSelection(SortBy.CREATED_AT, SortOrder.DESC)}
+                  className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 cursor-pointer"
+                >
+                  Most Recent
+                </button>
+                <button
+                  onClick={() => handleSortSelection(SortBy.CREATED_AT, SortOrder.ASC)}
+                  className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 cursor-pointer"
+                >
+                  Oldest
+                </button>
+                <button
+                  onClick={() => handleSortSelection(SortBy.TITLE, SortOrder.ASC)}
+                  className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 cursor-pointer"
+                >
+                  Alphabetical
+                </button>
+              </div>
+            )}
+          </div>
         </div>
       </section>
 
       {/* Categories Button Section*/}
       {/* TODO: overflow */}
-      {/* TODO: change card based on categories  */}
       <section className="flex flex-wrap items-center gap-2 mb-3">
         {/* All Categories */}
         <Button

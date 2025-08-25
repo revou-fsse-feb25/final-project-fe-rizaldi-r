@@ -1,10 +1,36 @@
 import { CourseModuleDetails } from "@/types/module-interface";
 import { InstructorInfo } from "@/types/user-interface";
 
+export enum SortBy {
+  CREATED_AT = "createdAt",
+  UPDATED_AT = "updatedAt",
+  TITLE = "title",
+}
+
+export enum SortOrder {
+  ASC = "asc",
+  DESC = "desc",
+}
+
+export enum SearchBy {
+  TTILE = "title",
+  INSTRUCTOR_NAME = "instructorName",
+}
+
 enum Program {
   WEBDEV,
   DATA_ANALYST,
   MARKETING,
+}
+
+export interface SearchData {
+  searchQuery: string;
+  searchBy: SearchBy;
+}
+
+export interface SortOption {
+  sortBy: SortBy;
+  sortOrder: SortOrder;
 }
 
 /**

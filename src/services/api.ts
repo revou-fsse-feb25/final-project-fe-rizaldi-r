@@ -1,8 +1,19 @@
-import { CourseCreateData } from "@/types/course-interface";
+import {
+  CourseCreateData,
+  SearchData,
+  SortBy,
+  SortOption,
+  SortOrder,
+} from "@/types/course-interface";
 import { UserRole } from "@/types/jwtPayload";
-import { DescriptionType, ModuleType } from "@/types/module-interface";
+import {
+  DescriptionType,
+  ModuleType,
+  SubmissionField,
+  SubmissionTemplate,
+} from "@/types/module-interface";
 import { GradeSubmission, SubmissionFieldValue } from "@/types/submission-interface";
-import axios, { AxiosError } from "axios";
+import axios, { AxiosError, Method } from "axios";
 
 // API base URL
 const BaseUrl = process.env.NEXT_PUBLIC_API_URL;
@@ -43,106 +54,78 @@ const handleAxiosError = (error: unknown): void => {
   }
 };
 
-// FETCH
-
-export const fetchUsers = async (token: string) => {
+// A generic API function to handle all Axios requests, providing centralized error handling and auth headers.
+// TODO: generalize respon data type
+// const api = async <T>(
+//   token: string | undefined,
+//   method: Method,
+//   url: string,
+//   data?: any
+// ): Promise<AxiosResponse<T>> => {
+//   try {
+//     const config = createAuthHeaders(token);
+//     const response = await axios({ method, url, data, ...config });
+//     return response; // Return full response object
+//   } catch (error) {
+//     handleAxiosError(error);
+//     throw error;
+//   }
+// };
+const api = async <T>(
+  token: string | undefined,
+  method: Method,
+  url: string,
+  data?: any
+): Promise<T> => {
   try {
     const config = createAuthHeaders(token);
-    const response = await axios.get("/users", config);
-    response.status;
+    const response = await axios({ method, url, data, ...config });
     return response.data;
   } catch (error) {
-    throw handleAxiosError(error);
+    handleAxiosError(error);
+    throw error; // Re-throw to propagate the error
   }
 };
 
-export const patchUserRole = async (token: string, userId: string, payload: any) => {
-  try {
-    const config = createAuthHeaders(token);
-    const response = await axios.patch(`/users/${userId}/role`, payload, config);
-    return response.data;
-  } catch (error) {
-    throw handleAxiosError(error);
-  }
+// FETCH functions (GET)
+export const fetchUsers = async (token: string) => api<any[]>(token, "GET", "/users");
+
+export const fetchInstructorList = async (token: string) =>
+  api<any[]>(token, "GET", "/users?role=INSTRUCTOR");
+
+export const fetchCategoryList = async (token: string) => api<any[]>(token, "GET", "/categories");
+
+export const fetchCoursesList = async (
+  token: string,
+  categoryId?: string | null,
+  searchData?: SearchData | null,
+  sortOption?: SortOption | null
+) => {
+  const filterCategory = categoryId ? `categoryId=${categoryId}` : "";
+  const sortCourse = sortOption
+    ? `sortBy=${sortOption.sortBy}&sortOrder=${sortOption.sortOrder}`
+    : "";
+  const searchCourse = searchData ? `${searchData.searchBy}=${searchData.searchQuery}` : "";
+  return api<any[]>(token, "GET", `/courses?${filterCategory}&${sortCourse}&${searchCourse}`);
 };
 
-export const deleteUser = async (token: string, userId: string) => {
-  try {
-    const config = createAuthHeaders(token);
-    const response = await axios.delete(`/users/${userId}`, config);
-    return response.data;
-  } catch (error) {
-    throw handleAxiosError(error);
-  }
-};
+export const fetchCourse = async (token: string, courseId?: string | null) =>
+  api<any>(
+    token,
+    "GET",
+    `/courses/${courseId}?showInstructor=true&showCategories=true&showSections=true`
+  );
 
-export const fetchInstructorList = async (token: string) => {
-  try {
-    const config = createAuthHeaders(token);
-    const response = await axios.get("/users?role=INSTRUCTOR", config);
-    response.status;
-    return response.data;
-  } catch (error) {
-    throw handleAxiosError(error);
-  }
-};
-
-export const fetchCategoryList = async (token: string) => {
-  try {
-    const config = createAuthHeaders(token);
-    const response = await axios.get("/categories", config);
-    response.status;
-    return response.data;
-  } catch (error) {
-    throw handleAxiosError(error);
-  }
-};
-
-export const fetchCoursesList = async (token: string, categoryId?: string | null) => {
-  try {
-    const config = createAuthHeaders(token);
-    const filterCategory = categoryId ? `?categoryId=${categoryId}` : "";
-    const params: string = "/courses" + filterCategory;
-    const response = await axios.get(params, config);
-    return response.data;
-  } catch (error) {
-    throw handleAxiosError(error);
-  }
-};
-
-export const fetchCourse = async (token: string, courseId?: string | null) => {
-  try {
-    const config = createAuthHeaders(token);
-    const params: string = `/courses/${courseId}?showInstructor=true&showCategories=true&showSections=true`;
-    const response = await axios.get(params, config);
-    return response.data;
-  } catch (error) {
-    throw handleAxiosError(error);
-  }
-};
-
-export const fetchModule = async (token: string, moduleId?: string | null) => {
-  try {
-    const config = createAuthHeaders(token);
-    const params: string = `/modules/${moduleId}`;
-    const response = await axios.get(params, config);
-    return response.data;
-  } catch (error) {
-    throw handleAxiosError(error);
-  }
-};
+export const fetchModule = async (token: string, moduleId?: string | null) =>
+  api<any>(token, "GET", `/modules/${moduleId}`);
 
 export const fetchEnrollmentWithCourseList = async (token: string, categoryId?: string | null) => {
-  try {
-    const config = createAuthHeaders(token);
-    const filterCategory = categoryId ? `&courseCategoryId=${categoryId}` : "";
-    const params: string =
-      "/enrollments/by-student?includeCourse=true&includeSections=true" + filterCategory;
-    const response = await axios.get(params, config);
-    return response.data;
-  } catch (error) {
-    throw handleAxiosError(error);
-  }
+  const filterCategory = categoryId ? `&courseCategoryId=${categoryId}` : "";
+  return api<any[]>(
+    token,
+    "GET",
+    `/enrollments/by-student?includeCourse=true&includeSections=true${filterCategory}`
+  );
 };
 
 export const fetchEnrollmentWithSubmissionByStudent = async (
@@ -150,138 +133,69 @@ export const fetchEnrollmentWithSubmissionByStudent = async (
   courseId?: string | null,
   includeCourse?: boolean | null
 ) => {
-  try {
-    const config = createAuthHeaders(token);
-    const filterCourse = courseId ? `&courseId=${courseId}` : "";
-    const queryincludeCourse = includeCourse ? `&includeCourse=true` : "";
-    const params: string =
-      "/enrollments/by-student?includeSubmissions=true" + queryincludeCourse + filterCourse;
-    const response = await axios.get(params, config);
-    return response.data;
-  } catch (error) {
-    throw handleAxiosError(error);
-  }
+  const filterCourse = courseId ? `&courseId=${courseId}` : "";
+  const queryincludeCourse = includeCourse ? `&includeCourse=true` : "";
+  return api<any[]>(
+    token,
+    "GET",
+    `/enrollments/by-student?includeSubmissions=true${queryincludeCourse}${filterCourse}`
+  );
 };
 
-export const fetchEnrollmentsWithSubmissionAndProgressByStudent = async (token: string) => {
-  try {
-    const config = createAuthHeaders(token);
-    const params: string =
-      "/enrollments/by-student?includeCourse=true&includeSubmissions=true&includeAllProgress=true";
-    const response = await axios.get(params, config);
-    return response.data;
-  } catch (error) {
-    throw handleAxiosError(error);
-  }
-};
-
-// instructor students performace page
+export const fetchEnrollmentsWithSubmissionAndProgressByStudent = async (token: string) =>
+  api<any[]>(
+    token,
+    "GET",
+    "/enrollments/by-student?includeCourse=true&includeSubmissions=true&includeAllProgress=true"
+  );
 
 export const fetchCourseByInstructor = async (
   token: string,
   categoryId?: string,
   showSections?: boolean | null
 ) => {
-  try {
-    const config = createAuthHeaders(token);
-    const filterCategory = categoryId ? `categoryId=${categoryId}` : "";
-    const queryShowSections = showSections ? `showSections=true` : "";
-    const params: string = `/courses/by-instructor?showCategories=true&${queryShowSections}&${filterCategory}`;
-    const response = await axios.get(params, config);
-    return response.data;
-  } catch (error) {
-    throw handleAxiosError(error);
-  }
+  const filterCategory = categoryId ? `categoryId=${categoryId}` : "";
+  const queryShowSections = showSections ? `showSections=true` : "";
+  return api<any[]>(
+    token,
+    "GET",
+    `/courses/by-instructor?showCategories=true&${queryShowSections}&${filterCategory}`
+  );
 };
 
-export const fetchEnrollmentWithSubmission = async (token: string, enrollmentId: string) => {
-  try {
-    const config = createAuthHeaders(token);
-    const params: string = `/enrollments/${enrollmentId}?includeSubmissions=true&includeCourse=true`;
-    const response = await axios.get(params, config);
-    return response.data;
-  } catch (error) {
-    throw handleAxiosError(error);
-  }
-};
+export const fetchEnrollmentWithSubmission = async (token: string, enrollmentId: string) =>
+  api<any>(token, "GET", `/enrollments/${enrollmentId}?includeSubmissions=true&includeCourse=true`);
 
-export const fetchEnrollmentsByCourse = async (token: string, courseId: string) => {
-  try {
-    const config = createAuthHeaders(token);
-    const params: string = `/enrollments/by-course/${courseId}`;
-    const response = await axios.get(params, config);
-    return response.data;
-  } catch (error) {
-    throw handleAxiosError(error);
-  }
-};
+export const fetchEnrollmentsByCourse = async (token: string, courseId: string) =>
+  api<any[]>(token, "GET", `/enrollments/by-course/${courseId}`);
 
-export const fetchSubmissionsByEnrollment = async (token: string, enrollmentId: string) => {
-  try {
-    const config = createAuthHeaders(token);
-    const params: string = `/submissions/by-enrollment/${enrollmentId}`;
-    const response = await axios.get(params, config);
-    return response.data;
-  } catch (error) {
-    throw handleAxiosError(error);
-  }
-};
+export const fetchSubmissionsByEnrollment = async (token: string, enrollmentId: string) =>
+  api<any[]>(token, "GET", `/submissions/by-enrollment/${enrollmentId}`);
 
-// PATCH and POST
+// POST/PATCH/DELETE functions
+export const patchUserRole = async (token: string, userId: string, payload: any) =>
+  api<any>(token, "PATCH", `/users/${userId}/role`, payload);
+
+export const deleteUser = async (token: string, userId: string) =>
+  api<any>(token, "DELETE", `/users/${userId}`);
 
 export const patchStudentSubmission = async (
   token: string,
   submissionId: string,
   submissionFieldValueData: SubmissionFieldValue[]
-) => {
-  try {
-    const config = createAuthHeaders(token);
-    const requestBody = {
-      submissionFieldValueData,
-    };
-    const response = await axios.patch(`/submissions/${submissionId}`, requestBody, config);
-  } catch (error) {
-    throw handleAxiosError(error);
-  }
-};
+) => api(token, "PATCH", `/submissions/${submissionId}`, { submissionFieldValueData });
 
 export const patchGradeSubmission = async (
   token: string,
   submissionId: string,
   submissionGradeData: GradeSubmission
-) => {
-  try {
-    const config = createAuthHeaders(token);
-    const requestBody = {
-      ...submissionGradeData,
-    };
-    const response = await axios.patch(`/submissions/grade/${submissionId}`, requestBody, config);
-  } catch (error) {
-    throw handleAxiosError(error);
-  }
-};
+) => api(token, "PATCH", `/submissions/grade/${submissionId}`, submissionGradeData);
 
-export const postSection = async (token: string, courseId: string, title: string) => {
-  try {
-    const config = createAuthHeaders(token);
-    const requestBody = {
-      courseId,
-      title,
-    };
-    const response = await axios.post(`/sections`, requestBody, config);
-  } catch (error) {
-    throw handleAxiosError(error);
-  }
-};
+export const postSection = async (token: string, courseId: string, title: string) =>
+  api(token, "POST", "/sections", { courseId, title });
 
-export const deleteSection = async (token: string, sectionId: string) => {
-  try {
-    const config = createAuthHeaders(token);
-    const response = await axios.delete(`/sections/${sectionId}`, config);
-  } catch (error) {
-    throw handleAxiosError(error);
-  }
-};
+export const deleteSection = async (token: string, sectionId: string) =>
+  api(token, "DELETE", `/sections/${sectionId}`);
 
 export const postModule = async (
   token: string,
@@ -291,84 +205,36 @@ export const postModule = async (
     description: string;
     moduleType: ModuleType;
   }
-) => {
-  try {
-    const config = createAuthHeaders(token);
-    const response = await axios.post(`/modules`, createModuleData, config);
-  } catch (error) {
-    throw handleAxiosError(error);
-  }
-};
+) => api(token, "POST", "/modules", createModuleData);
 
 export const patchModule = async (
   token: string,
   moduleId: string,
   editModuleData: { title?: string; description?: string; moduleType?: string }
-) => {
-  try {
-    const config = createAuthHeaders(token);
-    const requestBody = editModuleData;
-    const response = await axios.patch(`/modules/${moduleId}`, requestBody, config);
-  } catch (error) {
-    throw handleAxiosError(error);
-  }
-};
+) => api(token, "PATCH", `/modules/${moduleId}`, editModuleData);
 
-export const deleteModule = async (token: string, moduleId: string) => {
-  try {
-    const config = createAuthHeaders(token);
-    const response = await axios.delete(`/modules/${moduleId}`, config);
-  } catch (error) {
-    throw handleAxiosError(error);
-  }
-};
+export const deleteModule = async (token: string, moduleId: string) =>
+  api(token, "DELETE", `/modules/${moduleId}`);
 
 export const patchSubdescription = async (
   token: string,
   subdescId: string,
   editModuleData: { header?: string; description?: string; type?: DescriptionType }
-) => {
-  try {
-    const config = createAuthHeaders(token);
-    const requestBody = editModuleData;
-    const response = await axios.patch(`/subdescriptions/${subdescId}`, requestBody, config);
-  } catch (error) {
-    throw handleAxiosError(error);
-  }
-};
+) => api(token, "PATCH", `/subdescriptions/${subdescId}`, editModuleData);
 
-export const deleteSubdescription = async (token: string, subdescId: string) => {
-  try {
-    const config = createAuthHeaders(token);
-    const response = await axios.delete(`/subdescriptions/${subdescId}`, config);
-  } catch (error) {
-    throw handleAxiosError(error);
-  }
-};
+export const deleteSubdescription = async (token: string, subdescId: string) =>
+  api(token, "DELETE", `/subdescriptions/${subdescId}`);
 
 export const patchLink = async (
   token: string,
   linkId: string,
   editLinkData: { label?: string; href?: string }
-) => {
-  try {
-    const config = createAuthHeaders(token);
-    const requestBody = editLinkData;
-    const response = await axios.patch(`/links/${linkId}`, requestBody, config);
-  } catch (error) {
-    throw handleAxiosError(error);
-  }
-};
+) => api(token, "PATCH", `/links/${linkId}`, editLinkData);
 
-export const deleteLink = async (token: string, linkId: string) => {
-  try {
-    const config = createAuthHeaders(token);
-    const response = await axios.delete(`/links/${linkId}`, config);
-  } catch (error) {
-    throw handleAxiosError(error);
-  }
-};
+export const deleteLink = async (token: string, linkId: string) =>
+  api(token, "DELETE", `/links/${linkId}`);
 
+// TODO: convert
 export const addLink = async (
   token: string,
   addLinkData: { label?: string; href?: string; moduleId: string }
@@ -382,6 +248,7 @@ export const addLink = async (
   }
 };
 
+// TODO: convert
 export const addSubdescription = async (
   token: string,
   addSubdescData: { header?: string; type?: DescriptionType; description: string; moduleId: string }
@@ -398,66 +265,24 @@ export const addSubdescription = async (
 export const postSubmissionTemplate = async (
   token: string,
   payload: { submissionTitle?: string; moduleId: string }
-) => {
-  try {
-    const config = createAuthHeaders(token);
-    const response = await axios.post(`/submission-templates`, payload, config);
-    return response;
-  } catch (error) {
-    throw handleAxiosError(error);
-  }
-};
+) => api<SubmissionTemplate>(token, "POST", "/submission-templates", payload);
 
 export const postSubmissionField = async (
   token: string,
   addSubmissionFieldData: { label?: string; isTextfield?: boolean; submissionTemplateId: string }
-) => {
-  try {
-    const config = createAuthHeaders(token);
-    const response = await axios.post(`/submission-fields`, addSubmissionFieldData, config);
-    return response;
-  } catch (error) {
-    throw handleAxiosError(error);
-  }
-};
+) => api<SubmissionField>(token, "POST", "/submission-fields", addSubmissionFieldData);
 
-export const deleteSubmissionField = async (token: string, submissionFieldId: string) => {
-  try {
-    const config = createAuthHeaders(token);
-    const response = await axios.delete(`/submission-fields/${submissionFieldId}`, config);
-  } catch (error) {
-    throw handleAxiosError(error);
-  }
-};
+export const deleteSubmissionField = async (token: string, submissionFieldId: string) =>
+  api(token, "DELETE", `/submission-fields/${submissionFieldId}`);
 
-export const deleteCourse = async (token: string, courseId: string) => {
-  try {
-    const config = createAuthHeaders(token);
-    const response = await axios.delete(`/courses/${courseId}`, config);
-  } catch (error) {
-    throw handleAxiosError(error);
-  }
-};
+export const deleteCourse = async (token: string, courseId: string) =>
+  api(token, "DELETE", `/courses/${courseId}`);
 
-export const postCourse = async (token: string, addCourseData: CourseCreateData) => {
-  try {
-    const config = createAuthHeaders(token);
-    const response = await axios.post(`/courses`, addCourseData, config);
-    return response;
-  } catch (error) {
-    throw handleAxiosError(error);
-  }
-};
+export const postCourse = async (token: string, addCourseData: CourseCreateData) =>
+  api(token, "POST", "/courses", addCourseData);
 
-export const postCourseByAdmin = async (token: string, addCourseData: CourseCreateData) => {
-  try {
-    const config = createAuthHeaders(token);
-    const response = await axios.post(`/courses/by-admin`, addCourseData, config);
-    return response;
-  } catch (error) {
-    throw handleAxiosError(error);
-  }
-};
+export const postCourseByAdmin = async (token: string, addCourseData: CourseCreateData) =>
+  api(token, "POST", "/courses/by-admin", addCourseData);
 
 export const postRegister = async (addUserData: {
   username: string;
@@ -466,22 +291,7 @@ export const postRegister = async (addUserData: {
   firstName: string;
   lastName: string;
   program: string;
-}) => {
-  try {
-    console.log("🚀 ~ program:", addUserData)
-    const response = await axios.post(`/auth/register`, addUserData);
-    return response;
-  } catch (error) {
-    throw handleAxiosError(error);
-  }
-};
+}) => api(undefined, "POST", "/auth/register", addUserData);
 
-export const createEnrollment = async (token: string, courseId: string) => {
-  try {
-    const config = createAuthHeaders(token);
-    const response = await axios.post(`/enrollments`, { courseId }, config);
-    return response;
-  } catch (error) {
-    throw handleAxiosError(error);
-  }
-};
+export const createEnrollment = async (token: string, courseId: string) =>
+  api(token, "POST", "/enrollments", { courseId });

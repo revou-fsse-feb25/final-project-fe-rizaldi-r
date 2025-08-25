@@ -6,7 +6,7 @@ import Layout from "@/components/_commons/layout/Layout";
 import BasicCourseCard from "@/components/student/search/BasicCourseCard";
 import { useFetchData } from "@/hooks/useFetchData";
 import { fetchCategoryList, fetchCoursesList, setDefaultAuthHeader } from "@/services/api";
-import { CourseDetails } from "@/types/course-interface";
+import { CourseDetails, SearchData, SortBy, SortOption } from "@/types/course-interface";
 import { useSession } from "next-auth/react";
 import { useState } from "react";
 
@@ -15,6 +15,18 @@ export default function searchPage() {
   const [categoryId, setCategoryId] = useState<string | null>(null);
   const onCategoryChange = (newCategoryId: string | null) => {
     setCategoryId(newCategoryId);
+  };
+
+  // Handle sorting
+  const [sortOption, setsortOption] = useState<SortOption | null>(null);
+  const onSortOptionChange = (newSortOption: SortOption | null) => {
+    setsortOption(newSortOption);
+  };
+
+  // Handle searching
+  const [searchData, setSearchData] = useState<SearchData | null>(null);
+  const onSearchDataChange = (newSearchData: SearchData | null) => {
+    setSearchData(newSearchData);
   };
 
   // fetch categories
@@ -31,7 +43,13 @@ export default function searchPage() {
     data: CourseDataList,
     isLoading: isLoadingProductList,
     error: errorProductList,
-  } = useFetchData<CourseDetails[], [string | null]>(fetchCoursesList, token, categoryId);
+  } = useFetchData<CourseDetails[], [string | null, SearchData | null, SortOption | null]>(
+    fetchCoursesList,
+    token,
+    categoryId,
+    searchData,
+    sortOption
+  );
 
   return (
     <Layout>
@@ -40,9 +58,11 @@ export default function searchPage() {
       </Header>
 
       <CourseFilterSection
-        courseCategoriesData={CategoryDataList}
+        courseCategoriesData={CategoryDataList || []}
         onEachButtonClicked={onCategoryChange}
+        onEachSortButtonClicked={onSortOptionChange}
         activeCategoryId={categoryId}
+        onSearchFieldSubmitted={onSearchDataChange}
       />
 
       <section className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
