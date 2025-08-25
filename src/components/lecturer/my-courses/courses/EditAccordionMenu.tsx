@@ -1,11 +1,12 @@
 "use client";
 
+import { AddAccordionContentForm } from "@/components/lecturer/my-courses/courses/AddAccordionContentForm";
+import { usePostApi } from "@/hooks/addContent";
 import { deleteSection, postModule, postSection } from "@/services/api";
 import { CourseSection } from "@/types/course-interface";
 import { ModuleType } from "@/types/module-interface";
-import { BookMinus, CheckCircle, ChevronDown, Trash2, XCircle } from "lucide-react";
+import { BookMinus, ChevronDown, Trash2 } from "lucide-react";
 import { useSession } from "next-auth/react";
-import { title } from "process";
 import { useEffect, useState } from "react";
 
 interface CourseContentAccordionProps {
@@ -59,70 +60,49 @@ export default function EditAccordionMenu({
   const { data: session } = useSession();
   const token = session?.accessToken;
 
-  // Handle new section
+  // handle aadding module
   const [isAddingSection, setIsAddingSection] = useState(false);
-  const [newSectionTitle, setNewSectionTitle] = useState("");
-  const [isLoading, setIsLoading] = useState(false);
-  const [isSuccess, setIsSuccess] = useState(false);
-  const [isError, setIsError] = useState(false);
-  const handleNewSectionSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!newSectionTitle.trim()) {
-      return;
-    }
+  const [sectionSuccessMessage, setSectionSuccessMessage] = useState<string | null>(null);
+  const [sectionErrorMessage, setSectionErrorMessage] = useState<string | null>(null);
+  const { isLoading: isLoadingSection, postData: postNewSection } = usePostApi({
+    postApiFunc: postSection,
+    refetchFunc: refetchCourse,
+    refetchParam: courseId,
+    token,
+    onSuccess: () => setSectionSuccessMessage("Section added successfully!"),
+    onError: () => setSectionErrorMessage("Failed to add section. Please try again"),
+  });
 
-    setIsLoading(true);
-    setIsSuccess(false);
-    setIsError(false);
+  const handleNewSectionSubmit = async (newSectionTitle: string) => {
+    setSectionSuccessMessage(null);
+    setSectionErrorMessage(null);
 
-    try {
-      const response = await postSection(token || "", courseId, newSectionTitle);
-      refetchCourse(courseId);
-      setIsSuccess(true);
-      setNewSectionTitle("");
-      setIsAddingSection(false);
-    } catch (error) {
-      setIsError(true);
-      console.error("Failed to add new section:", error);
-    } finally {
-      setIsLoading(false);
-    }
+    await postNewSection(courseId, newSectionTitle);
   };
 
-  // Handle new module
+  // handle adding module
   const [addingModuleForSectionId, setAddingModuleForSectionId] = useState<string | null>(null);
-  const [newModuleTitle, setNewModuleTitle] = useState("");
-  const [isLoadingModule, setIsLoadingModule] = useState(false);
-  const [isSuccessModule, setIsSuccessModule] = useState(false);
-  const [isErrorModule, setIsErrorModule] = useState(false);
-  const handleNewModuleSubmit = async (sectionId: string) => {
-    if (!newModuleTitle.trim()) {
-      setIsErrorModule(true);
-      return;
-    }
+  const [moduleSuccessMessage, setModuleSuccessMessage] = useState<string | null>(null);
+  const [moduleErrorMessage, setModuleErrorMessage] = useState<string | null>(null);
+  const { isLoading: isLoadingModule, postData: postNewModule } = usePostApi({
+    postApiFunc: postModule,
+    refetchFunc: refetchCourse,
+    refetchParam: courseId,
+    token,
+    onSuccess: () => setModuleSuccessMessage("Module added successfully!"),
+    onError: () => setModuleErrorMessage("Failed to add module. Please try again"),
+  });
+  const handleNewModuleSubmit = async (newModuleTitle: string) => {
+    setModuleSuccessMessage(null);
+    setModuleErrorMessage(null);
 
-    setIsLoadingModule(true);
-    setIsSuccessModule(false);
-    setIsErrorModule(false);
-
-    try {
-      const reqBody = {
-        sectionId,
-        title: newModuleTitle,
-        description: "Module Description",
-        moduleType: ModuleType.LECTURE,
-      };
-      const response = await postModule(token || "", reqBody);
-      refetchCourse(courseId);
-      setIsSuccessModule(true);
-      setNewModuleTitle("");
-      setAddingModuleForSectionId(null);
-    } catch (error) {
-      setIsErrorModule(true);
-      console.error("Failed to add new module:", error);
-    } finally {
-      setIsLoadingModule(false);
-    }
+    const payload = {
+      sectionId: addingModuleForSectionId || "",
+      title: newModuleTitle,
+      description: "Module Description",
+      moduleType: ModuleType.LECTURE,
+    };
+    await postNewModule(payload);
   };
 
   // handle section deletion
@@ -173,56 +153,29 @@ export default function EditAccordionMenu({
       </button>
 
       {/* Add New Section Button & Form */}
-      <div className="p-3 border-b border-slate-300">
-        {!isAddingSection ? (
+      {!isAddingSection ? (
+        <div className="p-3 border-b border-slate-300">
           <button
-            onClick={() => setIsAddingSection(true)}
+            onClick={() => {
+              setIsAddingSection(true);
+              setSectionSuccessMessage("");
+              setSectionErrorMessage("");
+            }}
             className="w-full text-center text-blue-500 font-medium py-2 rounded-sm border border-blue-500 hover:bg-blue-50 transition-colors"
           >
             Add New Section
           </button>
-        ) : (
-          <form onSubmit={handleNewSectionSubmit} className="flex flex-col gap-2">
-            <input
-              type="text"
-              value={newSectionTitle}
-              onChange={(e) => setNewSectionTitle(e.target.value)}
-              placeholder="Enter section title"
-              className="w-full p-2 border border-slate-300 rounded-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
-              disabled={isLoading}
-            />
-            <div className="flex gap-2">
-              <button
-                type="submit"
-                className="flex-1 bg-blue-500 text-white font-medium py-2 rounded-sm disabled:opacity-50"
-                disabled={isLoading}
-              >
-                {isLoading ? "Submitting..." : "Submit"}
-              </button>
-              <button
-                type="button"
-                onClick={() => setIsAddingSection(false)}
-                className="flex-1 text-slate-500 bg-slate-100 border-1 border-slate-300 font-medium py-2 rounded-sm disabled:opacity-50"
-                disabled={isLoading}
-              >
-                Cancel
-              </button>
-            </div>
-          </form>
-        )}
-        <div>
-          {isSuccess && (
-            <p className="text-green-600 flex items-center mt-2">
-              <CheckCircle size={16} className="mr-2" /> Section added successfully!
-            </p>
-          )}
-          {isError && (
-            <p className="text-red-600 flex items-center mt-2">
-              <XCircle size={16} className="mr-2" /> Failed to add section.
-            </p>
-          )}
         </div>
-      </div>
+      ) : (
+        <AddAccordionContentForm
+          onAdd={handleNewSectionSubmit}
+          onCancel={() => setIsAddingSection(false)}
+          isLoading={isLoadingSection}
+          successMesssage={sectionSuccessMessage}
+          errorMessage={sectionErrorMessage}
+          placeholderText={"Enter section title"}
+        />
+      )}
 
       {/* Section List */}
       {expandedCourse &&
@@ -300,60 +253,30 @@ export default function EditAccordionMenu({
                 ))}
 
                 {/* Add New Module Button & Form */}
-                <div className="p-3">
+                <div>
                   {addingModuleForSectionId !== section.id ? (
                     <button
                       onClick={() => {
                         setAddingModuleForSectionId(section.id);
-                        setNewModuleTitle("");
-                        setIsSuccessModule(false);
-                        setIsErrorModule(false);
                       }}
-                      className="w-4/5 text-center text-blue-500 font-medium py-2 rounded-sm border border-blue-500 hover:bg-blue-50 transition-colors text-sm m-auto block"
+                      className="w-4/5 text-center text-blue-500 font-medium py-2 rounded-sm border border-blue-500 hover:bg-blue-50 transition-colors text-sm m-auto block my-3"
                     >
                       Add New Module
                     </button>
                   ) : (
-                    <div className="flex flex-col gap-2">
-                      <input
-                        type="text"
-                        value={newModuleTitle}
-                        onChange={(e) => setNewModuleTitle(e.target.value)}
-                        placeholder="Enter module title"
-                        className="w-full p-2 border border-slate-300 rounded-sm focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm"
-                        disabled={isLoadingModule}
-                      />
-                      <div className="flex gap-2">
-                        <button
-                          onClick={() => handleNewModuleSubmit(section.id)}
-                          className="flex-1 bg-blue-500 text-white font-medium py-2 rounded-sm disabled:opacity-50 text-sm"
-                          disabled={isLoadingModule}
-                        >
-                          {isLoadingModule ? "Submitting..." : "Submit"}
-                        </button>
-                        <button
-                          type="button"
-                          onClick={() => setAddingModuleForSectionId(null)}
-                          className="flex-1 text-slate-500 bg-slate-100 font-medium py-2 rounded-sm disabled:opacity-50 text-sm border-1 border-slate-300"
-                          disabled={isLoadingModule}
-                        >
-                          Cancel
-                        </button>
-                      </div>
-                    </div>
+                    <AddAccordionContentForm
+                      onAdd={handleNewModuleSubmit}
+                      onCancel={() => {
+                        setAddingModuleForSectionId(null);
+                        setModuleSuccessMessage(null);
+                        setModuleErrorMessage(null);
+                      }}
+                      isLoading={isLoadingModule}
+                      successMesssage={moduleSuccessMessage}
+                      errorMessage={moduleErrorMessage}
+                      placeholderText="Enter module title"
+                    />
                   )}
-                  <div>
-                    {isSuccessModule && addingModuleForSectionId === section.id && (
-                      <p className="text-green-600 flex items-center text-sm mt-2">
-                        <CheckCircle size={14} className="mr-1" /> Module added successfully!
-                      </p>
-                    )}
-                    {isErrorModule && addingModuleForSectionId === section.id && (
-                      <p className="text-red-600 flex items-center text-sm mt-2">
-                        <XCircle size={14} className="mr-1" /> Failed to add module.
-                      </p>
-                    )}
-                  </div>
                 </div>
               </div>
             )}
