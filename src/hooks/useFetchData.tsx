@@ -20,10 +20,7 @@ export function useFetchData<TData, TParams extends any[]>(
   // This prevent the useEffect to run unnecessarily on every render because fetchData function is re-created (new identity) if we didnt use callback
   const fetchData = useCallback(
     async (...params: TParams) => {
-      // Check if a token is provided and if it's explicitly null.
-      // If so, we'll skip the fetch and set a loading state to false.
       if (!token) {
-        // setIsLoading(false);
         return;
       }
       setIsLoading(true);
@@ -53,7 +50,7 @@ export function useFetchData<TData, TParams extends any[]>(
     data,
     isLoading,
     error,
-    refetch: fetchData,
     // Expose the function to allow components using this hook to trigger fetches
+    refetch: fetchData,
   };
 }
