@@ -21,35 +21,14 @@ export async function middleware(request: NextRequest) {
   const isAuthenticated = !!token;
   const userRole = token?.role as UserRole;
 
-  
-  // --- Handle Auth Pages (Redirect from auth pages if Authenticated) ---
   const isAuthPage = routeConfig.authPages.some(
     (routePath) => path === routePath || path.startsWith(`${routePath}/`)
   );
 
-  if (isAuthPage && userRole === UserRole.INSTRUCTOR) {
-    const redirectPath = "/instructor/my-courses";
+  // --- Handle Redirect Student to Student home page---
+  if (isAuthPage && userRole === UserRole.STUDENT) {
+    const redirectPath = "/student/search";
     return NextResponse.redirect(new URL(redirectPath, request.url));
-  } else if (isAuthPage && userRole === UserRole.STUDENT) {
-    const redirectPath = "/student/my-courses";
-    return NextResponse.redirect(new URL(redirectPath, request.url));
-  }
-
-  // --- Handle Protected Routes (Require Authentication) ---
-  const isAdminRoute = routeConfig.adminPath.some(
-    (routePath) => path === routePath || path.startsWith(`${routePath}/`)
-  );
-  const isInstructorRoute = routeConfig.instructorPath.some(
-    (routePath) => path === routePath || path.startsWith(`${routePath}/`)
-  );
-  const isProtected = routeConfig.protected.some(
-    (routePath) => path === routePath || path.startsWith(`${routePath}/`)
-  );
-
-  if ((isProtected || isAdminRoute || isInstructorRoute) && !isAuthenticated) {
-    const accountUrl = new URL("/login", request.url);
-    accountUrl.searchParams.set("redirect", path);
-    return NextResponse.redirect(accountUrl);
   }
 
   // --- Handle Redirect Instructor to Instructor home page---
@@ -60,6 +39,29 @@ export async function middleware(request: NextRequest) {
   // --- Handle Redirect admin to admin home page---
   if (isAuthPage && userRole === UserRole.ADMIN) {
     return NextResponse.redirect(new URL("/admin/courses", request.url));
+  }
+
+  const isAdminRoute = routeConfig.adminPath.some(
+    (routePath) => path === routePath || path.startsWith(`${routePath}/`)
+  );
+  const isInstructorRoute = routeConfig.instructorPath.some(
+    (routePath) => path === routePath || path.startsWith(`${routePath}/`)
+  );
+  const isProtected = routeConfig.protected.some(
+    (routePath) => path === routePath || path.startsWith(`${routePath}/`)
+  );
+
+  // --- Handle Protected Routes (Require Authentication) ---
+  if ((isProtected || isAdminRoute || isInstructorRoute) && !isAuthenticated) {
+    const accountUrl = new URL("/login", request.url);
+    accountUrl.searchParams.set("redirect", path);
+    return NextResponse.redirect(accountUrl);
+  }
+
+  // --- Handle Student-Only Routes (Require Student Role) ---
+  if (isProtected) {
+    if (!isAuthenticated || userRole !== UserRole.STUDENT)
+      return NextResponse.redirect(new URL("/", request.url));
   }
 
   // --- Handle Instructor-Only Routes (Require Instructor Role) ---
