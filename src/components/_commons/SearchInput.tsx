@@ -21,7 +21,7 @@ export default function SearchInput({
   onSearchSubmit,
 }: SearchInputProps) {
   const [isSearchDropdownOpen, setIsSearchDropdownOpen] = useState(false);
-  const [searchBy, setSearchBy] = useState<SearchBy>(SearchBy.TTILE);
+  const [searchBy, setSearchBy] = useState<SearchBy>(SearchBy.TITLE);
   const [searchQuery, setSearchQuery] = useState("");
 
   const toggleSearchDropdown = () => {
@@ -44,7 +44,7 @@ export default function SearchInput({
   };
 
   const searchPlaceholder =
-    searchBy === SearchBy.TTILE ? "Search by Course" : "Search by Instructor";
+    searchBy === SearchBy.TITLE ? "Search by Course" : "Search by Instructor";
 
   return (
     <form onSubmit={handleFormSubmit} className={`flex w-full gap-2 ${className}`}>
@@ -73,7 +73,7 @@ export default function SearchInput({
           {isSearchDropdownOpen && (
             <div className="absolute right-0 mt-2 w-48 bg-white border border-slate-300 rounded-md z-10">
               <button
-                onClick={() => handleSearchOptionSelect(SearchBy.TTILE)}
+                onClick={() => handleSearchOptionSelect(SearchBy.TITLE)}
                 className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
               >
                 Course Name

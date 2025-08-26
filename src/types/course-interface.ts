@@ -13,7 +13,7 @@ export enum SortOrder {
 }
 
 export enum SearchBy {
-  TTILE = "title",
+  TITLE = "title",
   INSTRUCTOR_NAME = "instructorName",
 }
 

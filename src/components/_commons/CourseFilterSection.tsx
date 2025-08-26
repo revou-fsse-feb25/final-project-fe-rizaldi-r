@@ -51,7 +51,7 @@ export default function CourseFilterSection({
 
   // Handle search submission from the SearchInput component
   const [searchQuery, setSearchQuery] = useState("");
-  const [searchBy, setSearchBy] = useState<SearchBy>(SearchBy.TTILE);
+  const [searchBy, setSearchBy] = useState<SearchBy>(SearchBy.TITLE);
   const handleSearchSubmit = (newQuery: string, newSearchBy: SearchBy) => {
     setSearchQuery(newQuery);
     setSearchBy(newSearchBy);

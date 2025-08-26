@@ -54,23 +54,6 @@ const handleAxiosError = (error: unknown): void => {
   }
 };
 
-// A generic API function to handle all Axios requests, providing centralized error handling and auth headers.
-// TODO: generalize respon data type
-// const api = async <T>(
-//   token: string | undefined,
-//   method: Method,
-//   url: string,
-//   data?: any
-// ): Promise<AxiosResponse<T>> => {
-//   try {
-//     const config = createAuthHeaders(token);
-//     const response = await axios({ method, url, data, ...config });
-//     return response; // Return full response object
-//   } catch (error) {
-//     handleAxiosError(error);
-//     throw error;
-//   }
-// };
 const api = async <T>(
   token: string | undefined,
   method: Method,
@@ -81,6 +64,8 @@ const api = async <T>(
     const config = createAuthHeaders(token);
     const response = await axios({ method, url, data, ...config });
     return response.data;
+    // TODO: generalize respon data type
+    // return response; // Return full response object
   } catch (error) {
     handleAxiosError(error);
     throw error; // Re-throw to propagate the error
@@ -173,6 +158,7 @@ export const fetchSubmissionsByEnrollment = async (token: string, enrollmentId: 
   api<any[]>(token, "GET", `/submissions/by-enrollment/${enrollmentId}`);
 
 // POST/PATCH/DELETE functions
+
 export const patchUserRole = async (token: string, userId: string, payload: any) =>
   api<any>(token, "PATCH", `/users/${userId}/role`, payload);
 
