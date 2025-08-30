@@ -8,7 +8,7 @@ const staticFileExtensions = [".ico", ".png", ".jpg", ".jpeg", ".gif", ".svg", "
 const routeConfig = {
   public: [],
   authPages: ["/login", "/signup"],
-  protected: ["/student"],
+  protected: ["/student", "/profile"],
   instructorPath: ["/instructor"],
   adminPath: ["/admin"],
 };
