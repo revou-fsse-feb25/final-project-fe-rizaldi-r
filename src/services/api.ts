@@ -1,10 +1,12 @@
 import {
   CourseCreateData,
+  FetchCoursesOptions,
   SearchData,
   SortBy,
   SortOption,
   SortOrder,
 } from "@/types/course-interface";
+import { EnrollmentOptions } from "@/types/enrollment-interface";
 import { UserRole } from "@/types/jwtPayload";
 import {
   DescriptionType,
@@ -13,6 +15,7 @@ import {
   SubmissionTemplate,
 } from "@/types/module-interface";
 import { GradeSubmission, SubmissionFieldValue } from "@/types/submission-interface";
+import { UserInfo } from "@/types/user-interface";
 import axios, { AxiosError, Method } from "axios";
 
 // API base URL
@@ -75,23 +78,56 @@ const api = async <T>(
 // FETCH functions (GET)
 export const fetchUsers = async (token: string) => api<any[]>(token, "GET", "/users");
 
+export const fetchCurrentUser = async (token: string) =>
+  api<UserInfo>(token, "GET", "/users/profile");
+
 export const fetchInstructorList = async (token: string) =>
   api<any[]>(token, "GET", "/users?role=INSTRUCTOR");
 
 export const fetchCategoryList = async (token: string) => api<any[]>(token, "GET", "/categories");
 
-export const fetchCoursesList = async (
-  token: string,
-  categoryId?: string | null,
-  searchData?: SearchData | null,
-  sortOption?: SortOption | null
-) => {
-  const filterCategory = categoryId ? `categoryId=${categoryId}` : "";
-  const sortCourse = sortOption
-    ? `sortBy=${sortOption.sortBy}&sortOrder=${sortOption.sortOrder}`
-    : "";
-  const searchCourse = searchData ? `${searchData.searchBy}=${searchData.searchQuery}` : "";
-  return api<any[]>(token, "GET", `/courses?${filterCategory}&${sortCourse}&${searchCourse}`);
+export const fetchCourses = async (token: string, options: FetchCoursesOptions) => {
+  const {
+    categoryId,
+    searchData,
+    sortOption,
+    instructorUsername,
+    isInstructor,
+    includeSections,
+    includeCategories,
+  } = options;
+
+  const queryParams = new URLSearchParams();
+
+  if (categoryId) {
+    queryParams.append("categoryId", categoryId);
+  }
+
+  if (instructorUsername) {
+    queryParams.append("instructorUsername", instructorUsername);
+  }
+
+  if (sortOption) {
+    queryParams.append("sortBy", sortOption.sortBy);
+    queryParams.append("sortOrder", sortOption.sortOrder);
+  }
+
+  if (searchData) {
+    queryParams.append(searchData.searchBy, searchData.searchQuery);
+  }
+
+  if (includeSections) {
+    queryParams.append("showSections", "true");
+  }
+
+  if (includeCategories) {
+    queryParams.append("showCategories", "true");
+  }
+
+  // Determine the correct API endpoint to call.
+  const endpoint = isInstructor ? "/courses/by-instructor" : "/courses";
+
+  return api<any[]>(token, "GET", `${endpoint}?${queryParams.toString()}`);
 };
 
 export const fetchCourse = async (token: string, courseId?: string | null) =>
@@ -101,51 +137,43 @@ export const fetchCourse = async (token: string, courseId?: string | null) =>
     `/courses/${courseId}?showInstructor=true&showCategories=true&showSections=true`
   );
 
-export const fetchModule = async (token: string, moduleId?: string | null) =>
-  api<any>(token, "GET", `/modules/${moduleId}`);
+export const fetchEnrollmentsByStudent = async (token: string, options: EnrollmentOptions) => {
+  const params = new URLSearchParams();
 
-export const fetchEnrollmentWithCourseList = async (token: string, categoryId?: string | null) => {
-  const filterCategory = categoryId ? `&courseCategoryId=${categoryId}` : "";
-  return api<any[]>(
-    token,
-    "GET",
-    `/enrollments/by-student?includeCourse=true&includeSections=true${filterCategory}`
-  );
-};
+  if (options.categoryId) {
+    params.append("courseCategoryId", options.categoryId);
+  }
+  if (options.searchData) {
+    params.append("searchQuery", options.searchData.searchQuery);
+    params.append("searchBy", options.searchData.searchBy);
+  }
+  if (options.sortOption) {
+    params.append("sortBy", options.sortOption.sortBy);
+    params.append("sortOrder", options.sortOption.sortOrder);
+  }
+  if (options.courseId) {
+    params.append("courseId", options.courseId);
+  }
+  if (options.includeCourse) {
+    params.append("includeCourse", "true");
+  }
+  if (options.includeSections) {
+    params.append("includeSections", "true");
+  }
+  if (options.includeSubmissions) {
+    params.append("includeSubmissions", "true");
+  }
+  if (options.includeAllProgress) {
+    params.append("includeAllProgress", "true");
+  }
+  if (options.includeModuleProgresses) {
+    params.append("includeModuleProgresses", "true");
+  }
 
-export const fetchEnrollmentWithSubmissionByStudent = async (
-  token: string,
-  courseId?: string | null,
-  includeCourse?: boolean | null
-) => {
-  const filterCourse = courseId ? `&courseId=${courseId}` : "";
-  const queryincludeCourse = includeCourse ? `&includeCourse=true` : "";
-  return api<any[]>(
-    token,
-    "GET",
-    `/enrollments/by-student?includeSubmissions=true${queryincludeCourse}${filterCourse}`
-  );
-};
+  const queryString = params.toString();
+  const url = `/enrollments/by-student?${queryString}`;
 
-export const fetchEnrollmentsWithSubmissionAndProgressByStudent = async (token: string) =>
-  api<any[]>(
-    token,
-    "GET",
-    "/enrollments/by-student?includeCourse=true&includeSubmissions=true&includeAllProgress=true"
-  );
-
-export const fetchCourseByInstructor = async (
-  token: string,
-  categoryId?: string,
-  showSections?: boolean | null
-) => {
-  const filterCategory = categoryId ? `categoryId=${categoryId}` : "";
-  const queryShowSections = showSections ? `showSections=true` : "";
-  return api<any[]>(
-    token,
-    "GET",
-    `/courses/by-instructor?showCategories=true&${queryShowSections}&${filterCategory}`
-  );
+  return api<any[]>(token, "GET", url);
 };
 
 export const fetchEnrollmentWithSubmission = async (token: string, enrollmentId: string) =>
@@ -157,7 +185,24 @@ export const fetchEnrollmentsByCourse = async (token: string, courseId: string) 
 export const fetchSubmissionsByEnrollment = async (token: string, enrollmentId: string) =>
   api<any[]>(token, "GET", `/submissions/by-enrollment/${enrollmentId}`);
 
+export const fetchModule = async (token: string, moduleId?: string | null) =>
+  api<any>(token, "GET", `/modules/${moduleId}`);
+
+export const fetchModuleProgress = async (token: string, enrollmentId?: string | null) =>
+  api<any>(token, "GET", `/module-progress/by-enrollment/${enrollmentId}`);
+
 // POST/PATCH/DELETE functions
+
+export const patchCurrentUser = async (token: string, userData: Partial<UserInfo>) =>
+  api<UserInfo>(token, "PATCH", "/users/profile", userData);
+
+export const patchModuleProgress = async (
+  token: string,
+  id?: string | null,
+  moduleProgressData?: { isCompleted: boolean }
+) => {
+  api<any>(token, "PATCH", `/module-progress/${id}`, moduleProgressData);
+};
 
 export const patchUserRole = async (token: string, userId: string, payload: any) =>
   api<any>(token, "PATCH", `/users/${userId}/role`, payload);
@@ -196,7 +241,12 @@ export const postModule = async (
 export const patchModule = async (
   token: string,
   moduleId: string,
-  editModuleData: { title?: string; description?: string; moduleType?: string }
+  editModuleData: {
+    title?: string;
+    description?: string;
+    moduleType?: string;
+    embedVideoLink?: string | null;
+  }
 ) => api(token, "PATCH", `/modules/${moduleId}`, editModuleData);
 
 export const deleteModule = async (token: string, moduleId: string) =>

@@ -41,10 +41,13 @@ export function useFetchData<TData, TParams extends any[]>(
     [fetcher, token]
   );
 
+  // stringify the fetcherParams to create a stable dependency.
+  const stringifiedParams = JSON.stringify(fetcherParams);
+
   // It runs once on component mount and whenever fetchData or fetcherParams change.
   useEffect(() => {
     fetchData(...fetcherParams);
-  }, [fetchData, ...fetcherParams]);
+  }, [fetchData, stringifiedParams]);
 
   return {
     data,
