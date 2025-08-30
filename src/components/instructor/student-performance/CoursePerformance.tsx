@@ -7,7 +7,7 @@ import OverallScores from "@/components/student/performance/OverallScores";
 import CourseScores from "@/components/student/performance/CourseScores";
 import { CourseDetails } from "@/types/course-interface";
 import { fetchEnrollmentsByCourse } from "@/services/api";
-import { useFetchData } from "@/hooks/useFetchData";
+import { useFetchData } from "@/hooks/useFetchApi";
 import { Enrollment } from "@/types/enrollment-interface";
 import { transformDate } from "@/utils/transform-date";
 import { createFullName } from "@/utils/create-full-name";

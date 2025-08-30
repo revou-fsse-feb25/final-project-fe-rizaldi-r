@@ -3,7 +3,7 @@ import Header from "@/components/_commons/Header";
 import Link from "next/link";
 import { BookMinus, PlayIcon } from "lucide-react";
 import { AssignmentDetailsItf } from "@/types/types";
-import Grading from "@/components/lecturer/student-performance/assignment-page/Grading";
+import Grading from "@/components/instructor/student-performance/assignment-page/Grading";
 import { Submission } from "@/types/submission-interface";
 import { Enrollment } from "@/types/enrollment-interface";
 import { CourseModuleDetails, DescriptionType } from "@/types/module-interface";

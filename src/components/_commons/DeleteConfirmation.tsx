@@ -2,14 +2,14 @@ import React, { MouseEventHandler } from "react";
 
 interface DeleteConfirmationProp {
   onConfirm: MouseEventHandler<HTMLButtonElement>;
-  cancelDelete: MouseEventHandler<HTMLButtonElement>;
+  onCancel: MouseEventHandler<HTMLButtonElement>;
   isDeleting: boolean;
 }
 
 export default function DeleteConfirmation({
   onConfirm,
   isDeleting,
-  cancelDelete,
+  onCancel,
 }: DeleteConfirmationProp) {
   return (
     <div className="p-2 px-3 bg-slate-50 rounded-sm flex items-center justify-between">
@@ -23,7 +23,7 @@ export default function DeleteConfirmation({
           {isDeleting ? "Deleting..." : "Confirm"}
         </button>
         <button
-          onClick={cancelDelete}
+          onClick={onCancel}
           disabled={isDeleting}
           className="text-sm px-3 py-1 rounded-sm border border-gray-300 text-gray-700 hover:bg-gray-200 transition-colors"
         >

@@ -1,7 +1,7 @@
 "use client";
 
-import { AddAccordionContentForm } from "@/components/lecturer/my-courses/courses/AddAccordionContentForm";
-import { usePostApi } from "@/hooks/addContent";
+import { AddAccordionContentForm } from "@/components/instructor/my-courses/courses/AddAccordionContentForm";
+import { usePostApi } from "@/hooks/usePostApi";
 import { deleteSection, postModule, postSection } from "@/services/api";
 import { CourseSection } from "@/types/course-interface";
 import { ModuleType } from "@/types/module-interface";

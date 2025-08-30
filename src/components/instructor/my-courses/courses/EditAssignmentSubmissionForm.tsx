@@ -184,7 +184,7 @@ export default function EditAssignmentSubmissionForm({
               {deletingFieldId === submissionfield.id ? (
                 <DeleteConfirmation
                   onConfirm={() => handleDeleteField(submissionfield.id)}
-                  cancelDelete={handleCancelDelete}
+                  onCancel={handleCancelDelete}
                   isDeleting={isDeleting}
                 />
               ) : (

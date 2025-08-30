@@ -1,6 +1,6 @@
 import { postCourse } from "@/services/api";
 import { AxiosErrorItf } from "@/types/axios-error";
-import { CourseCreateData } from "@/types/course-interface";
+import { CourseCreateData, FetchCoursesOptions } from "@/types/course-interface";
 import { UserInfo } from "@/types/user-interface";
 import { Plus, X } from "lucide-react";
 import { useState } from "react";
@@ -24,7 +24,7 @@ interface ModalProps {
 }
 
 interface CreateCourseFormProps {
-  refetchCourses: (params_0: string, params_1: boolean) => Promise<void>;
+  refetchCourses: (params_0: FetchCoursesOptions) => Promise<void>;
   token: string;
   courseCategories?: CourseCategory[];
   userInstructors?: UserInfo[];
@@ -128,7 +128,7 @@ export const CreateCourseForm: React.FC<CreateCourseFormProps> = ({
       if (response) {
         setMessage("Course added successfully!");
         setIsSuccess(true);
-        refetchCourses("", true);
+        refetchCourses({});
         setFormData({
           title: "",
           imageSrc: "",
@@ -140,7 +140,7 @@ export const CreateCourseForm: React.FC<CreateCourseFormProps> = ({
           allowedBatchYears: [2023, 2024],
           categoryIds: "",
         });
-        setIsModalOpen(false)
+        setIsModalOpen(false);
         // setTimeout(() => setIsModalOpen(false), 2000);
       }
     } catch (error) {
