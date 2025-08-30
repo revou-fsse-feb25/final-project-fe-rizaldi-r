@@ -1,5 +1,6 @@
 import Header from "@/components/_commons/Header";
 import ProgressDisplay from "@/components/_commons/ProgressDisplay";
+import { EnrollmentProgress } from "@/types/enrollment-interface";
 import React from "react";
 
 export interface OverallScoresItf {

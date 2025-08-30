@@ -2,6 +2,7 @@ import AssignmentScore from "@/components/student/performance/AssignmentScore";
 import OverallScores from "@/components/student/performance/OverallScores";
 import ExpandableMoreContent from "@/components/_commons/ExpandableMoreContent";
 import { Submission } from "@/types/submission-interface";
+import { EnrollmentProgress } from "@/types/enrollment-interface";
 
 export interface CourseScoresItf {
   courseId?: string;
