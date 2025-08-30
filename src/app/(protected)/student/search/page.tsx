@@ -4,9 +4,14 @@ import CourseFilterSection from "@/components/_commons/CourseFilterSection";
 import Header from "@/components/_commons/Header";
 import Layout from "@/components/_commons/layout/Layout";
 import BasicCourseCard from "@/components/student/search/BasicCourseCard";
-import { useFetchData } from "@/hooks/useFetchData";
-import { fetchCategoryList, fetchCoursesList, setDefaultAuthHeader } from "@/services/api";
-import { CourseDetails, SearchData, SortBy, SortOption } from "@/types/course-interface";
+import { useFetchData } from "@/hooks/useFetchApi";
+import { fetchCategoryList, fetchCourses } from "@/services/api";
+import {
+  CourseDetails,
+  FetchCoursesOptions,
+  SearchData,
+  SortOption,
+} from "@/types/course-interface";
 import { useSession } from "next-auth/react";
 import { useState } from "react";
 
@@ -43,13 +48,11 @@ export default function searchPage() {
     data: CourseDataList,
     isLoading: isLoadingProductList,
     error: errorProductList,
-  } = useFetchData<CourseDetails[], [string | null, SearchData | null, SortOption | null]>(
-    fetchCoursesList,
-    token,
+  } = useFetchData<CourseDetails[], [FetchCoursesOptions]>(fetchCourses, token, {
     categoryId,
     searchData,
-    sortOption
-  );
+    sortOption,
+  });
 
   return (
     <Layout>

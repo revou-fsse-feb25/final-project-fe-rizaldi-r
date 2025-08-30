@@ -5,15 +5,15 @@ import Header from "@/components/_commons/Header";
 import Layout from "@/components/_commons/layout/Layout";
 import AdminCourseCard from "@/components/admin/courses/AdminCourseCard";
 import { CreateCourseFormForAdmin } from "@/components/admin/courses/CreateCourseFormForAdmin";
-import InstructorCourseCard from "@/components/lecturer/my-courses/InstructorCourseCard";
-import { useFetchData } from "@/hooks/useFetchData";
+import InstructorCourseCard from "@/components/instructor/my-courses/InstructorCourseCard";
+import { useFetchData } from "@/hooks/useFetchApi";
+import { fetchCategoryList, fetchCourses, fetchInstructorList } from "@/services/api";
 import {
-  fetchCategoryList,
-  fetchCourseByInstructor,
-  fetchCoursesList,
-  fetchInstructorList,
-} from "@/services/api";
-import { CourseDetails, SearchData, SortOption } from "@/types/course-interface";
+  CourseDetails,
+  FetchCoursesOptions,
+  SearchData,
+  SortOption,
+} from "@/types/course-interface";
 import { UserInfo } from "@/types/user-interface";
 import { useSession } from "next-auth/react";
 import { useState } from "react";
@@ -54,13 +54,11 @@ export default function CoursesPage() {
     isLoading: isLoadingCourses,
     error: errorCourses,
     refetch: refetchCourses,
-  } = useFetchData<CourseDetails[], [string | null, SearchData | null, SortOption | null]>(
-    fetchCoursesList,
-    token,
+  } = useFetchData<CourseDetails[], [FetchCoursesOptions]>(fetchCourses, token, {
     categoryId,
     searchData,
-    sortOption
-  );
+    sortOption,
+  });
 
   // fetch instructors
   const {

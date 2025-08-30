@@ -30,7 +30,6 @@ export default function SearchInput({
 
   const handleSearchOptionSelect = (option: SearchBy) => {
     setSearchBy(option);
-    // The submission is now handled by the form's onSubmit handler.
     setIsSearchDropdownOpen(false);
   };
 
@@ -44,17 +43,21 @@ export default function SearchInput({
   };
 
   const searchPlaceholder =
-    searchBy === SearchBy.TITLE ? "Search by Course" : "Search by Instructor";
+    searchBy === SearchBy.TITLE
+      ? "Course"
+      : searchBy === SearchBy.INSTRUCTOR_NAME
+      ? "Instructor"
+      : "Student";
 
   return (
     <form onSubmit={handleFormSubmit} className={`flex w-full gap-2 ${className}`}>
       {/* Search input field */}
       <div className="flex items-center gap-2 bg-slate-100 border border-slate-300 rounded-md py-1 pr-1 pl-4 w-full">
-        <Search className="w-5 h-5 text-gray-400" />
+        <Search className="text-gray-400 min-w-4"/>
         <input
           type="text"
           name="search"
-          placeholder={`${searchPlaceholder} name ...`}
+          placeholder={`Search by ${searchPlaceholder} Name...`}
           value={searchQuery}
           onChange={handleSearchInputChange}
           className="w-full bg-transparent focus:outline-none placeholder:text-gray-400"
@@ -68,7 +71,7 @@ export default function SearchInput({
             className="text-slate-500 border border-slate-300"
             fontWeight="font-medium"
           >
-            {searchPlaceholder}
+            Search by {searchPlaceholder}
           </Button>
           {isSearchDropdownOpen && (
             <div className="absolute right-0 mt-2 w-48 bg-white border border-slate-300 rounded-md z-10">
@@ -82,7 +85,13 @@ export default function SearchInput({
                 onClick={() => handleSearchOptionSelect(SearchBy.INSTRUCTOR_NAME)}
                 className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
               >
-                Instructor
+                Instructor Name
+              </button>
+              <button
+                onClick={() => handleSearchOptionSelect(SearchBy.STUDENT_NAME)}
+                className="block w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
+              >
+                Student Name
               </button>
             </div>
           )}

@@ -2,12 +2,12 @@
 
 import Breadcrumps from "@/components/_commons/Breadcrumps";
 import Layout from "@/components/_commons/layout/Layout";
-import EditAccordionMenu from "@/components/lecturer/my-courses/courses/EditAccordionMenu";
-import EditCourseHeader from "@/components/lecturer/my-courses/courses/EditCourseHeader";
-import EditCourseInfoCard from "@/components/lecturer/my-courses/courses/EditCourseInfoCard";
-import EditModuleContent from "@/components/lecturer/my-courses/courses/EditModuleContent";
-import { useFetchData } from "@/hooks/useFetchData";
-import { fetchCourse, fetchModule, fetchEnrollmentWithSubmissionByStudent } from "@/services/api";
+import EditAccordionMenu from "@/components/instructor/my-courses/courses/EditAccordionMenu";
+import EditCourseHeader from "@/components/instructor/my-courses/courses/EditCourseHeader";
+import EditCourseInfoCard from "@/components/instructor/my-courses/courses/EditCourseInfoCard";
+import EditModuleContent from "@/components/instructor/my-courses/courses/EditModuleContent";
+import { useFetchData } from "@/hooks/useFetchApi";
+import { fetchCourse, fetchModule } from "@/services/api";
 import { CourseDetails } from "@/types/course-interface";
 import { Enrollment } from "@/types/enrollment-interface";
 import { CourseModuleDetails } from "@/types/module-interface";
@@ -70,7 +70,6 @@ export default function instructorCoursePage({ params }: ICoursesPageProps) {
   // TODO: handle not found
   if (isLoadingCourseData) return <div>Loading...</div>;
   if (!courseData) return <div>404 Course Not Found</div>;
-
 
   return (
     <Layout>

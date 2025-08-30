@@ -4,13 +4,10 @@ import CourseFilterSection from "@/components/_commons/CourseFilterSection";
 import Header from "@/components/_commons/Header";
 import Layout from "@/components/_commons/layout/Layout";
 import StudentCoursePerformance from "@/components/student/performance/StudentCoursePerformance";
-import { useFetchData } from "@/hooks/useFetchData";
-import {
-  fetchCategoryList,
-  fetchEnrollmentsWithSubmissionAndProgressByStudent,
-} from "@/services/api";
+import { useFetchData } from "@/hooks/useFetchApi";
+import { fetchCategoryList, fetchEnrollmentsByStudent } from "@/services/api";
 import { SearchData, SortOption } from "@/types/course-interface";
-import { Enrollment } from "@/types/enrollment-interface";
+import { Enrollment, EnrollmentOptions } from "@/types/enrollment-interface";
 import { useSession } from "next-auth/react";
 import { useState } from "react";
 
@@ -44,18 +41,19 @@ export default function performancePage() {
     error: errorCategoryList,
   } = useFetchData(fetchCategoryList, token);
 
-  // TODO: handle category change
   // Find the current module data based on the URL parameter
   const {
     data: enrollments,
     isLoading: isLoadingEnrollments,
     error: errorEnrollments,
-  } = useFetchData<Enrollment[], [null, boolean]>(
-    fetchEnrollmentsWithSubmissionAndProgressByStudent,
-    token,
-    null,
-    true
-  );
+  } = useFetchData<Enrollment[], [EnrollmentOptions]>(fetchEnrollmentsByStudent, token, {
+    includeCourse: true,
+    includeSubmissions: true,
+    includeAllProgress: true,
+    categoryId,
+    searchData,
+    sortOption,
+  });
 
   return (
     <Layout>

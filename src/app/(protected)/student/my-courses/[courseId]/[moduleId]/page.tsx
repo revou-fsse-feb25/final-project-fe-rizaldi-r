@@ -6,17 +6,18 @@ import AccordionMenu from "@/components/student/my-courses/courses/AccordionMenu
 import CourseHeader from "@/components/student/my-courses/courses/CourseHeader";
 import CourseInfoCard from "@/components/student/my-courses/courses/CourseInfoCard";
 import ModuleContent from "@/components/student/my-courses/courses/ModuleContent";
-import { useFetchData } from "@/hooks/useFetchData";
+import { useFetchData } from "@/hooks/useFetchApi";
 import {
   fetchCourse,
   fetchModule,
-  fetchEnrollmentWithCourseList,
-  fetchEnrollmentWithSubmissionByStudent,
   createEnrollment,
+  fetchEnrollmentsByStudent,
+  fetchModuleProgress,
+  patchModuleProgress,
 } from "@/services/api";
 import { CourseDetails } from "@/types/course-interface";
-import { Enrollment } from "@/types/enrollment-interface";
-import { CourseModuleDetails } from "@/types/module-interface";
+import { Enrollment, EnrollmentOptions } from "@/types/enrollment-interface";
+import { CourseModuleDetails, ModuleProgress } from "@/types/module-interface";
 import { createFullName } from "@/utils/create-full-name";
 import { AlertCircle } from "lucide-react";
 import { useSession } from "next-auth/react";
@@ -46,9 +47,10 @@ export default function coursePage({ params }: ICoursesPageProps) {
   const tempParams = React.use(params);
   const { courseId, moduleId } = tempParams;
 
-  // fetch course
   const { data: session } = useSession();
   const token = session?.accessToken;
+
+  // fetch course
   const {
     data: courseData,
     isLoading: isLoadingCourseData,
@@ -64,11 +66,17 @@ export default function coursePage({ params }: ICoursesPageProps) {
 
   // Find the current module data based on the URL parameter
   const {
-    data: enrollment,
-    isLoading: isLoadingEnrollment,
-    error: errorEnrollment,
+    data: enrollments,
+    isLoading: isLoadingEnrollments,
+    error: errorEnrollments,
     refetch: refetchEnrollment,
-  } = useFetchData<Enrollment[], [string]>(fetchEnrollmentWithSubmissionByStudent, token, courseId);
+  } = useFetchData<Enrollment[], [EnrollmentOptions]>(fetchEnrollmentsByStudent, token, {
+    courseId,
+    includeSubmissions: true,
+    includeModuleProgresses: true,
+  });
+  const enrollment = enrollments?.[0];
+  const moduleProgresses = enrollment?.moduleProgresses;
 
   // update breadcrumps
   breadcrumbsData[1].label = courseData?.title || "Course";
@@ -87,12 +95,30 @@ export default function coursePage({ params }: ICoursesPageProps) {
     try {
       await createEnrollment(token || "", courseId);
       setEnrollmentMessage("Enrollment successful! Redirecting...");
-      refetchEnrollment(courseId);
+      refetchEnrollment({ courseId });
     } catch (err) {
       setEnrollmentMessage("Enrollment failed. Please try again.");
     } finally {
       setIsEnrolling(false);
     }
+  };
+
+  // Handle progress updates
+  const handleProgressToggle = async (
+    moduleId: string,
+    isChecked: boolean,
+    enrollmentId: string
+  ) => {
+    // 1. Find the specific ModuleProgress object using the moduleId
+    const progressToUpdate = moduleProgresses?.find((p) => p.moduleId === moduleId);
+    if (!progressToUpdate) {
+      console.error("Module progress record not found for moduleId:", moduleId);
+      return;
+    }
+
+    // 2. Call the API
+    const moduleProgressId = progressToUpdate.id;
+    await patchModuleProgress(token || "", moduleProgressId, { isCompleted: isChecked });
   };
 
   // TODO: handle not found
@@ -118,7 +144,7 @@ export default function coursePage({ params }: ICoursesPageProps) {
       <section className="flex flex-wrap lg:flex-nowrap gap-4">
         <section className="flex flex-col gap-4 w-full lg:w-5/7">
           {moduleData ? (
-            <ModuleContent {...moduleData} submissions={enrollment?.[0]?.submissions} />
+            <ModuleContent {...moduleData} submissions={enrollment?.submissions} />
           ) : (
             // TODO: add error/not found component
             <div>Module not found</div>
@@ -128,11 +154,14 @@ export default function coursePage({ params }: ICoursesPageProps) {
         {/* Course Menu & Detail */}
         <section className="flex flex-col gap-4 w-full lg:w-2/7">
           {/* Course Menu */}
-          {enrollment?.[0] ? (
+          {enrollment ? (
             <AccordionMenu
+              enrollmentId={enrollment.id}
               sections={courseData.sections}
               onModuleChange={handleModuleChange}
               initialActiveModuleId={moduleId || courseData.sections[0]?.modules[0].id}
+              moduleProgress={enrollment.moduleProgresses}
+              onItemToggle={handleProgressToggle}
             />
           ) : (
             <>

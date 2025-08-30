@@ -2,8 +2,8 @@
 
 import Breadcrumps from "@/components/_commons/Breadcrumps";
 import Layout from "@/components/_commons/layout/Layout";
-import AssignmentDetails from "@/components/lecturer/student-performance/assignment-page/AssignmentDetails";
-import { useFetchData } from "@/hooks/useFetchData";
+import AssignmentDetails from "@/components/instructor/student-performance/assignment-page/AssignmentDetails";
+import { useFetchData } from "@/hooks/useFetchApi";
 import { fetchEnrollmentWithSubmission, fetchModule } from "@/services/api";
 import { Enrollment } from "@/types/enrollment-interface";
 import { CourseModuleDetails } from "@/types/module-interface";

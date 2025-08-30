@@ -3,10 +3,15 @@
 import CourseFilterSection from "@/components/_commons/CourseFilterSection";
 import Header from "@/components/_commons/Header";
 import Layout from "@/components/_commons/layout/Layout";
-import CoursePerformance from "@/components/lecturer/student-performance/CoursePerformance";
-import { useFetchData } from "@/hooks/useFetchData";
-import { fetchCategoryList, fetchCourseByInstructor } from "@/services/api";
-import { CourseDetails, SearchData, SortOption } from "@/types/course-interface";
+import CoursePerformance from "@/components/instructor/student-performance/CoursePerformance";
+import { useFetchData } from "@/hooks/useFetchApi";
+import { fetchCategoryList, fetchCourses } from "@/services/api";
+import {
+  CourseDetails,
+  FetchCoursesOptions,
+  SearchData,
+  SortOption,
+} from "@/types/course-interface";
 import { useSession } from "next-auth/react";
 import { useState } from "react";
 
@@ -47,7 +52,12 @@ export default function studentPerformancePage() {
     data: courses,
     isLoading: isLoadingCourses,
     error: errorCourses,
-  } = useFetchData<CourseDetails[], []>(fetchCourseByInstructor, token);
+  } = useFetchData<CourseDetails[], [FetchCoursesOptions]>(fetchCourses, token, {
+    instructorUsername,
+    categoryId,
+    searchData,
+    sortOption,
+  });
 
   // then find match student enrollment that enrolled with the sam e course
 
@@ -67,6 +77,7 @@ export default function studentPerformancePage() {
 
       <section>
         {courses?.map((course) => (
+          // TODO: feed the searchData to filter enrollment by student name
           <CoursePerformance {...{ ...course, token }} key={course.id} />
         ))}
       </section>

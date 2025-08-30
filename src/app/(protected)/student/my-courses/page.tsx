@@ -1,15 +1,14 @@
 "use client";
 
 import Header from "@/components/_commons/Header";
-import { courseCategoriesData, enrolledCourseData } from "@/utils/mock-data";
 import EnrollmentCard from "@/components/student/my-courses/EnrollmentCard";
 import Layout from "@/components/_commons/layout/Layout";
 import CourseFilterSection from "@/components/_commons/CourseFilterSection";
 import { useState } from "react";
 import { useSession } from "next-auth/react";
-import { useFetchData } from "@/hooks/useFetchData";
-import { fetchCategoryList, fetchEnrollmentWithCourseList } from "@/services/api";
-import { Enrollment } from "@/types/enrollment-interface";
+import { useFetchData } from "@/hooks/useFetchApi";
+import { fetchCategoryList, fetchEnrollmentsByStudent } from "@/services/api";
+import { Enrollment, EnrollmentOptions } from "@/types/enrollment-interface";
 import { SearchData, SortOption } from "@/types/course-interface";
 
 const courseStatusExcluded = ["Not Enrolled", "Enrolled"];
@@ -43,12 +42,17 @@ export default function MyCoursesPage() {
   } = useFetchData(fetchCategoryList, token);
 
   // fetch enrollments + courses
-  // TODO: enrollments
   const {
     data: EnrollmentDataList,
     isLoading: isLoadingProductList,
     error: errorProductList,
-  } = useFetchData<Enrollment[], [string | null]>(fetchEnrollmentWithCourseList, token, categoryId);
+  } = useFetchData<Enrollment[], [EnrollmentOptions]>(fetchEnrollmentsByStudent, token, {
+    includeCourse: true,
+    includeSections: true,
+    categoryId,
+    searchData,
+    sortOption,
+  });
 
   return (
     <Layout>

@@ -1,18 +1,12 @@
 "use client";
 
-import CourseFilterSection from "@/components/_commons/CourseFilterSection";
-import Header from "@/components/_commons/Header";
 import Layout from "@/components/_commons/layout/Layout";
-import CoursePerformance from "@/components/lecturer/student-performance/CoursePerformance";
-import { useFetchData } from "@/hooks/useFetchData";
+import { useFetchData } from "@/hooks/useFetchApi";
 import {
   deleteUser,
-  fetchCategoryList,
-  fetchCourseByInstructor,
   fetchUsers,
   patchUserRole,
 } from "@/services/api";
-import { CourseDetails } from "@/types/course-interface";
 import { UserRole } from "@/types/jwtPayload";
 import { Trash2 } from "lucide-react";
 import { useSession } from "next-auth/react";
@@ -111,7 +105,7 @@ export default function userListPage() {
   };
 
   // Cancels the deletion confirmation.
-  const cancelDelete = () => {
+  const onCancel = () => {
     setDeletingUserId(null);
     setDeletingStatus("");
     setMessage("");
@@ -182,7 +176,7 @@ export default function userListPage() {
                             {deletingStatus === "deleting" ? "..." : "Yes"}
                           </button>
                           <button
-                            onClick={cancelDelete}
+                            onClick={onCancel}
                             disabled={deletingStatus === "deleting"}
                             className="px-3 py-1 text-xs rounded-md bg-gray-300 text-gray-800 font-medium hover:bg-gray-400 transition-colors duration-200 shadow-sm"
                           >
@@ -229,7 +223,7 @@ export default function userListPage() {
                           {deletingStatus === "deleting" ? "..." : "Yes"}
                         </button>
                         <button
-                          onClick={cancelDelete}
+                          onClick={onCancel}
                           disabled={deletingStatus === "deleting"}
                           className="px-2 py-1 text-xs rounded-md bg-gray-300 text-gray-800"
                         >

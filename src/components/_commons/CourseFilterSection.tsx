@@ -1,4 +1,4 @@
-import { ArrowDownNarrowWide, ArrowUpDown } from "lucide-react";
+import { ArrowDownNarrowWide } from "lucide-react";
 import Button from "./Button";
 import SearchInput from "./SearchInput";
 import { useState } from "react";
@@ -56,7 +56,6 @@ export default function CourseFilterSection({
     setSearchQuery(newQuery);
     setSearchBy(newSearchBy);
     onSearchFieldSubmitted({ searchQuery: newQuery, searchBy: newSearchBy });
-    console.log(`Search submitted! Query: ${newQuery}, Search by: ${newSearchBy}`);
   };
 
   return (
@@ -66,7 +65,6 @@ export default function CourseFilterSection({
         <SearchInput
           type="text"
           name="search"
-          placeholder="Search for..."
           className="w-full"
           onSearchSubmit={handleSearchSubmit}
         />
