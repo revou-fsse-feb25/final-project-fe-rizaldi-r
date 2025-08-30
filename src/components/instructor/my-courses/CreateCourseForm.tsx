@@ -24,7 +24,7 @@ interface ModalProps {
 }
 
 interface CreateCourseFormProps {
-  refetchCourses: (params_0: FetchCoursesOptions) => Promise<void>;
+  refetchCourses: () => void;
   token: string;
   courseCategories?: CourseCategory[];
   userInstructors?: UserInfo[];
@@ -128,7 +128,7 @@ export const CreateCourseForm: React.FC<CreateCourseFormProps> = ({
       if (response) {
         setMessage("Course added successfully!");
         setIsSuccess(true);
-        refetchCourses({});
+        refetchCourses();
         setFormData({
           title: "",
           imageSrc: "",

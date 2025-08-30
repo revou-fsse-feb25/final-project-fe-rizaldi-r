@@ -8,7 +8,7 @@ const staticFileExtensions = [".ico", ".png", ".jpg", ".jpeg", ".gif", ".svg", "
 const routeConfig = {
   public: [],
   authPages: ["/login", "/signup"],
-  protected: ["/student", "/profile"],
+  protected: ["/student"],
   instructorPath: ["/instructor"],
   adminPath: ["/admin"],
 };
@@ -24,6 +24,13 @@ export async function middleware(request: NextRequest) {
   const isAuthPage = routeConfig.authPages.some(
     (routePath) => path === routePath || path.startsWith(`${routePath}/`)
   );
+
+  // --- Handle Protected Routes (Require Authentication) ---
+  if (!isAuthenticated && !isAuthPage) {
+    const accountUrl = new URL("/login", request.url);
+    accountUrl.searchParams.set("redirect", path);
+    return NextResponse.redirect(accountUrl);
+  }
 
   // --- Handle Redirect Student to Student home page---
   if (isAuthPage && userRole === UserRole.STUDENT) {
@@ -50,13 +57,6 @@ export async function middleware(request: NextRequest) {
   const isProtected = routeConfig.protected.some(
     (routePath) => path === routePath || path.startsWith(`${routePath}/`)
   );
-
-  // --- Handle Protected Routes (Require Authentication) ---
-  if ((isProtected || isAdminRoute || isInstructorRoute) && !isAuthenticated) {
-    const accountUrl = new URL("/login", request.url);
-    accountUrl.searchParams.set("redirect", path);
-    return NextResponse.redirect(accountUrl);
-  }
 
   // --- Handle Student-Only Routes (Require Student Role) ---
   if (isProtected) {
