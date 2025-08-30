@@ -15,12 +15,23 @@ export enum SortOrder {
 export enum SearchBy {
   TITLE = "title",
   INSTRUCTOR_NAME = "instructorName",
+  STUDENT_NAME = "studentName",
 }
 
 enum Program {
   WEBDEV,
   DATA_ANALYST,
   MARKETING,
+}
+
+export interface FetchCoursesOptions {
+  categoryId?: string | null;
+  instructorUsername?: string | null;
+  searchData?: SearchData | null;
+  sortOption?: SortOption | null;
+  isInstructor?: boolean;
+  includeSections?: boolean;
+  includeCategories?: boolean;
 }
 
 export interface SearchData {

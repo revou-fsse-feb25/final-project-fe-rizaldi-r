@@ -9,6 +9,22 @@ export enum ModuleType {
 }
 
 /**
+ * Interface for the ModuleProgress model, based on the provided Prisma schema.
+ * This object tracks a student's completion status for a specific module
+ * within their enrollment.
+ */
+export interface ModuleProgress {
+  id: string;
+  isCompleted: boolean;
+  enrollmentId: string;
+  moduleId: string;
+  createdAt: string;
+  updatedAt: string;
+  // enrollment?: any;
+  // module?: any;
+}
+
+/**
  * Interface for a submission field within an assignment template.
  */
 export interface SubmissionField {
