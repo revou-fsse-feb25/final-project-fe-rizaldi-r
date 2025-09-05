@@ -76,7 +76,7 @@ To get Campjam up and running on your local machine, follow these steps:
 
 ## 🚀 Deployment
 
-- **Frontend:** https://final-project-fe-rizaldi-r.vercel.app/
+- **Frontend:** https://campjam.vercel.app/
 - **Backend:** https://final-project-be-rizaldi-r-production.up.railway.app/
 
 ---
